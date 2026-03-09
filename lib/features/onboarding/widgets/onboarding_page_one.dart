@@ -433,7 +433,7 @@ class OnboardingPageOne extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 160),
             ],
           ),
         ),
