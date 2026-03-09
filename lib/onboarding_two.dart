@@ -14,15 +14,17 @@ class OnboardingScreenTwo extends StatelessWidget {
               const SizedBox(height: 20),
               // App Mock Preview Header Area
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 40.0), // Push the whole mockup down
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.topCenter,
-                    children: [
-                      // Fading White Mock App View
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    // Fading White Mock App View
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 40.0,
+                        left: 24.0,
+                        right: 24.0,
+                      ),
                       child: ShaderMask(
                         shaderCallback: (Rect bounds) {
                           return const LinearGradient(
