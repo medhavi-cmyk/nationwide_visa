@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'onboarding.dart';
 import 'onboarding_two.dart';
+import 'onboarding_three.dart'; // Import Screen 3
 
 class OnboardingFlow extends StatefulWidget {
   const OnboardingFlow({super.key});
@@ -52,6 +53,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                   children: const [
                     OnboardingScreen(),
                     OnboardingScreenTwo(),
+                    OnboardingScreenThree(), // Third screen added!
                   ],
                 ),
               ),
