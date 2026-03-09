@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../../../core/app_colors.dart';
 
-class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
+class OnboardingPageOne extends StatelessWidget {
+  const OnboardingPageOne({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +38,11 @@ class OnboardingScreen extends StatelessWidget {
                         blendMode: BlendMode.dstIn,
                         child: Container(
                           width: double.infinity,
-                          height: MediaQuery.of(context).size.height * 0.5, // Force to half screen height
+                          height: MediaQuery.of(context).size.height * 0.5,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
-                              color: const Color.fromARGB(
-                                255,
-                                255,
-                                170,
-                                164,
-                              ),
+                              color: const Color.fromARGB(255, 255, 170, 164),
                               width: 3.0,
                             ),
                             borderRadius: const BorderRadius.only(
@@ -84,19 +80,17 @@ class OnboardingScreen extends StatelessWidget {
                                     border: Border.all(
                                       color: Colors.grey[500]!,
                                     ),
-                                    borderRadius: BorderRadius.circular(
-                                      30,
-                                    ),
+                                    borderRadius: BorderRadius.circular(30),
                                   ),
-                                  child: Row(
+                                  child: const Row(
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.search,
                                         color: Colors.black,
                                         size: 24,
                                       ),
-                                      const SizedBox(width: 10),
-                                      const Expanded(
+                                      SizedBox(width: 10),
+                                      Expanded(
                                         child: Text(
                                           "Find Courses and Institutions",
                                           style: TextStyle(
@@ -152,7 +146,7 @@ class OnboardingScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.red[800], // Changed from purple to match red theme
+                                        color: Colors.red[800],
                                       ),
                                     ),
                                     const SizedBox(width: 4),
@@ -163,17 +157,13 @@ class OnboardingScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const Expanded(
-                                  child: SizedBox(height: 10),
-                                ), // Flexible gap instead of hardcoded height
+                                const Expanded(child: SizedBox(height: 10)),
                                 // Underneath faded card
                                 Container(
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     color: Colors.grey[50],
-                                    borderRadius: BorderRadius.circular(
-                                      20,
-                                    ),
+                                    borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color: Colors.grey[200]!,
                                     ),
@@ -201,12 +191,8 @@ class OnboardingScreen extends StatelessWidget {
                                               vertical: 6,
                                             ),
                                             decoration: BoxDecoration(
-                                              color: Colors.red.withValues(
-                                                alpha: 0.08,
-                                              ),
-                                              borderRadius: BorderRadius.circular(
-                                                8,
-                                              ),
+                                              color: AppColors.primaryRed.withValues(alpha: 0.08),
+                                              borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Row(
                                               children: [
@@ -262,10 +248,7 @@ class OnboardingScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-
-                                const SizedBox(
-                                  height: 20,
-                                ), // Additional padding to ensure it fades smoothly
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ),
@@ -275,7 +258,7 @@ class OnboardingScreen extends StatelessWidget {
 
                     // Floaty Matching Cards overlapping everything
                     Positioned(
-                      top: 190, // Hang over the Genie's matches result
+                      top: 190,
                       left: 10,
                       right: 10,
                       child: Container(
@@ -283,17 +266,10 @@ class OnboardingScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(
-                            color: const Color.fromARGB(
-                              255,
-                              255,
-                              170,
-                              164,
-                            ),
+                            color: const Color.fromARGB(255, 255, 170, 164),
                             width: 3.0,
                           ),
-                          borderRadius: BorderRadius.circular(
-                            20,
-                          ), // Outer white pill
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.08),
@@ -309,7 +285,6 @@ class OnboardingScreen extends StatelessWidget {
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  // Very subtle light green to mint gradient
                                   gradient: const LinearGradient(
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
@@ -346,7 +321,6 @@ class OnboardingScreen extends StatelessWidget {
                                       ],
                                     ),
                                     Positioned(
-                                      // Puzzle pieces mock
                                       bottom: -10,
                                       right: -10,
                                       child: Stack(
@@ -413,7 +387,6 @@ class OnboardingScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    // Make blue puzzle pieces
                                     Positioned(
                                       bottom: -10,
                                       right: -5,
@@ -424,7 +397,6 @@ class OnboardingScreen extends StatelessWidget {
                                             color: Colors.indigo[400]!.withValues(alpha: 0.6),
                                             size: 40,
                                           ),
-                                          // Outlined one
                                           Icon(
                                             Icons.extension_outlined,
                                             color: Colors.indigo[400]!.withValues(alpha: 0.4),

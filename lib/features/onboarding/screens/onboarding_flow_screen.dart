@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import '../../../../core/app_colors.dart';
+import '../widgets/onboarding_page_one.dart';
+import '../widgets/onboarding_page_two.dart';
+import '../widgets/onboarding_page_three.dart';
+import '../../auth/widgets/login_bottom_sheet.dart';
+
+class OnboardingFlowScreen extends StatefulWidget {
+  const OnboardingFlowScreen({super.key});
+
+  @override
+  State<OnboardingFlowScreen> createState() => _OnboardingFlowScreenState();
+}
+
+class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primaryRed,
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            children: const [
+              OnboardingPageOne(),
+              OnboardingPageTwo(),
+              OnboardingPageThree(),
+            ],
+          ),
+          // Progress Dots
+          Positioned(
+            bottom: 120,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (index) => _buildDot(index)),
+            ),
+          ),
+          // Get Started / Next Button
+          Positioned(
+            bottom: 40,
+            left: 24,
+            right: 24,
+            child: ElevatedButton(
+              onPressed: () {
+                if (_currentPage < 2) {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                } else {
+                  LoginBottomSheet.show(context);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primaryRed,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                _currentPage == 2 ? "Get Started" : "Continue",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDot(int index) {
+    bool isActive = _currentPage == index;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      width: isActive ? 24 : 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
+  }
+}

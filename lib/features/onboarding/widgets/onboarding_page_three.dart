@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class OnboardingScreenThree extends StatelessWidget {
-  const OnboardingScreenThree({super.key});
+class OnboardingPageThree extends StatelessWidget {
+  const OnboardingPageThree({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Faded red color for image tinting to match the theme instead of purple
+    // Faded red color for image tinting to match the theme
     final Color tintColor = Colors.red[900]!.withValues(alpha: 0.6);
 
     return CustomScrollView(
@@ -158,7 +158,6 @@ class OnboardingScreenThree extends StatelessWidget {
     );
 
     if (isFaded) {
-      // Create the tinted fade overlay effect for bottom items
       return ShaderMask(
         shaderCallback: (Rect bounds) {
           return const LinearGradient(
@@ -176,7 +175,7 @@ class OnboardingScreenThree extends StatelessWidget {
               height: height,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: tintColor, // The red hue tint
+                color: tintColor,
                 borderRadius: BorderRadius.circular(30),
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'onboarding_flow.dart'; // Import Flow
+import 'features/onboarding/screens/onboarding_flow_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
       title: 'Course Finder',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(), // Use Poppins
+        textTheme: GoogleFonts.poppinsTextTheme(),
         useMaterial3: true,
       ),
-      home: const OnboardingFlow(), // Set to Flow wrapper
+      home: const OnboardingFlowScreen(),
     );
   }
 }

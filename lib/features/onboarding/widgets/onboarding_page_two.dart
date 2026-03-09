@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class OnboardingScreenTwo extends StatelessWidget {
-  const OnboardingScreenTwo({super.key});
+class OnboardingPageTwo extends StatelessWidget {
+  const OnboardingPageTwo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                         blendMode: BlendMode.dstIn,
                         child: Container(
                           width: double.infinity,
-                          height:
-                              MediaQuery.of(context).size.height *
-                              0.5, // Force to half screen height
+                          height: MediaQuery.of(context).size.height * 0.5,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(
@@ -80,9 +78,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.04,
-                                        ),
+                                        color: Colors.black.withValues(alpha: 0.04),
                                         blurRadius: 10,
                                         offset: const Offset(0, 4),
                                       ),
@@ -92,8 +88,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                     ),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         "MSc Mechanical Engineering",
@@ -113,9 +108,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.grey[200],
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
+                                            borderRadius: BorderRadius.circular(20),
                                           ),
                                           child: const Text(
                                             "SUBMIT DOCUMENTS",
@@ -173,7 +166,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                       width: 28,
                                       height: 28,
                                       decoration: const BoxDecoration(
-                                        color: Color(0xFF8B5CF6), // Purple
+                                        color: Color(0xFF8B5CF6),
                                         shape: BoxShape.circle,
                                       ),
                                       alignment: Alignment.center,
@@ -189,8 +182,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             "Submit documents",
@@ -214,10 +206,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-
-                                const Expanded(
-                                  child: SizedBox(height: 10),
-                                ), // Flexible gap instead of hardcoded height
+                                const Expanded(child: SizedBox(height: 10)),
                               ],
                             ),
                           ),
@@ -228,7 +217,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                     // Floaty Timeline Card overlapping
                     Positioned(
                       top: 150,
-                      left: 100, // Reduced from 120 to provide more horizontal room
+                      left: 100,
                       right: 20,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -368,9 +357,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: hasLine
-                        ? Colors.green[700]
-                        : Colors.grey[300], // Green connection vs simple grey
+                    color: hasLine ? Colors.green[700] : Colors.grey[300],
                   ),
                 ),
             ],
@@ -407,8 +394,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (!isLast)
-                  const SizedBox(height: 22), // Spacing out steps in the card
+                if (!isLast) const SizedBox(height: 22),
               ],
             ),
           ),
