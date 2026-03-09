@@ -56,19 +56,22 @@ class OnboardingScreenThree extends StatelessWidget {
                             // 100K+ Text
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Text(
-                                "100K+",
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black.withValues(alpha: 0.3),
-                                      offset: const Offset(0, 4),
-                                      blurRadius: 10,
-                                    ),
-                                  ],
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "100K+",
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black.withValues(alpha: 0.3),
+                                        offset: const Offset(0, 4),
+                                        blurRadius: 10,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

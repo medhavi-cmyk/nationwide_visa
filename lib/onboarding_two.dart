@@ -199,6 +199,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                                               fontSize: 16,
                                               color: Colors.black87,
                                             ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
@@ -227,7 +228,7 @@ class OnboardingScreenTwo extends StatelessWidget {
                     // Floaty Timeline Card overlapping
                     Positioned(
                       top: 150,
-                      left: 120, // More inset
+                      left: 100, // Reduced from 120 to provide more horizontal room
                       right: 20,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -384,14 +385,18 @@ class OnboardingScreenTwo extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       date,
                       style: TextStyle(
