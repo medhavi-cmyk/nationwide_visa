@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
 import 'account_exists_bottom_sheet.dart';
 import 'register_bottom_sheet.dart';
@@ -164,32 +166,36 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           // Terms and Conditions
                           RichText(
                             textAlign: TextAlign.start,
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: const TextStyle(
                                 color: AppColors.textGrey,
                                 fontSize: 13,
                                 height: 1.5,
                               ),
-                              children: [
-                                TextSpan(
-                                  text: "By proceeding, you agree to the ",
-                                ),
-                                TextSpan(
-                                  text: "Terms & Conditions",
-                                  style: TextStyle(
-                                    color: AppColors.primaryRed,
-                                    fontWeight: FontWeight.bold,
+                                children: [
+                                  const TextSpan(
+                                    text: "By proceeding, you agree to the ",
                                   ),
-                                ),
-                                TextSpan(text: " and "),
-                                TextSpan(
-                                  text: "Privacy Policy.",
-                                  style: TextStyle(
-                                    color: AppColors.primaryRed,
-                                    fontWeight: FontWeight.bold,
+                                  TextSpan(
+                                    text: "Terms & Conditions",
+                                    style: const TextStyle(
+                                      color: AppColors.primaryRed,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
                                   ),
-                                ),
-                              ],
+                                  const TextSpan(text: " and "),
+                                  TextSpan(
+                                    text: "Privacy Policy.",
+                                    style: const TextStyle(
+                                      color: AppColors.primaryRed,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
+                                  ),
+                                ],
                             ),
                           ),
                           const SizedBox(height: 32),
@@ -296,6 +302,13 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
         );
       },
     );
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+      debugPrint('Could not launch $urlString');
+    }
   }
 
   Widget _buildSocialButton(String text, {IconData? icon, Widget? iconWidget}) {
