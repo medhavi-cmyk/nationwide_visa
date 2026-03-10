@@ -27,13 +27,13 @@ class OnboardingPageThree extends StatelessWidget {
                         child: Column(
                           children: [
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/1564489651/display_1500/stock-photo-happy-indian-student-male-bearded-wearing-glasses-and-black-t-short-holding-passport-airline-ticket-1564489651.jpg",
+                              assetPath: "assets/image_sir.png",
                               height: 220,
                               isFaded: false,
                             ),
                             const SizedBox(height: 16),
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/2205410909/display_1500/stock-photo-a-young-happy-asian-girl-with-a-german-flag-poses-at-the-media-harbor-and-tv-tower-in-dusseldorf-2205410909.jpg",
+                              assetPath: "assets/image_2.webp",
                               height: 140,
                               isFaded: true,
                               tintColor: tintColor,
@@ -48,7 +48,7 @@ class OnboardingPageThree extends StatelessWidget {
                           children: [
                             const SizedBox(height: 30),
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/2072876585/display_1500/stock-photo-multicultural-group-of-young-people-standing-in-circle-and-smiling-at-camera-happy-diverse-2072876585.jpg",
+                              assetPath: "assets/mahima_ghalaut.jpg",
                               height: 130,
                               isFaded: false,
                             ),
@@ -77,7 +77,7 @@ class OnboardingPageThree extends StatelessWidget {
                             ),
                             const SizedBox(height: 14),
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/2401451549/display_1500/stock-photo-beautiful-caucasian-woman-applying-for-an-american-visa-online-using-the-laptop-while-holding-a-us-2401451549.jpg",
+                              assetPath: "assets/ramandeep.jpg",
                               height: 180,
                               isFaded: true,
                               tintColor: tintColor,
@@ -92,13 +92,13 @@ class OnboardingPageThree extends StatelessWidget {
                           children: [
                             const SizedBox(height: 50),
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/2690300141/display_1500/stock-photo-young-man-smiling-while-carrying-a-backpack-and-holding-a-passport-with-boarding-pass-represents-2690300141.jpg",
+                              assetPath: "assets/dsc00113.jpg",
                               height: 200,
                               isFaded: false,
                             ),
                             const SizedBox(height: 16),
                             _buildImage(
-                              url: "https://www.shutterstock.com/shutterstock/photos/1421390993/display_1500/stock-photo-group-of-students-with-canadian-flags-outdoors-1421390993.jpg",
+                              assetPath: "assets/dsc00423.jpg",
                               height: 140,
                               isFaded: true,
                               tintColor: tintColor,
@@ -139,7 +139,7 @@ class OnboardingPageThree extends StatelessWidget {
   }
 
   Widget _buildImage({
-    required String url,
+    required String assetPath,
     required double height,
     required bool isFaded,
     Color? tintColor,
@@ -151,7 +151,7 @@ class OnboardingPageThree extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: BorderRadius.circular(30),
         image: DecorationImage(
-          image: NetworkImage(url),
+          image: AssetImage(assetPath),
           fit: BoxFit.cover,
         ),
       ),
