@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class OnboardingPageThree extends StatelessWidget {
   const OnboardingPageThree({super.key});
@@ -144,16 +145,27 @@ class OnboardingPageThree extends StatelessWidget {
     required bool isFaded,
     Color? tintColor,
   }) {
-    Widget imageContent = Container(
-      height: height,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(30),
-        image: DecorationImage(
-          image: AssetImage(assetPath),
-          fit: BoxFit.cover,
-        ),
+    Widget imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Image.asset(
+        assetPath,
+        height: height,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded || frame != null) {
+            return child;
+          }
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: height,
+              width: double.infinity,
+              color: Colors.white,
+            ),
+          );
+        },
       ),
     );
 
@@ -170,7 +182,7 @@ class OnboardingPageThree extends StatelessWidget {
         blendMode: BlendMode.dstIn,
         child: Stack(
           children: [
-            imageContent,
+            imageWidget,
             Container(
               height: height,
               width: double.infinity,
@@ -184,6 +196,6 @@ class OnboardingPageThree extends StatelessWidget {
       );
     }
 
-    return imageContent;
+    return imageWidget;
   }
 }

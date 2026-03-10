@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
 import 'account_exists_bottom_sheet.dart';
 import 'register_bottom_sheet.dart';
+import '../view_model/login_view_model.dart';
 
 class LoginBottomSheet extends StatefulWidget {
   const LoginBottomSheet({super.key});
@@ -24,24 +25,12 @@ class LoginBottomSheet extends StatefulWidget {
 }
 
 class _LoginBottomSheetState extends State<LoginBottomSheet> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _viewModel = LoginViewModel();
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _viewModel.dispose();
     super.dispose();
-  }
-
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    }
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (!emailRegex.hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
   }
 
   @override
@@ -83,7 +72,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       bottom: MediaQuery.of(context).viewInsets.bottom + 10.0,
                     ),
                     child: Form(
-                      key: _formKey,
+                      key: _viewModel.formKey,
                       child: Column(
                         children: [
                           // Illustration / Logo Area
@@ -110,9 +99,9 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           const SizedBox(height: 14),
                           // Email Field
                           TextFormField(
-                            controller: _emailController,
+                            controller: _viewModel.emailController,
                             keyboardType: TextInputType.emailAddress,
-                            validator: _validateEmail,
+                            validator: _viewModel.validateEmail,
                             decoration: InputDecoration(
                               labelText: "Email address",
                               labelStyle: const TextStyle(
@@ -223,8 +212,8 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                             ),
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  String email = _emailController.text.trim();
+                                if (_viewModel.validateForm()) {
+                                  String email = _viewModel.emailController.text.trim();
                                   if (email == 'test1@gmail.com') {
                                     Navigator.pop(context);
                                     AccountExistsBottomSheet.show(context, email);
@@ -281,14 +270,17 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           ),
                           const SizedBox(height: 40),
                           // Stats Row
-                          const Row(
-                            children: [
-                              _StatItem(val: "4.7/5 ⭐", label: "Google rating"),
-                              SizedBox(width: 8),
-                              _StatItem(val: "100K+", label: "Students counselled"),
-                              SizedBox(width: 8),
-                              _StatItem(val: "75K+", label: "Courses available"),
-                            ],
+                          const IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _StatItem(val: "4.7/5 ⭐", label: "Google rating"),
+                                SizedBox(width: 8),
+                                _StatItem(val: "100K+", label: "Students counselled"),
+                                SizedBox(width: 8),
+                                _StatItem(val: "75K+", label: "Courses available"),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 40),
                         ],
