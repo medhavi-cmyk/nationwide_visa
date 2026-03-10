@@ -259,7 +259,11 @@ class _OtpVerificationSheetState extends State<OtpVerificationSheet> {
                         ),
                         child: ElevatedButton(
                           onPressed: () {
-                            // Verify logic
+                            // Pop the OTP sheet
+                            Navigator.pop(context);
+                            // Pop the Register sheet (assuming it's still below)
+                            // Using a slight delay or popUntil is safer for nested modals
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
