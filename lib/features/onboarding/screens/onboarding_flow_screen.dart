@@ -79,6 +79,21 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
               ),
             ),
           ),
+          // Debug Skip Button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            right: 16,
+            child: TextButton(
+              onPressed: () => LoginBottomSheet.show(context),
+              child: const Text(
+                "Login (Debug)",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

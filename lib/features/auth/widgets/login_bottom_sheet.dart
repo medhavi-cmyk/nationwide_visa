@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
+import 'account_exists_bottom_sheet.dart';
+import 'register_bottom_sheet.dart';
 
 class LoginBottomSheet extends StatefulWidget {
   const LoginBottomSheet({super.key});
@@ -216,8 +218,17 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  // Proceed with login
-                                  debugPrint("Email is valid: ${_emailController.text}");
+                                  String email = _emailController.text.trim();
+                                  if (email == 'test1@gmail.com') {
+                                    Navigator.pop(context);
+                                    AccountExistsBottomSheet.show(context, email);
+                                  } else if (email == 'test2@gmail.com') {
+                                    Navigator.pop(context);
+                                    RegisterBottomSheet.show(context, email);
+                                  } else {
+                                    // Proceed with login
+                                    debugPrint("Email is valid: $email");
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(
