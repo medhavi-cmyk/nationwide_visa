@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nwdapp/features/auth/presentation/views/login_view.dart';
 import 'package:nwdapp/features/auth/presentation/views/profile_setup_view.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/router.dart';
 import '../../widgets/onboarding_page_one.dart';
 import '../../widgets/onboarding_page_two.dart';
 import '../../widgets/onboarding_page_three.dart';
@@ -102,6 +104,16 @@ class _OnboardingViewState extends State<OnboardingView> {
                   onPressed: () => ProfileSetupView.show(context),
                   child: const Text(
                     "Profile (Debug)",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => context.go(AppRouter.home),
+                  child: const Text(
+                    "Home (Debug)",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

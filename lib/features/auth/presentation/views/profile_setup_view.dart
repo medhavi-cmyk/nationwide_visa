@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/router.dart';
 import '../viewmodels/profile_viewmodel.dart';
 
 class ProfileSetupView extends StatelessWidget {
@@ -201,7 +203,7 @@ class ProfileSetupView extends StatelessWidget {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.go(AppRouter.home);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
