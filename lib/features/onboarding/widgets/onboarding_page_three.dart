@@ -28,7 +28,7 @@ class OnboardingPageThree extends StatelessWidget {
                         child: Column(
                           children: [
                             _buildImage(
-                              assetPath: "assets/image_sir.png",
+                              assetPath: "assets/image_sir.JPG",
                               height: 220,
                               isFaded: false,
                             ),
@@ -67,7 +67,9 @@ class OnboardingPageThree extends StatelessWidget {
                                     color: Colors.white,
                                     shadows: [
                                       Shadow(
-                                        color: Colors.black.withValues(alpha: 0.3),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.3,
+                                        ),
                                         offset: const Offset(0, 4),
                                         blurRadius: 10,
                                       ),

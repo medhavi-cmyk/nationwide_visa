@@ -82,7 +82,7 @@ class OnboardingPageOne extends StatelessWidget {
                                     ),
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  child: const Row(
+                                  child: Row(
                                     children: [
                                       Icon(
                                         Icons.search,

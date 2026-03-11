@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:nwdapp/features/auth/presentation/views/login_view.dart';
+import 'package:nwdapp/features/auth/presentation/views/profile_setup_view.dart';
 import '../../../../core/app_colors.dart';
-import '../widgets/onboarding_page_one.dart';
-import '../widgets/onboarding_page_two.dart';
-import '../widgets/onboarding_page_three.dart';
-import '../../auth/widgets/login_bottom_sheet.dart';
+import '../../widgets/onboarding_page_one.dart';
+import '../../widgets/onboarding_page_two.dart';
+import '../../widgets/onboarding_page_three.dart';
 
-class OnboardingFlowScreen extends StatefulWidget {
-  const OnboardingFlowScreen({super.key});
+class OnboardingView extends StatefulWidget {
+  const OnboardingView({super.key});
 
   @override
-  State<OnboardingFlowScreen> createState() => _OnboardingFlowScreenState();
+  State<OnboardingView> createState() => _OnboardingViewState();
 }
 
-class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
+class _OnboardingViewState extends State<OnboardingView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -58,7 +59,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
                     curve: Curves.easeInOut,
                   );
                 } else {
-                  LoginBottomSheet.show(context);
+                  LoginView.show(context);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -83,15 +84,31 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen> {
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
             right: 16,
-            child: TextButton(
-              onPressed: () => LoginBottomSheet.show(context),
-              child: const Text(
-                "Login (Debug)",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => LoginView.show(context),
+                  child: const Text(
+                    "Login (Debug)",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                TextButton(
+                  onPressed: () => ProfileSetupView.show(context),
+                  child: const Text(
+                    "Profile (Debug)",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

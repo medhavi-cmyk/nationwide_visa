@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
-import 'login_bottom_sheet.dart';
+import 'login_view.dart';
 
-class AccountExistsBottomSheet extends StatelessWidget {
+class AccountExistsView extends StatelessWidget {
   final String email;
 
-  const AccountExistsBottomSheet({
+  const AccountExistsView({
     super.key,
     required this.email,
   });
@@ -16,7 +16,7 @@ class AccountExistsBottomSheet extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return AccountExistsBottomSheet(email: email);
+        return AccountExistsView(email: email);
       },
     );
   }
@@ -26,8 +26,7 @@ class AccountExistsBottomSheet extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     
-    // Calculate scaling factors
-    final double vScale = screenHeight / 844.0; // Base on iPhone 13/14 height
+    final double vScale = screenHeight / 844.0;
     final double hScale = screenWidth / 390.0;
     
     return Container(
@@ -82,7 +81,6 @@ class AccountExistsBottomSheet extends StatelessWidget {
                     ),
                   ),
                   
-                  // Circular Profile Placeholder - Scaled
                   Container(
                     width: (screenHeight < 700 ? 80 : 110) * vScale.clamp(0.7, 1.1),
                     height: (screenHeight < 700 ? 80 : 110) * vScale.clamp(0.7, 1.1),
@@ -97,7 +95,6 @@ class AccountExistsBottomSheet extends StatelessWidget {
                     ),
                   ),
                   
-                  // Email Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -117,7 +114,6 @@ class AccountExistsBottomSheet extends StatelessWidget {
                     ],
                   ),
                   
-                  // Social Buttons - Constrained height
                   Column(
                     children: [
                       _buildSocialButton(
@@ -137,7 +133,6 @@ class AccountExistsBottomSheet extends StatelessWidget {
                     ],
                   ),
                   
-                  // Footer
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -152,7 +147,7 @@ class AccountExistsBottomSheet extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Navigator.pop(context);
-                          LoginBottomSheet.show(context);
+                          LoginView.show(context);
                         },
                         child: Text(
                           "Use another account",

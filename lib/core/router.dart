@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import '../features/onboarding/screens/onboarding_flow_screen.dart';
+import '../features/onboarding/presentation/views/onboarding_view.dart';
 
 class AppRouter {
   static const String onboarding = '/';
@@ -9,7 +9,7 @@ class AppRouter {
     routes: [
       GoRoute(
         path: onboarding,
-        builder: (context, state) => const OnboardingFlowScreen(),
+        builder: (context, state) => const OnboardingView(),
       ),
     ],
   );

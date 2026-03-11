@@ -39,6 +39,7 @@ dependencies:
   url_launcher: ^6.3.2
   shimmer: ^3.0.0
   country_state_city_pro: ^0.0.6
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

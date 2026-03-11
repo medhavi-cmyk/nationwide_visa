@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Course Finder',
+      title: 'NationWide Visas',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppColors.primaryRed,
-          selectionColor: AppColors.primaryRed.withOpacity(0.3),
+          selectionColor: AppColors.primaryRed.withValues(alpha: 0.3),
           selectionHandleColor: AppColors.primaryRed,
         ),
       ),

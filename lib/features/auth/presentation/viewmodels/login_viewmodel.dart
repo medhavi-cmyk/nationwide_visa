@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class LoginViewModel {
+class LoginViewModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  @override
   void dispose() {
     emailController.dispose();
+    super.dispose();
   }
 
   String? validateEmail(String? value) {
@@ -20,6 +22,8 @@ class LoginViewModel {
   }
 
   bool validateForm() {
-    return formKey.currentState?.validate() ?? false;
+    final isValid = formKey.currentState?.validate() ?? false;
+    notifyListeners();
+    return isValid;
   }
 }

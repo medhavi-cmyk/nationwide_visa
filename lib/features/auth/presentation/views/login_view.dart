@@ -1,13 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
-import 'account_exists_bottom_sheet.dart';
-import 'register_bottom_sheet.dart';
-import '../view_model/login_view_model.dart';
+import '../viewmodels/login_viewmodel.dart';
+import 'account_exists_view.dart';
+import 'register_view.dart';
 
-class LoginBottomSheet extends StatefulWidget {
-  const LoginBottomSheet({super.key});
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
 
   static void show(BuildContext context) {
     showModalBottomSheet(
@@ -15,26 +16,18 @@ class LoginBottomSheet extends StatefulWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return const LoginBottomSheet();
+        return ChangeNotifierProvider(
+          create: (_) => LoginViewModel(),
+          child: const LoginView(),
+        );
       },
     );
   }
 
   @override
-  State<LoginBottomSheet> createState() => _LoginBottomSheetState();
-}
-
-class _LoginBottomSheetState extends State<LoginBottomSheet> {
-  final _viewModel = LoginViewModel();
-
-  @override
-  void dispose() {
-    _viewModel.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<LoginViewModel>();
+
     return DraggableScrollableSheet(
       initialChildSize: 0.92,
       minChildSize: 0.5,
@@ -72,7 +65,7 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                       bottom: MediaQuery.of(context).viewInsets.bottom + 10.0,
                     ),
                     child: Form(
-                      key: _viewModel.formKey,
+                      key: viewModel.formKey,
                       child: Column(
                         children: [
                           // Illustration / Logo Area
@@ -99,9 +92,10 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                           const SizedBox(height: 14),
                           // Email Field
                           TextFormField(
-                            controller: _viewModel.emailController,
+                            controller: viewModel.emailController,
                             keyboardType: TextInputType.emailAddress,
-                            validator: _viewModel.validateEmail,
+                            validator: viewModel.validateEmail,
+                            onChanged: (_) => viewModel.validateForm(), // Real-time validation
                             decoration: InputDecoration(
                               labelText: "Email address",
                               labelStyle: const TextStyle(
@@ -161,30 +155,30 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                                 fontSize: 13,
                                 height: 1.5,
                               ),
-                                children: [
-                                  const TextSpan(
-                                    text: "By proceeding, you agree to the ",
+                              children: [
+                                const TextSpan(
+                                  text: "By proceeding, you agree to the ",
+                                ),
+                                TextSpan(
+                                  text: "Terms & Conditions",
+                                  style: const TextStyle(
+                                    color: AppColors.primaryRed,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  TextSpan(
-                                    text: "Terms & Conditions",
-                                    style: const TextStyle(
-                                      color: AppColors.primaryRed,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
+                                ),
+                                const TextSpan(text: " and "),
+                                TextSpan(
+                                  text: "Privacy Policy.",
+                                  style: const TextStyle(
+                                    color: AppColors.primaryRed,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  const TextSpan(text: " and "),
-                                  TextSpan(
-                                    text: "Privacy Policy.",
-                                    style: const TextStyle(
-                                      color: AppColors.primaryRed,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
-                                  ),
-                                ],
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(height: 32),
@@ -212,16 +206,15 @@ class _LoginBottomSheetState extends State<LoginBottomSheet> {
                             ),
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_viewModel.validateForm()) {
-                                  String email = _viewModel.emailController.text.trim();
+                                if (viewModel.validateForm()) {
+                                  String email = viewModel.emailController.text.trim();
                                   if (email == 'test1@gmail.com') {
                                     Navigator.pop(context);
-                                    AccountExistsBottomSheet.show(context, email);
+                                    AccountExistsView.show(context, email);
                                   } else if (email == 'test2@gmail.com') {
                                     Navigator.pop(context);
-                                    RegisterBottomSheet.show(context, email);
+                                    RegisterView.show(context, email);
                                   } else {
-                                    // Proceed with login
                                     debugPrint("Email is valid: $email");
                                   }
                                 }

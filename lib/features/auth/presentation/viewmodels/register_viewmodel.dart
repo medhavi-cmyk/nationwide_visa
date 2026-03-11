@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
-class RegisterViewModel {
+class RegisterViewModel extends ChangeNotifier {
   RegisterViewModel() {
     debugPrint("--- RegisterViewModel Initialized (CSC PRO Fixed) ---");
   }
@@ -19,6 +19,7 @@ class RegisterViewModel {
   bool receiveUpdates = true;
   bool obscurePassword = true;
 
+  @override
   void dispose() {
     nameController.dispose();
     countryController.dispose();
@@ -27,6 +28,7 @@ class RegisterViewModel {
     phoneController.dispose();
     studyCountryController.dispose();
     passwordController.dispose();
+    super.dispose();
   }
 
   String? validateRequired(String? value, String fieldName) {
@@ -59,7 +61,6 @@ class RegisterViewModel {
     if (value == null || value.trim().isEmpty) {
       return "Password is required";
     }
-    // Regex for: 8+ chars, at least one uppercase, one lowercase, one number, and one special character
     final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
     if (!regex.hasMatch(value)) {
       return "Password must have 8 characters with a number , symbol, uppercase and lower case";
@@ -68,15 +69,19 @@ class RegisterViewModel {
   }
 
   bool validateForm() {
-    return formKey.currentState?.validate() ?? false;
+    final isValid = formKey.currentState?.validate() ?? false;
+    notifyListeners();
+    return isValid;
   }
 
   void togglePasswordVisibility() {
     obscurePassword = !obscurePassword;
+    notifyListeners();
   }
 
   void toggleReceiveUpdates(bool? value) {
     receiveUpdates = value ?? false;
+    notifyListeners();
   }
 
   void updateCountry(Map<String, dynamic> country) {
@@ -85,19 +90,20 @@ class RegisterViewModel {
     _selectedCountryId = country['id']?.toString();
     _selectedCountryIso2 = country['iso2']?.toString();
     _selectedCountryIso3 = country['iso3']?.toString();
-    // Clear city if country changes
     cityController.clear();
+    notifyListeners();
   }
 
   void updateNationality(Map<String, dynamic> country) {
     debugPrint("--- Selected Nationality Data: $country ---");
     nationalityController.text = country['name'] ?? '';
+    notifyListeners();
   }
 
   String? _selectedCountryId;
   String? _selectedCountryIso2;
   String? _selectedCountryIso3;
-  Map<String, String> _stateNames = {}; // state_id -> state_name
+  final Map<String, String> _stateNames = {};
 
   bool get isCountrySelected => countryController.text.isNotEmpty;
 
@@ -106,7 +112,6 @@ class RegisterViewModel {
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/country.json');
       final List<dynamic> data = json.decode(response);
-      debugPrint("--- Loaded ${data.length} countries ---");
       return data.cast<Map<String, dynamic>>();
     } catch (e) {
       debugPrint("--- Error loading countries: $e ---");
@@ -116,7 +121,6 @@ class RegisterViewModel {
 
   Future<void> _loadStates() async {
     if (_stateNames.isNotEmpty) return;
-    debugPrint("--- Loading States ---");
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/state.json');
       final List<dynamic> data = json.decode(response);
@@ -127,16 +131,13 @@ class RegisterViewModel {
           _stateNames[id] = name;
         }
       }
-      debugPrint("--- Loaded ${_stateNames.length} states ---");
     } catch (e) {
       debugPrint("--- Error loading states: $e ---");
     }
   }
 
   Future<List<Map<String, dynamic>>> getCitiesForSelectedCountry() async {
-    debugPrint("--- Fetching Cities for ID:$_selectedCountryId, Iso2:$_selectedCountryIso2, Iso3:$_selectedCountryIso3 ---");
     if (_selectedCountryId == null && _selectedCountryIso2 == null) {
-      debugPrint("--- No country identifiers available, returning empty city list ---");
       return [];
     }
 
@@ -145,7 +146,6 @@ class RegisterViewModel {
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/city.json');
       final List<dynamic> data = json.decode(response);
-      debugPrint("--- Total cities loaded from JSON: ${data.length} ---");
       
       final filtered = data.where((city) {
         final countryId = city['country_id']?.toString();
@@ -165,11 +165,20 @@ class RegisterViewModel {
         return city;
       }).toList();
 
-      debugPrint("--- Loaded ${filtered.length} cities matching identifiers ---");
       return filtered;
     } catch (e) {
       debugPrint("--- Error loading cities: $e ---");
       return [];
     }
+  }
+
+  void updateCity(String city) {
+    cityController.text = city;
+    notifyListeners();
+  }
+
+  void updateStudyCountry(String country) {
+    studyCountryController.text = country;
+    notifyListeners();
   }
 }
