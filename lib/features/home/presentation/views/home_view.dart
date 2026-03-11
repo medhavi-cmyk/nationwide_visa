@@ -4,6 +4,9 @@ import '../widgets/home_header.dart';
 import '../widgets/services_carousel.dart';
 import '../widgets/popular_destinations.dart';
 import '../widgets/trending_services.dart';
+import '../widgets/trending_subjects.dart';
+import '../widgets/whats_new.dart';
+import '../widgets/referral_banner.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -36,6 +39,12 @@ class _HomeViewState extends State<HomeView> {
                 PopularDestinations(),
                 SizedBox(height: 32),
                 TrendingServices(),
+                SizedBox(height: 40),
+                TrendingSubjects(),
+                SizedBox(height: 40),
+                WhatsNew(),
+                SizedBox(height: 40),
+                ReferralBanner(),
                 SizedBox(height: 40),
               ],
             ),
