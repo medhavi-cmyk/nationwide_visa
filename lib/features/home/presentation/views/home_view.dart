@@ -19,19 +19,28 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const HomeHeader(),
-            const SizedBox(height: 24),
-            const ServicesCarousel(),
-            const SizedBox(height: 32),
-            const PopularDestinations(),
-            const SizedBox(height: 32),
-            const TrendingServices(),
-            const SizedBox(height: 40),
-          ],
-        ),
+      body: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: StickySearchHeaderDelegate(
+              statusBarHeight: MediaQuery.of(context).padding.top,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: const [
+                SizedBox(height: 24),
+                ServicesCarousel(),
+                SizedBox(height: 32),
+                PopularDestinations(),
+                SizedBox(height: 32),
+                TrendingServices(),
+                SizedBox(height: 40),
+              ],
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
