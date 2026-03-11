@@ -1,18 +1,58 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
+import 'destination_story_view.dart';
 
-class PopularDestinations extends StatelessWidget {
+class PopularDestinations extends StatefulWidget {
   const PopularDestinations({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final destinations = [
-      {'name': 'Canada', 'image': 'assets/logo.png'}, // Replace with actual images if available
-      {'name': 'Australia', 'image': 'assets/logo.png'},
-      {'name': 'Germany', 'image': 'assets/logo.png'},
-      {'name': 'UK', 'image': 'assets/logo.png'},
-    ];
+  State<PopularDestinations> createState() => _PopularDestinationsState();
+}
 
+class _PopularDestinationsState extends State<PopularDestinations> {
+  // Track viewed destinations by name
+  final Set<String> _viewedDestinations = {};
+
+  final destinations = [
+    {
+      'name': 'Canada',
+      'image': 'assets/popular_destination/canada_img.jpg',
+    },
+    {
+      'name': 'Australia',
+      'image': 'assets/popular_destination/australia_img.jpg',
+    },
+    {
+      'name': 'Germany',
+      'image': 'assets/popular_destination/germany_img.jpg',
+    },
+    {
+      'name': 'UK',
+      'image': 'assets/popular_destination/uk_img.jpg',
+    },
+  ];
+
+  void _openStory(String name, String image) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => DestinationStoryView(
+          name: name,
+          image: image,
+          onComplete: () {
+            if (mounted) {
+              setState(() {
+                _viewedDestinations.add(name);
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,7 +75,7 @@ class PopularDestinations extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 120,
+          height: 140, // Increased to provide room for border and text
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             scrollDirection: Axis.horizontal,
@@ -43,33 +83,48 @@ class PopularDestinations extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(width: 20),
             itemBuilder: (context, index) {
               final dest = destinations[index];
-              return Column(
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primaryRed.withValues(alpha: 0.1),
-                        width: 4,
+              final String name = dest['name']!;
+              final String image = dest['image']!;
+              final bool isViewed = _viewedDestinations.contains(name);
+
+              return GestureDetector(
+                onTap: () => _openStory(name, image),
+                child: Column(
+                  children: [
+                    CustomPaint(
+                      painter: SegmentedCirclePainter(
+                        color: isViewed
+                            ? Colors.grey[400]!
+                            : AppColors.primaryRed,
+                        segments: 7,
+                        strokeWidth: 3.0,
                       ),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/logo.png'), // Using logo as fallback
-                        fit: BoxFit.cover,
+                      child: Container(
+                        width: 90,
+                        height: 90,
+                        padding: const EdgeInsets.all(5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(image),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    dest['name']!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textBlack,
+                    const SizedBox(height: 8),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textBlack,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -77,4 +132,46 @@ class PopularDestinations extends StatelessWidget {
       ],
     );
   }
+}
+
+class SegmentedCirclePainter extends CustomPainter {
+  final Color color;
+  final int segments;
+  final double strokeWidth;
+
+  SegmentedCirclePainter({
+    required this.color,
+    this.segments = 7,
+    this.strokeWidth = 2.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    // Adjust radius to account for stroke width and prevent clipping
+    final double radius = min(size.width / 2, size.height / 2) - (strokeWidth / 2);
+    final Offset center = Offset(size.width / 2, size.height / 2);
+
+    final double totalGap = 0.15; // Reduced from 0.5 for closer dashes
+    final double segmentAngle = (2 * pi - (segments * totalGap)) / segments;
+
+    for (int i = 0; i < segments; i++) {
+      final double startAngle = i * (segmentAngle + totalGap) - (pi / 2);
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        segmentAngle,
+        false,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
