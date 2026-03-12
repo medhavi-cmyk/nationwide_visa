@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
-import '../widgets/home_header.dart';
-import '../widgets/services_carousel.dart';
-import '../widgets/popular_destinations.dart';
-import '../widgets/trending_services.dart';
-import '../widgets/trending_subjects.dart';
-import '../widgets/whats_new.dart';
-import '../widgets/referral_banner.dart';
+import 'explore_view.dart';
+import '../../../meetings/presentation/views/meetings_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,39 +13,19 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
 
+  final List<Widget> _pages = [
+    const ExploreView(),
+    const MeetingsView(),
+    const Center(child: Text('Chat - Coming Soon')),
+    const Center(child: Text('Applications - Coming Soon')),
+    const Center(child: Text('Profile - Coming Soon')),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: CustomScrollView(
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: StickySearchHeaderDelegate(
-              statusBarHeight: MediaQuery.of(context).padding.top,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: const [
-                SizedBox(height: 24),
-                ServicesCarousel(),
-                SizedBox(height: 32),
-                PopularDestinations(),
-                SizedBox(height: 32),
-                TrendingServices(),
-                SizedBox(height: 40),
-                TrendingSubjects(),
-                SizedBox(height: 40),
-                WhatsNew(),
-                SizedBox(height: 40),
-                ReferralBanner(),
-                SizedBox(height: 40),
-              ],
-            ),
-          ),
-        ],
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -81,12 +56,12 @@ class _HomeViewState extends State<HomeView> {
               label: 'Explore',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline),
-              label: 'Chat',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.videocam_outlined),
               label: 'Meet',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline),
+              label: 'Chat',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.description_outlined),
