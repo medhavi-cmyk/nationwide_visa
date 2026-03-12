@@ -29,22 +29,22 @@ class _MeetingsViewState extends State<MeetingsView> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Meetings',
-          style: TextStyle(
-            color: AppColors.textBlack,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 24, 24, 16),
+              child: Text(
+                'Meetings',
+                style: TextStyle(
+                  color: AppColors.textBlack,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TabBar(
                 controller: _tabController,
@@ -60,15 +60,18 @@ class _MeetingsViewState extends State<MeetingsView> with SingleTickerProviderSt
                 ],
               ),
             ),
-          ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  UpcomingMeetingsView(),
+                  HistoryMeetingsView(),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          UpcomingMeetingsView(),
-          HistoryMeetingsView(),
-        ],
       ),
     );
   }
