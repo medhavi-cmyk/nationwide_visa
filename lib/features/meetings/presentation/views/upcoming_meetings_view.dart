@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:nwdapp/features/meetings/presentation/view_models/meetings_view_model.dart';
 import 'package:nwdapp/features/meetings/presentation/widgets/booking_bottom_sheet.dart';
+import 'package:nwdapp/features/meetings/presentation/widgets/meeting_feedback_bottom_sheet.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../../../../core/app_colors.dart';
 
@@ -194,7 +195,15 @@ class UpcomingMeetingsView extends StatelessWidget {
                                       ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall(),
                                 ),
                               ),
-                            );
+                            ).then((value) {
+                              // Show feedback bottom sheet after the call ends
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const MeetingFeedbackBottomSheet(),
+                              );
+                            });
                           },
                           isPrimary: true,
                         )
