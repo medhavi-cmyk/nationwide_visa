@@ -183,10 +183,11 @@ class UpcomingMeetingsView extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ZegoUIKitPrebuiltCall(
-                                  appID:
-                                      456153833, // Placeholder: USER MUST REPLACE
+                                  appID: 456153833,
+                                  // Placeholder: USER MUST REPLACE
                                   appSign:
-                                      'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce', // Placeholder: USER MUST REPLACE
+                                      'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce',
+                                  // Placeholder: USER MUST REPLACE
                                   userID:
                                       'user_${DateTime.now().millisecondsSinceEpoch}',
                                   userName: 'User Name',
@@ -201,7 +202,8 @@ class UpcomingMeetingsView extends StatelessWidget {
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => const MeetingFeedbackBottomSheet(),
+                                builder: (context) =>
+                                    const MeetingFeedbackBottomSheet(),
                               );
                             });
                           },

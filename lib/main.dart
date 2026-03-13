@@ -8,9 +8,7 @@ import 'core/router.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MeetingsViewModel()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => MeetingsViewModel())],
       child: const MyApp(),
     ),
   );
