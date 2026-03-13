@@ -15,14 +15,18 @@ Empowering your dreams of immigrating to Canada, Australia, and Germany with exp
     -   **Services Carousel**: Discover Study, Work, Invest, and Settle programs.
     -   **Popular Destinations**: Quick access to Canada, Australia, and Germany specific content.
     -   **Trending Programs**: Real-time listings for PNPs, Spouse PR, and Opportunity Cards.
+-   **Video Counseling**: Book and join 1:1 video meet-ups with dedicated counselors.
+    -   Dynamic "Join" logic that unlocks the video call room exactly at the scheduled time.
+    -   Powered by ZEGOCLOUD Prebuilt Call Kit for seamless, high-quality audio and video.
 
 ## 🛠️ Tech Stack
 
 -   **Framework**: [Flutter](https://flutter.dev/) (Material 3)
 -   **Navigation**: [GoRouter](https://pub.dev/packages/go_router) for declarative, scalable routing.
--   **State Management**: [Provider](https://pub.dev/packages/provider) for efficient reactive data binding.
+-   **State Management**: [Provider](https://pub.dev/packages/provider) for efficient reactive data binding (MVVM pattern for meetings).
 -   **Typography**: [Google Fonts (Poppins)](https://fonts.google.com/specimen/Poppins) for a modern, sleek feel.
 -   **Architecture**: Modular Feature-based Architecture for high maintainability.
+-   **Video Calls**: [ZEGOCLOUD Prebuilt Call](https://pub.dev/packages/zego_uikit_prebuilt_call) for rapid MVP integration.
 
 ## 📂 Directory Structure
 
@@ -32,7 +36,8 @@ lib/
 ├── features/
 │   ├── auth/           # Authentication UI, ViewModels, and logic
 │   ├── onboarding/     # Onboarding screens and widgets
-│   └── home/           # Main dashboard and service discovery
+│   ├── home/           # Main dashboard and service discovery
+│   └── meetings/       # MVVM-based booking, active meetings, and video UI
 └── assets/             # Logos, illustrations, and images
 ```
 
@@ -58,3 +63,6 @@ lib/
 
 ---
 *Built with ❤️ for a seamless immigration experience.*
+
+
+<!-- flutter emulators --launch Medium_Phone_API_36.1 -->
