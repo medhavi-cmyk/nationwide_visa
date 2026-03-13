@@ -78,19 +78,22 @@ class ReferralBottomSheet extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.card_giftcard, size: 20),
-                        SizedBox(width: 8),
-                        Text(
-                          "Refer friends",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    child: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.card_giftcard, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            "Refer friends",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -105,24 +108,28 @@ class ReferralBottomSheet extends StatelessWidget {
                       side: const BorderSide(color: Color(0xFFF3F4F6), width: 1.5),
                       backgroundColor: const Color(0xFFF3F4F6),
                       foregroundColor: AppColors.textBlack,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(28),
                       ),
                       elevation: 0,
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.check, size: 20, color: Colors.green),
-                        SizedBox(width: 4),
-                        Text(
-                          "Done",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    child: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check, size: 20, color: Colors.green),
+                          SizedBox(width: 4),
+                          Text(
+                            "Done",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

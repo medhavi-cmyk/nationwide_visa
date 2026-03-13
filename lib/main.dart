@@ -4,8 +4,20 @@ import 'package:provider/provider.dart';
 import 'features/meetings/presentation/view_models/meetings_view_model.dart';
 import 'core/app_colors.dart';
 import 'core/router.dart';
+import 'core/services/zego_chat_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Zego Chat
+  final zegoService = ZegoChatService();
+  await zegoService.init();
+  
+  // Mock login for MVP
+  // In a real app, this would happen after authentication
+  final String userId = 'user_${DateTime.now().millisecondsSinceEpoch}';
+  await zegoService.login(userId, 'Demo User');
+
   runApp(
     MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => MeetingsViewModel())],

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nwdapp/features/meetings/presentation/view_models/meetings_view_model.dart';
 import 'package:nwdapp/features/meetings/presentation/widgets/booking_bottom_sheet.dart';
 import 'package:nwdapp/features/meetings/presentation/widgets/meeting_feedback_bottom_sheet.dart';
+import 'package:nwdapp/features/meetings/presentation/widgets/referral_bottom_sheet.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../../../../core/app_colors.dart';
 
@@ -21,6 +22,39 @@ class UpcomingMeetingsView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // Debug Buttons for Testing
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const MeetingFeedbackBottomSheet(),
+                    );
+                  },
+                  child: const Text("Test Review", style: TextStyle(fontSize: 12)),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const ReferralBottomSheet(),
+                    );
+                  },
+                  child: const Text("Test Referral", style: TextStyle(fontSize: 12)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           if (!isBooked) ...[
             // Hero Illustration
             AspectRatio(
