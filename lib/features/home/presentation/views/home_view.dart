@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
 import 'explore_view.dart';
+import '../../../chat/presentation/views/chat_view.dart';
 import '../../../meetings/presentation/views/meetings_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -15,8 +16,8 @@ class _HomeViewState extends State<HomeView> {
 
   final List<Widget> _pages = [
     const ExploreView(),
+    const ChatView(),
     const MeetingsView(),
-    const Center(child: Text('Chat - Coming Soon')),
     const Center(child: Text('Applications - Coming Soon')),
     const Center(child: Text('Profile - Coming Soon')),
   ];
@@ -56,12 +57,12 @@ class _HomeViewState extends State<HomeView> {
               label: 'Explore',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.videocam_outlined),
-              label: 'Meet',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.chat_bubble_outline),
               label: 'Chat',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.videocam_outlined),
+              label: 'Meet',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.description_outlined),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
+import 'referral_bottom_sheet.dart';
 
 class MeetingFeedbackBottomSheet extends StatefulWidget {
   const MeetingFeedbackBottomSheet({super.key});
@@ -111,13 +112,12 @@ class _MeetingFeedbackBottomSheetState extends State<MeetingFeedbackBottomSheet>
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                // Return data or just close for now
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Thank you for your feedback!"),
-                    backgroundColor: AppColors.primaryRed,
-                  ),
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => const ReferralBottomSheet(),
                 );
               },
               style: ElevatedButton.styleFrom(
