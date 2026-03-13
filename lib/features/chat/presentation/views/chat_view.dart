@@ -23,7 +23,7 @@ class _ChatViewState extends State<ChatView> {
   final TextEditingController _commentController = TextEditingController();
   final ZegoChatService _chatService = ZegoChatService();
   String _targetUserID = "counselor_1"; // Default target
-  
+
   final List<_ChatMessage> _messages = [
     _ChatMessage(text: "Hi", time: "11:15 AM", isMe: true),
     _ChatMessage(
@@ -40,14 +40,17 @@ class _ChatViewState extends State<ChatView> {
     _chatService.receiveMessageStream.listen((ZIMMessage message) {
       if (message is ZIMTextMessage) {
         final now = DateTime.now();
-        final timeString = "${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}";
-        
+        final timeString =
+            "${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}";
+
         setState(() {
-          _messages.add(_ChatMessage(
-            text: message.message,
-            time: timeString,
-            isMe: false, // Message from the other person
-          ));
+          _messages.add(
+            _ChatMessage(
+              text: message.message,
+              time: timeString,
+              isMe: false, // Message from the other person
+            ),
+          );
         });
       }
     });
@@ -70,13 +73,7 @@ class _ChatViewState extends State<ChatView> {
       _chatService.sendMessage(_targetUserID, text);
 
       setState(() {
-        _messages.add(
-          _ChatMessage(
-            text: text,
-            time: timeString,
-            isMe: true,
-          ),
-        );
+        _messages.add(_ChatMessage(text: text, time: timeString, isMe: true));
         _commentController.clear();
       });
     }
@@ -104,9 +101,13 @@ class _ChatViewState extends State<ChatView> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: const NetworkImage(
-                    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop',
-                  ),
+                  backgroundImage: _chatService.currentUserID == "counselor_1"
+                      ? const NetworkImage(
+                          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop',
+                        )
+                      : const NetworkImage(
+                          'https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?q=80&w=687&auto=format&fit=crop',
+                        ),
                   backgroundColor: Colors.purple.withValues(alpha: 0.1),
                 ),
                 Positioned(
@@ -128,8 +129,10 @@ class _ChatViewState extends State<ChatView> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Niha Samreen N',
+                Text(
+                  _chatService.currentUserID == "counselor_1"
+                      ? "Counselor"
+                      : "User",
                   style: TextStyle(
                     color: AppColors.textBlack,
                     fontSize: 18,
@@ -137,7 +140,9 @@ class _ChatViewState extends State<ChatView> {
                   ),
                 ),
                 Text(
-                  _chatService.currentUserID == "counselor_1" ? "Testing (Counselor)" : "Counsellor",
+                  _chatService.currentUserID == "counselor_1"
+                      ? "Counselor"
+                      : "User",
                   style: TextStyle(
                     color: AppColors.textGrey.withValues(alpha: 0.7),
                     fontSize: 14,
@@ -149,15 +154,17 @@ class _ChatViewState extends State<ChatView> {
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.bug_report, color: AppColors.primaryRed),
+            icon: const Icon(Icons.settings, color: AppColors.primaryRed),
             onSelected: (value) async {
               if (value == 'counselor') {
                 await _chatService.login("counselor_1", "Counselor Niha");
                 setState(() {
-                  _targetUserID = "user_default"; // In a real app, this would be the user you are chatting with
+                  _targetUserID =
+                      "user_default"; // In a real app, this would be the user you are chatting with
                 });
               } else {
-                final String userId = 'user_${DateTime.now().millisecondsSinceEpoch}';
+                final String userId =
+                    'user_${DateTime.now().millisecondsSinceEpoch}';
                 await _chatService.login(userId, "Demo User");
                 setState(() {
                   _targetUserID = "counselor_1";
@@ -165,10 +172,7 @@ class _ChatViewState extends State<ChatView> {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'user',
-                child: Text('Login as User'),
-              ),
+              const PopupMenuItem(value: 'user', child: Text('Login as User')),
               const PopupMenuItem(
                 value: 'counselor',
                 child: Text('Login as Counselor'),

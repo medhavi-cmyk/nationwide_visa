@@ -315,7 +315,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         children: [
           _buildDragHandle(),
           const Text(
-            "What would you like to discuss with Niha?",
+            "What would you like to discuss with counseller?",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
