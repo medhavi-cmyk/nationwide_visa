@@ -64,10 +64,10 @@ class _HomeViewState extends State<HomeView> {
               icon: Icon(Icons.videocam_outlined),
               label: 'Meet',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.description_outlined),
-              label: 'Applications',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.description_outlined),
+            //   label: 'Applications',
+            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               label: 'Profile',

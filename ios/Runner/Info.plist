@@ -60,11 +60,19 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to allow you to take and send photos in the chat.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library to allow you to pick and send photos in the chat.</string>
+	<string>Nationwide Visas needs camera access for video calls with your counsellor and to capture photos in chat.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to your microphone for video calls.</string>
+	<string>Nationwide Visas needs microphone access to enable audio during video consultations and voice messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nationwide Visas needs access to your photo library to send images in chat conversations.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Nationwide Visas needs permission to save images and media received in chat to your photo library.</string>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>Nationwide Visas needs notification permission to alert you about new messages and incoming video call invitations.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Nationwide Visas uses your local network to establish low-latency video call connections via ZEGOCLOUD.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Nationwide Visas uses Bluetooth to route audio to wireless headsets and earphones during video calls.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
