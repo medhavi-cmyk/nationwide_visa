@@ -8,11 +8,11 @@ import 'core/services/zego_chat_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Zego Chat
   final zegoService = ZegoChatService();
   await zegoService.init();
-  
+
   // Mock login for MVP
   // In a real app, this would happen after authentication
   final String userId = 'user_${DateTime.now().millisecondsSinceEpoch}';

@@ -3,8 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:zego_zim/zego_zim.dart';
 
 class ZegoChatService extends ChangeNotifier {
+  // Single instance
   static final ZegoChatService _instance = ZegoChatService._internal();
+  // Factory Constructor
   factory ZegoChatService() => _instance;
+  // Private Constructor
   ZegoChatService._internal();
 
   final int appID = 456153833; // From UpcomingMeetingsView
