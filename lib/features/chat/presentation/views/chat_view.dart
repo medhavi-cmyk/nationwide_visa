@@ -18,18 +18,22 @@ class ChatView extends StatefulWidget {
 enum ChatMessageType { text, image, file }
 
 class _ChatMessage {
+  final int? messageID;
   final String text;
   final String time;
   final bool isMe;
   final ChatMessageType type;
   final String? filePath;
+  ZIMMessageReceiptStatus receiptStatus;
 
   _ChatMessage({
+    this.messageID,
     required this.text,
     required this.time,
     required this.isMe,
     this.type = ChatMessageType.text,
     this.filePath,
+    this.receiptStatus = ZIMMessageReceiptStatus.none,
   });
 }
 
@@ -39,6 +43,10 @@ class _ChatViewState extends State<ChatView> {
   final ZegoChatService _chatService = ZegoChatService();
   String _targetUserID = "test_counselor"; // Default target
   StreamSubscription? _messageSubscription;
+  StreamSubscription? _typingSubscription;
+  StreamSubscription? _receiptSubscription;
+  Timer? _typingTimer;
+  bool _isTyping = false;
 
   final List<_ChatMessage> _messages = [
     _ChatMessage(text: "Hi", time: "11:15 AM", isMe: true),
@@ -85,14 +93,44 @@ class _ChatViewState extends State<ChatView> {
         });
         _scrollToBottom();
       }
+
+      // Send read receipt if we are on this screen and the message is from our target
+      if (message.senderUserID == _targetUserID) {
+        _chatService.sendReadReceipt(_targetUserID);
+      }
+    });
+
+    _typingSubscription = _chatService.typingStream.listen((typingMap) {
+      if (typingMap.containsKey(_targetUserID)) {
+        setState(() {
+          _isTyping = typingMap[_targetUserID]!;
+        });
+        if (_isTyping) _scrollToBottom();
+      }
+    });
+
+    _receiptSubscription = _chatService.receiptStream.listen((infos) {
+      bool needsUpdate = false;
+      for (var info in infos) {
+        for (var msg in _messages) {
+          if (msg.messageID == info.messageID) {
+            msg.receiptStatus = info.status;
+            needsUpdate = true;
+          }
+        }
+      }
+      if (needsUpdate) setState(() {});
     });
   }
 
   @override
   void dispose() {
+    _typingTimer?.cancel();
     _commentController.dispose();
     _scrollController.dispose();
     _messageSubscription?.cancel();
+    _typingSubscription?.cancel();
+    _receiptSubscription?.cancel();
     super.dispose();
   }
 
@@ -116,30 +154,53 @@ class _ChatViewState extends State<ChatView> {
     }
   }
 
-  void _sendWithService(String content, ChatMessageType type, {String? path}) {
+  void _sendWithService(String content, ChatMessageType type, {String? path}) async {
     final now = DateTime.now();
     final timeString =
         "${now.hour}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}";
 
     if (kDebugMode) print("Sending $type to $_targetUserID...");
-    if (type == ChatMessageType.text) {
-      _chatService.sendMessage(_targetUserID, content);
-    } else if (type == ChatMessageType.image && path != null) {
-      _chatService.sendImageMessage(_targetUserID, path);
-    } else if (type == ChatMessageType.file && path != null) {
-      _chatService.sendFileMessage(_targetUserID, path);
-    }
-
+    
+    // Optimistically add message
+    final chatMsg = _ChatMessage(
+      text: content,
+      time: timeString,
+      isMe: true,
+      type: type,
+      filePath: path,
+      receiptStatus: ZIMMessageReceiptStatus.processing, // One tick or Double grey initially
+    );
+    
     setState(() {
-      _messages.add(_ChatMessage(
-        text: content,
-        time: timeString,
-        isMe: true,
-        type: type,
-        filePath: path,
-      ));
+      _messages.add(chatMsg);
     });
     _scrollToBottom();
+
+    ZIMMessage? sentMsg;
+    if (type == ChatMessageType.text) {
+      sentMsg = await _chatService.sendMessage(_targetUserID, content);
+    } else if (type == ChatMessageType.image && path != null) {
+      sentMsg = await _chatService.sendImageMessage(_targetUserID, path);
+    } else if (type == ChatMessageType.file && path != null) {
+      sentMsg = await _chatService.sendFileMessage(_targetUserID, path);
+    }
+
+    if (sentMsg != null) {
+      setState(() {
+        final index = _messages.indexOf(chatMsg);
+        if (index != -1) {
+          _messages[index] = _ChatMessage(
+            messageID: sentMsg!.messageID,
+            text: chatMsg.text,
+            time: chatMsg.time,
+            isMe: chatMsg.isMe,
+            type: chatMsg.type,
+            filePath: chatMsg.filePath,
+            receiptStatus: sentMsg.receiptStatus,
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -366,13 +427,30 @@ class _ChatViewState extends State<ChatView> {
                           child: _buildMessageContent(message),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          message.time,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textBlack,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              message.time,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textBlack,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (message.isMe) ...[
+                              const SizedBox(width: 4),
+                              Icon(
+                                message.receiptStatus == ZIMMessageReceiptStatus.none 
+                                    ? Icons.check 
+                                    : Icons.done_all, 
+                                size: 16,
+                                color: message.receiptStatus == ZIMMessageReceiptStatus.done
+                                    ? Colors.blue
+                                    : Colors.grey,
+                              ),
+                            ]
+                          ],
                         ),
                         const SizedBox(height: 12),
                       ],
@@ -382,6 +460,20 @@ class _ChatViewState extends State<ChatView> {
               ],
             ),
           ),
+          // Typing Indicator
+          if (_isTyping)
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(left: 20, bottom: 8),
+              child: const Text(
+                "Typing...",
+                style: TextStyle(
+                  color: AppColors.textGrey,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 12,
+                ),
+              ),
+            ),
           // Input Area
           Container(
             padding: const EdgeInsets.only(
@@ -406,6 +498,11 @@ class _ChatViewState extends State<ChatView> {
                     child: TextField(
                       controller: _commentController,
                       onChanged: (text) {
+                        _typingTimer?.cancel();
+                        _chatService.sendTypingStatus(_targetUserID, true);
+                        _typingTimer = Timer(const Duration(seconds: 3), () {
+                          _chatService.sendTypingStatus(_targetUserID, false);
+                        });
                         setState(() {});
                       },
                       onSubmitted: (_) => _sendMessage(),

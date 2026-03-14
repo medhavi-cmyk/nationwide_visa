@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:zego_zim/zego_zim.dart';
 
@@ -20,6 +21,14 @@ class ZegoChatService extends ChangeNotifier {
   // Stream controller for incoming messages
   final _messageController = StreamController<ZIMMessage>.broadcast();
   Stream<ZIMMessage> get receiveMessageStream => _messageController.stream;
+
+  // Stream controller for typing indicators (userID -> isTyping)
+  final _typingController = StreamController<Map<String, bool>>.broadcast();
+  Stream<Map<String, bool>> get typingStream => _typingController.stream;
+
+  // Stream controller for message receipts
+  final _receiptController = StreamController<List<ZIMMessageReceiptInfo>>.broadcast();
+  Stream<List<ZIMMessageReceiptInfo>> get receiptStream => _receiptController.stream;
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -43,8 +52,24 @@ class ZegoChatService extends ChangeNotifier {
     // Set up listeners
     ZIMEventHandler.onReceivePeerMessage = (zim, messageList, fromUserID) {
       for (var message in messageList) {
-        _messageController.add(message);
+        if (message is ZIMCommandMessage) {
+          try {
+            final commandStr = utf8.decode(message.message);
+            final cmd = jsonDecode(commandStr);
+            if (cmd != null && cmd['isTyping'] != null) {
+              _typingController.add({fromUserID: cmd['isTyping'] as bool});
+            }
+          } catch (_) {
+            // Ignore JSON or decoding errors
+          }
+        } else {
+          _messageController.add(message);
+        }
       }
+    };
+
+    ZIMEventHandler.onMessageReceiptChanged = (zim, infos) {
+      _receiptController.add(infos);
     };
 
     _isInitialized = true;
@@ -86,61 +111,90 @@ class ZegoChatService extends ChangeNotifier {
 
   String? get currentUserID => _currentUserID;
 
-  Future<void> sendMessage(String toUserID, String text) async {
+  Future<ZIMMessage?> sendMessage(String toUserID, String text) async {
     try {
       ZIMTextMessage textMessage = ZIMTextMessage(message: text);
-      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig()..hasReceipt = true;
 
-      await ZIM.getInstance()!.sendMessage(
+      final result = await ZIM.getInstance()!.sendMessage(
         textMessage,
         toUserID,
         ZIMConversationType.peer,
         sendConfig,
       );
+      return result.message;
     } catch (e) {
       if (kDebugMode) print("ZIM Send Error: $e");
+      return null;
     }
   }
 
-  Future<void> sendImageMessage(String toUserID, String imagePath) async {
+  Future<ZIMMessage?> sendImageMessage(String toUserID, String imagePath) async {
     try {
       ZIMImageMessage imageMessage = ZIMImageMessage(imagePath);
-      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig()..hasReceipt = true;
 
-      await ZIM.getInstance()!.sendMediaMessage(
+      final result = await ZIM.getInstance()!.sendMediaMessage(
         imageMessage,
         toUserID,
         ZIMConversationType.peer,
         sendConfig,
         ZIMMediaMessageSendNotification(
-          onMediaUploadingProgress: (message, currentSize, totalSize) {
-            // Progress updates can be handled here
-          },
+          onMediaUploadingProgress: (message, currentSize, totalSize) {},
         ),
       );
+      return result.message;
     } catch (e) {
       if (kDebugMode) print("ZIM Send Image Error: $e");
+      return null;
     }
   }
 
-  Future<void> sendFileMessage(String toUserID, String filePath) async {
+  Future<ZIMMessage?> sendFileMessage(String toUserID, String filePath) async {
     try {
       ZIMFileMessage fileMessage = ZIMFileMessage(filePath);
-      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig()..hasReceipt = true;
 
-      await ZIM.getInstance()!.sendMediaMessage(
+      final result = await ZIM.getInstance()!.sendMediaMessage(
         fileMessage,
         toUserID,
         ZIMConversationType.peer,
         sendConfig,
         ZIMMediaMessageSendNotification(
-          onMediaUploadingProgress: (message, currentSize, totalSize) {
-            // Progress updates can be handled here
-          },
+          onMediaUploadingProgress: (message, currentSize, totalSize) {},
         ),
       );
+      return result.message;
     } catch (e) {
       if (kDebugMode) print("ZIM Send File Error: $e");
+      return null;
+    }
+  }
+
+  Future<void> sendTypingStatus(String toUserID, bool isTyping) async {
+    try {
+      final commandStr = jsonEncode({"isTyping": isTyping});
+      ZIMCommandMessage commandMessage = ZIMCommandMessage(message: Uint8List.fromList(utf8.encode(commandStr)));
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+      await ZIM.getInstance()!.sendMessage(
+        commandMessage,
+        toUserID,
+        ZIMConversationType.peer,
+        sendConfig,
+      );
+    } catch (e) {
+      if (kDebugMode) print("ZIM Typing Error: $e");
+    }
+  }
+
+  Future<void> sendReadReceipt(String conversationID) async {
+    try {
+      await ZIM.getInstance()!.sendConversationMessageReceiptRead(
+        conversationID,
+        ZIMConversationType.peer,
+      );
+    } catch (e) {
+      if (kDebugMode) print("ZIM Read Receipt Error: $e");
     }
   }
 }
