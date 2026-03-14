@@ -8,7 +8,8 @@ class ZegoChatService extends ChangeNotifier {
   ZegoChatService._internal();
 
   final int appID = 456153833; // From UpcomingMeetingsView
-  final String appSign = 'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce';
+  final String appSign =
+      'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce';
 
   bool _isInitialized = false;
   String? _currentUserID;
@@ -26,9 +27,11 @@ class ZegoChatService extends ChangeNotifier {
     }
 
     try {
-      ZIM.create(ZIMAppConfig()
-        ..appID = appID
-        ..appSign = appSign);
+      ZIM.create(
+        ZIMAppConfig()
+          ..appID = appID
+          ..appSign = appSign,
+      );
     } catch (e) {
       if (kDebugMode) print("ZIM Create Error: $e");
       return;
@@ -53,11 +56,11 @@ class ZegoChatService extends ChangeNotifier {
       }
 
       _currentUserID = userID;
-      
+
       // ZIM 2.x login syntax
       ZIMLoginConfig loginConfig = ZIMLoginConfig();
       loginConfig.userName = userName;
-      
+
       await ZIM.getInstance()!.login(userID, loginConfig);
       if (kDebugMode) print("ZIM Login Success: $userID");
       notifyListeners();
@@ -84,7 +87,7 @@ class ZegoChatService extends ChangeNotifier {
     try {
       ZIMTextMessage textMessage = ZIMTextMessage(message: text);
       ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
-      
+
       await ZIM.getInstance()!.sendMessage(
         textMessage,
         toUserID,
@@ -93,6 +96,48 @@ class ZegoChatService extends ChangeNotifier {
       );
     } catch (e) {
       if (kDebugMode) print("ZIM Send Error: $e");
+    }
+  }
+
+  Future<void> sendImageMessage(String toUserID, String imagePath) async {
+    try {
+      ZIMImageMessage imageMessage = ZIMImageMessage(imagePath);
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+
+      await ZIM.getInstance()!.sendMediaMessage(
+        imageMessage,
+        toUserID,
+        ZIMConversationType.peer,
+        sendConfig,
+        ZIMMediaMessageSendNotification(
+          onMediaUploadingProgress: (message, currentSize, totalSize) {
+            // Progress updates can be handled here
+          },
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) print("ZIM Send Image Error: $e");
+    }
+  }
+
+  Future<void> sendFileMessage(String toUserID, String filePath) async {
+    try {
+      ZIMFileMessage fileMessage = ZIMFileMessage(filePath);
+      ZIMMessageSendConfig sendConfig = ZIMMessageSendConfig();
+
+      await ZIM.getInstance()!.sendMediaMessage(
+        fileMessage,
+        toUserID,
+        ZIMConversationType.peer,
+        sendConfig,
+        ZIMMediaMessageSendNotification(
+          onMediaUploadingProgress: (message, currentSize, totalSize) {
+            // Progress updates can be handled here
+          },
+        ),
+      );
+    } catch (e) {
+      if (kDebugMode) print("ZIM Send File Error: $e");
     }
   }
 }

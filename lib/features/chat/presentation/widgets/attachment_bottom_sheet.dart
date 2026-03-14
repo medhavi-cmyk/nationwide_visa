@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../../core/app_colors.dart';
 
 class AttachmentBottomSheet extends StatelessWidget {
@@ -29,21 +32,68 @@ class AttachmentBottomSheet extends StatelessWidget {
             context,
             label: "Open Camera",
             icon: Icons.camera_alt_outlined,
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              try {
+                if (kDebugMode) print("Opening Camera...");
+                final picker = ImagePicker();
+                final image = await picker.pickImage(source: ImageSource.camera);
+                if (image != null) {
+                  if (kDebugMode) print("Image picked: ${image.path}");
+                  if (context.mounted) {
+                    Navigator.pop(context, {'type': 'image', 'path': image.path});
+                  }
+                } else {
+                  if (kDebugMode) print("Camera result: null");
+                }
+              } catch (e) {
+                if (kDebugMode) print("Camera error: $e");
+              }
+            },
           ),
           const SizedBox(height: 12),
           _buildOption(
             context,
             label: "Choose from Photos",
             icon: Icons.photo_library_outlined,
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              try {
+                if (kDebugMode) print("Opening Gallery...");
+                final picker = ImagePicker();
+                final image = await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  if (kDebugMode) print("Photo picked: ${image.path}");
+                  if (context.mounted) {
+                    Navigator.pop(context, {'type': 'image', 'path': image.path});
+                  }
+                } else {
+                  if (kDebugMode) print("Gallery result: null");
+                }
+              } catch (e) {
+                if (kDebugMode) print("Gallery error: $e");
+              }
+            },
           ),
           const SizedBox(height: 12),
           _buildOption(
             context,
             label: "Browse Files",
             icon: Icons.folder_open_outlined,
-            onTap: () => Navigator.pop(context),
+            onTap: () async {
+              try {
+                if (kDebugMode) print("Opening File Picker...");
+                final result = await FilePicker.platform.pickFiles();
+                if (result != null && result.files.single.path != null) {
+                  if (kDebugMode) print("File picked: ${result.files.single.path}");
+                  if (context.mounted) {
+                    Navigator.pop(context, {'type': 'file', 'path': result.files.single.path});
+                  }
+                } else {
+                  if (kDebugMode) print("File picker result: null");
+                }
+              } catch (e) {
+                if (kDebugMode) print("File picker error: $e");
+              }
+            },
           ),
           const SizedBox(height: 16),
           // Cancel Button
