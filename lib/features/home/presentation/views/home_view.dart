@@ -22,6 +22,7 @@ class _HomeViewState extends State<HomeView> {
         const MeetingsView(),
         ProfileView(
           onNavigateToChat: () => setState(() => _selectedIndex = 1),
+          onNavigateToMeet: () => setState(() => _selectedIndex = 2),
         ),
       ];
 

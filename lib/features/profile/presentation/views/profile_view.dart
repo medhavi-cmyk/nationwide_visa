@@ -4,7 +4,8 @@ import '../widgets/edit_profile_sheet.dart';
 
 class ProfileView extends StatefulWidget {
   final VoidCallback? onNavigateToChat;
-  const ProfileView({super.key, this.onNavigateToChat});
+  final VoidCallback? onNavigateToMeet;
+  const ProfileView({super.key, this.onNavigateToChat, this.onNavigateToMeet});
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -417,7 +418,7 @@ class _ProfileViewState extends State<ProfileView> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: widget.onNavigateToMeet,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
