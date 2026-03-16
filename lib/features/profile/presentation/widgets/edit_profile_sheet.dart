@@ -856,6 +856,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
         // Grading value — hint reflects selected system
         _plainTextField(
           controller: _gradingValueCtrl,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           label: _gradingSystem == null
               ? 'Grading system value'
               : _gradingSystem == 'GPA (4.0)'
@@ -1142,6 +1143,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     required TextEditingController controller,
     required String hint,
     String? label, // always-visible small label on top (like _qualDropdown)
+    TextInputType? keyboardType,
   }) {
     if (label != null) {
       // Wrap in a container with a persistent label, same style as _qualDropdown
@@ -1161,6 +1163,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
             ),
             TextField(
               controller: controller,
+              keyboardType: keyboardType,
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -1179,6 +1182,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     }
     return TextField(
       controller: controller,
+      keyboardType: keyboardType,
       style: GoogleFonts.poppins(fontSize: 14, color: _textDark),
       decoration: InputDecoration(
         hintText: hint,
