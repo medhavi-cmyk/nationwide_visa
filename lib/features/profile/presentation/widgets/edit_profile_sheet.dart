@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../features/auth/presentation/widgets/country_picker.dart';
@@ -72,12 +73,22 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
   // Standardized form
   String? _standardizedTest;
 
+  // Preferences
+  String? _prefDestination;
+  String? _prefStartYear;
+  String? _prefStartMonth;
+  String? _prefStudyLevel;
+  final List<String> _prefSubjects = ['Health care', 'Business'];
+  final _subjectSearchCtrl = TextEditingController();
+  String _subjectQuery = '';
+
   @override
   void dispose() {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
     _phoneCtrl.dispose();
     _gradingValueCtrl.dispose();
+    _subjectSearchCtrl.dispose();
     super.dispose();
   }
 
@@ -239,7 +250,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
               children: [
                 _buildBasicInfo(bottom),
                 _buildQualifications(),
-                _buildComingSoon('Preferences'),
+                _buildPreferences(),
               ],
             ),
           ),
@@ -1077,23 +1088,53 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     );
   }
 
-  Widget _qualField({required String hint, String? value}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _borderGrey, width: 1.2),
-      ),
-      child: Text(
-        value ?? hint,
-        style: GoogleFonts.poppins(
-          fontSize: 14,
-          color: value != null ? _textDark : _textGrey,
-          fontWeight: value != null ? FontWeight.w600 : FontWeight.w400,
+  Widget _qualField({
+    required String hint,
+    String? value,
+    String? label,
+    bool isSelected = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF9FAFB),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? _red : _borderGrey,
+              width: isSelected ? 1.5 : 1.2,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (label != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    label,
+                    style: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: _textGrey,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              Text(
+                value ?? hint,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: value != null ? _textDark : _textGrey,
+                  fontWeight: value != null ? FontWeight.w600 : FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -1215,24 +1256,465 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     );
   }
 
-  // ── COMING SOON ───────────────────────────────────────────────────────────────
-  Widget _buildComingSoon(String tab) {
-    return Center(
-      child: Column(
+  // ── PREFERENCES TAB ───────────────────────────────────────────────────────────
+
+
+  Widget _buildPreferences() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Preferred destination — wheel picker
+                GestureDetector(
+                  onTap: () => _showWheelPicker(
+                    title: 'Select Destination',
+                    options: [
+                      'Canada', 'Australia', 'Germany', 'United Kingdom',
+                      'United States', 'New Zealand', 'Ireland', 'France',
+                      'Netherlands', 'Singapore', 'UAE', 'Other',
+                    ],
+                    currentValue: _prefDestination,
+                    onSelect: (v) => setState(() => _prefDestination = v),
+                  ),
+                  child: _qualField(
+                    hint: 'Preferred destination',
+                    label: _prefDestination != null ? 'Preferred destination' : null,
+                    value: _prefDestination,
+                    isSelected: _prefDestination != null,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Start year + Start month (side by side)
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _showWheelPicker(
+                          title: 'Select Year',
+                          options: ['2024', '2025', '2026', '2027', '2028'],
+                          currentValue: _prefStartYear,
+                          onSelect: (v) => setState(() => _prefStartYear = v),
+                        ),
+                        child: _qualField(
+                          hint: 'Start year',
+                          label: _prefStartYear != null ? 'Start year' : null,
+                          value: _prefStartYear,
+                          isSelected: _prefStartYear != null,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _showWheelPicker(
+                          title: 'Select Month',
+                          options: [
+                            'Jan - Mar', 'Apr - June', 'Jul - Sep', 'Oct - Dec',
+                          ],
+                          currentValue: _prefStartMonth,
+                          onSelect: (v) => setState(() => _prefStartMonth = v),
+                        ),
+                        child: _qualField(
+                          hint: 'Start month',
+                          label: _prefStartMonth != null ? 'Start month' : null,
+                          value: _prefStartMonth,
+                          isSelected: _prefStartMonth != null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Preferred study level
+                GestureDetector(
+                  onTap: () => _showWheelPicker(
+                    title: 'Select Study Level',
+                    options: [
+                      'Foundation', 'Undergraduate', 'Postgraduate',
+                      'Doctorate', 'PhD / Doctoral', 'Diploma', 'Certificate',
+                    ],
+                    currentValue: _prefStudyLevel,
+                    onSelect: (v) => setState(() => _prefStudyLevel = v),
+                  ),
+                  child: _qualField(
+                    hint: 'Preferred study level',
+                    label: _prefStudyLevel != null ? 'Preferred study level' : null,
+                    value: _prefStudyLevel,
+                    isSelected: _prefStudyLevel != null,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // PREFERRED SUBJECTS header
+                Text(
+                  'PREFERRED SUBJECTS',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: _textGrey,
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // PREFERRED SUBJECTS field (acting as trigger for picker)
+                GestureDetector(
+                  onTap: _showSubjectPicker,
+                  child: AbsorbPointer(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search subjects',
+                        hintStyle: GoogleFonts.poppins(fontSize: 14, color: _textGrey),
+                        prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
+                        filled: true,
+                        fillColor: const Color(0xFFF9FAFB),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: _borderGrey, width: 1.2),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide(color: _red, width: 1.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Selected subject chips (on main screen)
+                if (_prefSubjects.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _prefSubjects.map((s) => _subjectChip(s)).toList(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        _buildBottomButtons(),
+      ],
+    );
+  }
+
+  Widget _subjectChip(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFECEC),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.construction_outlined, size: 48, color: Colors.grey[300]),
-          const SizedBox(height: 12),
           Text(
-            '$tab coming soon',
+            label,
             style: GoogleFonts.poppins(
-              fontSize: 15,
-              color: _textGrey,
-              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: _red,
             ),
+          ),
+          const SizedBox(width: 6),
+          GestureDetector(
+            onTap: () => setState(() => _prefSubjects.remove(label)),
+            child: const Icon(Icons.close, size: 14, color: _red),
           ),
         ],
       ),
+    );
+  }
+
+  // ── SUBJECT PICKER BOTTOM SHEET ────────────────────────────────────────────────
+  void _showSubjectPicker() {
+    final List<String> allSubjects = [
+      'Computer Science',
+      'Artificial Intelligence',
+      'Business',
+      'Cyber Security',
+      'Health care',
+      'Data Sciences and Big Data',
+      'Finance',
+      'Emergency Medicine',
+      'Business Administration',
+      'Engineering And Technology',
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setPickerState) {
+            final filtered = allSubjects
+                .where((s) => s.toLowerCase().contains(_subjectQuery.toLowerCase()))
+                .toList();
+
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.85,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12),
+                  // Handle
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD1D5DB),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Header
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Subjects',
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: _textDark,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          'Done',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF8B5CF6),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  // Search box in picker
+                  TextField(
+                    controller: _subjectSearchCtrl,
+                    onChanged: (q) => setPickerState(() => _subjectQuery = q),
+                    style: GoogleFonts.poppins(fontSize: 14, color: _textDark),
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
+                      filled: true,
+                      fillColor: const Color(0xFFF9FAFB),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: _red),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'You can pick up to 5 subjects',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Selected chips in picker
+                  if (_prefSubjects.isNotEmpty) ...[
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: _prefSubjects.map((s) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F3FF),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                s,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF6D28D9),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() => _prefSubjects.remove(s));
+                                  setPickerState(() {});
+                                },
+                                child: const Icon(Icons.close, size: 16, color: Color(0xFF6D28D9)),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                  // Scrollable list
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 4),
+                      itemBuilder: (context, index) {
+                        final s = filtered[index];
+                        final isSelected = _prefSubjects.contains(s);
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            s,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                              color: _textDark,
+                            ),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(Icons.check, color: Colors.black, size: 20)
+                              : null,
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                _prefSubjects.remove(s);
+                              } else if (_prefSubjects.length < 5) {
+                                _prefSubjects.add(s);
+                              }
+                            });
+                            setPickerState(() {});
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    ).then((_) {
+      _subjectSearchCtrl.clear();
+      setState(() => _subjectQuery = '');
+    });
+  }
+
+  // ── CONSOLIDATED WHEEL PICKER ────────────────────────────────────────────────
+  void _showWheelPicker({
+    required String title,
+    required List<String> options,
+    required String? currentValue,
+    required Function(String) onSelect,
+  }) {
+    int tempIndex = options.indexOf(currentValue ?? options.first);
+    if (tempIndex == -1) tempIndex = 0;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: 350,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: _textDark,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        onSelect(options[tempIndex]);
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Done',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: _red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, thickness: 1, color: Color(0xFFF3F4F6)),
+              
+              // Picker
+              Expanded(
+                child: CupertinoPicker(
+                  itemExtent: 45,
+                  scrollController: FixedExtentScrollController(initialItem: tempIndex),
+                  onSelectedItemChanged: (index) => tempIndex = index,
+                  children: options
+                      .map((d) => Center(
+                            child: Text(
+                              d,
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: _textDark,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+
+              // Help me decide
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Text(
+                  'Help me decide',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

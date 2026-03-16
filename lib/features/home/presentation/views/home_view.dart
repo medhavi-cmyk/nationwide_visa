@@ -16,13 +16,14 @@ class _HomeViewState extends State<HomeView> {
 
   static const Color _navRed = Color(0xFFC00A15);
 
-  final List<Widget> _pages = [
-    const ExploreView(),
-    const ChatView(),
-    const MeetingsView(),
-    // const Center(child: Text('Applications - Coming Soon')),
-    const ProfileView(),
-  ];
+  List<Widget> get _pages => [
+        const ExploreView(),
+        const ChatView(),
+        const MeetingsView(),
+        ProfileView(
+          onNavigateToChat: () => setState(() => _selectedIndex = 1),
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {

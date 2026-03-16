@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/edit_profile_sheet.dart';
 
 class ProfileView extends StatefulWidget {
-  const ProfileView({super.key});
+  final VoidCallback? onNavigateToChat;
+  const ProfileView({super.key, this.onNavigateToChat});
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -394,10 +395,13 @@ class _ProfileViewState extends State<ProfileView> {
                     color: _bgGrey,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(
-                    Icons.chat_rounded,
-                    color: Colors.grey,
-                    size: 22,
+                  child: GestureDetector(
+                    onTap: widget.onNavigateToChat,
+                    child: const Icon(
+                      Icons.chat_rounded,
+                      color: Colors.grey,
+                      size: 22,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
