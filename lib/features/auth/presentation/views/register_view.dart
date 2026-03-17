@@ -1,4 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:nwdapp/features/auth/presentation/views/otp_verification_view.dart';
 import '../../../../core/app_colors.dart';
@@ -8,6 +11,7 @@ import '../widgets/city_picker.dart';
 import '../widgets/country_picker.dart';
 import '../widgets/destination_picker.dart';
 import '../widgets/registration_exit_confirmation.dart';
+import '../widgets/registration_progress_bar.dart';
 
 class RegisterView extends StatelessWidget {
   final String email;
@@ -80,6 +84,7 @@ class RegisterView extends StatelessWidget {
                     ),
                   ),
                 ),
+                const RegistrationProgressBar(currentStep: 1),
                 const SizedBox(height: 16),
                 Expanded(
                   child: SingleChildScrollView(
@@ -156,8 +161,13 @@ class RegisterView extends StatelessWidget {
                           const SizedBox(height: 16),
 
                           TextFormField(
-                            controller: viewModel.phoneController,
-                            validator: viewModel.validatePhone,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                              PhoneFormatter(),
+                            ],
                             decoration:
                                 _inputDecoration(context, "Phone number").copyWith(
                                   prefixIcon: Padding(
@@ -204,6 +214,7 @@ class RegisterView extends StatelessWidget {
 
                           TextFormField(
                             controller: viewModel.passwordController,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             obscureText: viewModel.obscurePassword,
                             validator: viewModel.validatePassword,
                             decoration:
@@ -222,14 +233,17 @@ class RegisterView extends StatelessWidget {
 
                           const SizedBox(height: 24),
 
+                          const SizedBox(height: 16),
+
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
                                 height: 24,
                                 width: 24,
                                 child: Checkbox(
-                                  value: viewModel.receiveUpdates,
-                                  onChanged: (val) => viewModel.toggleReceiveUpdates(val),
+                                  value: viewModel.agreedToTerms,
+                                  onChanged: (val) => viewModel.toggleAgreedToTerms(val),
                                   activeColor: AppColors.primaryRed,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(4),
@@ -237,13 +251,36 @@ class RegisterView extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              const Expanded(
-                                child: Text(
-                                  "I'd like to receive NationwideVisas marketing Updates ",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textGrey,
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppColors.textGrey,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    children: [
+                                      const TextSpan(text: "I agree to the "),
+                                      TextSpan(
+                                        text: "Terms & Conditions",
+                                        style: const TextStyle(
+                                          color: AppColors.primaryRed,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/terms-and-conditions/"),
+                                      ),
+                                      const TextSpan(text: " and "),
+                                      TextSpan(
+                                        text: "Privacy Policy.",
+                                        style: const TextStyle(
+                                          color: AppColors.primaryRed,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/privacy-policy/"),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -270,8 +307,12 @@ class RegisterView extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: viewModel.isLoading
                                   ? null
-                                  : () async {
-                                      bool success = await viewModel.signUp(email);
+                                    : () async {
+                                        if (!viewModel.agreedToTerms) {
+                                          CustomSnackbar.showError("Please agree to the Terms & Conditions");
+                                          return;
+                                        }
+                                        bool success = await viewModel.signUp(email);
                                       if (success && context.mounted) {
                                         final phone = viewModel.phoneController.text.trim();
                                         Navigator.pop(context); // Close Register Sheet
@@ -384,6 +425,7 @@ class RegisterView extends StatelessWidget {
           decoration: _inputDecoration(context, label).copyWith(
             fillColor: enabled ? Colors.grey[50] : Colors.grey[100],
           ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: validator,
           readOnly: readOnly,
           enabled: enabled,
@@ -405,6 +447,13 @@ class RegisterView extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  Future<void> _launchURL(BuildContext context, String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+      debugPrint('Could not launch $urlString');
+    }
   }
 
   InputDecoration _inputDecoration(BuildContext context, String label) {
@@ -440,6 +489,23 @@ class RegisterView extends StatelessWidget {
       errorStyle: const TextStyle(fontSize: 12, height: 1.2),
       filled: true,
       fillColor: Colors.grey[50],
+    );
+  }
+}
+
+class PhoneFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String text = newValue.text.replaceAll(' ', '');
+    if (text.length > 5) {
+      text = '${text.substring(0, 5)} ${text.substring(5)}';
+    }
+    return newValue.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

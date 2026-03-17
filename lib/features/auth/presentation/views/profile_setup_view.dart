@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/router.dart';
 import '../viewmodels/profile_viewmodel.dart';
+import '../widgets/registration_progress_bar.dart';
 
 class ProfileSetupView extends StatelessWidget {
   const ProfileSetupView({super.key});
@@ -51,6 +52,8 @@ class ProfileSetupView extends StatelessWidget {
               ),
             ),
           ),
+          const RegistrationProgressBar(currentStep: 3),
+          const SizedBox(height: 16),
           Expanded(
             child: SingleChildScrollView(
               physics: viewModel.isAnyExpanded

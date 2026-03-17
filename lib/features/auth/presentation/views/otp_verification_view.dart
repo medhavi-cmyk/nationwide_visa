@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'profile_setup_view.dart';
+import '../widgets/registration_progress_bar.dart';
 
 class OtpVerificationView extends StatelessWidget {
   final String phoneNumber;
@@ -62,6 +63,7 @@ class OtpVerificationView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
+              const RegistrationProgressBar(currentStep: 2),
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,

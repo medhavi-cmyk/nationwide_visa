@@ -131,4 +131,17 @@ class LoginViewModel extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  void updateEmail(String value) {
+    emailController.text = value;
+    emailController.selection = TextSelection.fromPosition(
+      TextPosition(offset: emailController.text.length),
+    );
+    notifyListeners();
+  }
+
+  bool get showSuggestions {
+    final text = emailController.text;
+    return text.isNotEmpty && !text.contains('@');
+  }
 }

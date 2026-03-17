@@ -139,10 +139,21 @@ class _CountryPickerViewState extends State<CountryPickerView> {
               itemCount: _filteredCountries.length,
               itemBuilder: (context, index) {
                 return ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.network(
+                      "https://flagcdn.com/w40/${(_filteredCountries[index]['sortname'] ?? '').toString().toLowerCase()}.png",
+                      width: 32,
+                      height: 22,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.flag_outlined, size: 24),
+                    ),
+                  ),
                   title: Text(
                     _filteredCountries[index]['name'] ?? '',
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textBlack,
                     ),

@@ -22,6 +22,7 @@ class RegisterViewModel extends ChangeNotifier {
 
   bool receiveUpdates = true;
   bool obscurePassword = true;
+  bool agreedToTerms = false;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -133,6 +134,11 @@ class RegisterViewModel extends ChangeNotifier {
 
   void toggleReceiveUpdates(bool? value) {
     receiveUpdates = value ?? false;
+    notifyListeners();
+  }
+
+  void toggleAgreedToTerms(bool? value) {
+    agreedToTerms = value ?? false;
     notifyListeners();
   }
 

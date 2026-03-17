@@ -148,6 +148,42 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (viewModel.showSuggestions) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              height: 32,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: ["@gmail.com", "@yahoo.com", "@outlook.com"]
+                                    .map((domain) => Padding(
+                                          padding: const EdgeInsets.only(right: 8),
+                                          child: ActionChip(
+                                            label: Text(
+                                              domain,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.primaryRed,
+                                              ),
+                                            ),
+                                            backgroundColor: AppColors.primaryRed.withOpacity(0.05),
+                                            side: BorderSide(
+                                              color: AppColors.primaryRed.withOpacity(0.1),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            onPressed: () {
+                                              viewModel.updateEmail(
+                                                "${viewModel.emailController.text}$domain",
+                                              );
+                                            },
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 16),
                           // Terms and Conditions
                           RichText(
