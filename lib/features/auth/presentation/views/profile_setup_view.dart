@@ -202,9 +202,14 @@ class ProfileSetupView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: ElevatedButton(
-                onPressed: () {
-                  context.go(AppRouter.home);
-                },
+                onPressed: viewModel.isLoading
+                    ? null
+                    : () async {
+                        final success = await viewModel.saveProfile();
+                        if (success && context.mounted) {
+                          context.go(AppRouter.home);
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   foregroundColor: Colors.white,
@@ -213,10 +218,19 @@ class ProfileSetupView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: const Text(
-                  "Sign up",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                child: viewModel.isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        "Sign up",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
               ),
             ),
           ),

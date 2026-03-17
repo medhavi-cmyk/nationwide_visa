@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import 'models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // Get current user
@@ -72,5 +75,32 @@ class AuthService {
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  // Save/Update user data in Firestore
+  Future<void> saveUserData(UserModel user) async {
+    try {
+      await _firestore.collection('users').doc(user.uid).set(
+            user.toMap(),
+            SetOptions(merge: true),
+          );
+    } catch (e) {
+      debugPrint("Save user data error: $e");
+      rethrow;
+    }
+  }
+
+  // Get user data from Firestore
+  Future<UserModel?> getUserData(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists && doc.data() != null) {
+        return UserModel.fromMap(doc.data()!);
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Get user data error: $e");
+      rethrow;
+    }
   }
 }

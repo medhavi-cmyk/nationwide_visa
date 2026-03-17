@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../data/auth_service.dart';
+import '../../data/models/user_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
+  
+  bool get isLoading => _isLoading;
   String? _selectedStudyLevel;
   String? _selectedStartYear;
   String? _selectedMonthRange;
@@ -76,5 +82,34 @@ class ProfileViewModel extends ChangeNotifier {
     _isStartDateExpanded = false;
     _isStudyLevelExpanded = false;
     notifyListeners();
+  }
+
+  Future<bool> saveProfile() async {
+    final user = _authService.currentUser;
+    if (user == null) return false;
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final userModel = UserModel(
+        uid: user.uid,
+        email: user.email ?? '',
+        profession: _selectedStudyLevel,
+        // Using profession field for study level as an example, 
+        // or we could expand UserModel later.
+        gradingSystem: _selectedStartYear, 
+        cgpa: _selectedMonthRange,
+      );
+
+      await _authService.saveUserData(userModel);
+      return true;
+    } catch (e) {
+      debugPrint("Error saving profile: $e");
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

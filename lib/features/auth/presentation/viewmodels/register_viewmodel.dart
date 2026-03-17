@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import '../../data/auth_service.dart';
+import '../../data/models/user_model.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -45,9 +46,20 @@ class RegisterViewModel extends ChangeNotifier {
     _setError(null);
 
     try {
-      final user = await _authService.signUpWithEmail(email, passwordController.text.trim());
-      // Here you could also save additional user data to Firestore
-      return user != null;
+      final userCredential = await _authService.signUpWithEmail(email, passwordController.text.trim());
+      if (userCredential != null && userCredential.user != null) {
+        final userModel = UserModel(
+          uid: userCredential.user!.uid,
+          email: email,
+          name: nameController.text.trim(),
+          phoneNumber: phoneController.text.trim(),
+          country: countryController.text.trim(),
+          createdAt: DateTime.now(),
+        );
+        await _authService.saveUserData(userModel);
+        return true;
+      }
+      return false;
     } catch (e) {
       _setError("Sign up failed: $e");
       return false;

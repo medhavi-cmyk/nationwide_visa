@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/auth_service.dart';
+import '../../data/models/user_model.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -74,8 +75,18 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final user = await _authService.signInWithGoogle();
-      return user != null;
+      final userCredential = await _authService.signInWithGoogle();
+      if (userCredential != null && userCredential.user != null) {
+        final userModel = UserModel(
+          uid: userCredential.user!.uid,
+          email: userCredential.user!.email ?? '',
+          name: userCredential.user!.displayName,
+          createdAt: DateTime.now(),
+        );
+        await _authService.saveUserData(userModel);
+        return true;
+      }
+      return false;
     } catch (e) {
       _setError("Google sign in failed: $e");
       return false;
@@ -102,8 +113,17 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final user = await _authService.signUpWithEmail(emailController.text.trim(), password);
-      return user != null;
+      final userCredential = await _authService.signUpWithEmail(emailController.text.trim(), password);
+      if (userCredential != null && userCredential.user != null) {
+        final userModel = UserModel(
+          uid: userCredential.user!.uid,
+          email: emailController.text.trim(),
+          createdAt: DateTime.now(),
+        );
+        await _authService.saveUserData(userModel);
+        return true;
+      }
+      return false;
     } catch (e) {
       _setError("Sign up failed: $e");
       return false;
