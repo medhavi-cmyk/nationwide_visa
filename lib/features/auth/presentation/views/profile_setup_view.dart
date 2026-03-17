@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
-import '../../../../core/router.dart';
 import '../viewmodels/profile_viewmodel.dart';
 import '../widgets/registration_progress_bar.dart';
+import 'registration_success_view.dart';
 
 class ProfileSetupView extends StatelessWidget {
   const ProfileSetupView({super.key});
@@ -211,7 +210,8 @@ class ProfileSetupView extends StatelessWidget {
                         debugPrint("PROFILE_VIEW: 'Sign up' button tapped");
                         final success = await viewModel.saveProfile();
                         if (success && context.mounted) {
-                          context.go(AppRouter.home);
+                          Navigator.pop(context); // Close Profile Setup
+                          RegistrationSuccessView.show(context);
                         }
                       },
                 style: ElevatedButton.styleFrom(

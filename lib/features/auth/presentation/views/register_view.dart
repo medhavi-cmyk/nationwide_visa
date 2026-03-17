@@ -94,263 +94,269 @@ class RegisterView extends StatelessWidget {
                       right: 24.0,
                       bottom: MediaQuery.of(context).viewInsets.bottom + 10.0,
                     ),
-                    child: Form(
-                      key: viewModel.formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 16),
-                          Text(
-                            "Choose from best country to work or study abroad",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: screenWidth < 350 ? 24 : 28,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.textBlack,
-                              height: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Let's make it happen.",
-                            style: TextStyle(
-                              fontSize: screenWidth < 350 ? 16 : 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textBlack,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-
-                          _buildField(
-                            context: context,
-                            label: "Full name",
-                            hint: "As per your passport or ID proof",
-                            controller: viewModel.nameController,
-                            validator: viewModel.validateFullName,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildField(
-                            context: context,
-                            label: "Country you live in",
-                            controller: viewModel.countryController,
-                            validator: viewModel.validateCountry,
-                            readOnly: true,
-                            onTap: () => _showCountryPicker(context, viewModel),
-                          ),
-                          const SizedBox(height: 16),
-                          _buildField(
-                            context: context,
-                            label: "City you live in",
-                            controller: viewModel.cityController,
-                            validator: viewModel.validateCity,
-                            readOnly: true,
-                            enabled: viewModel.isCountrySelected,
-                            onTap: viewModel.isCountrySelected
-                                ? () => _showCityPicker(context, viewModel)
-                                : null,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildField(
-                            context: context,
-                            label: "Nationality",
-                            controller: viewModel.nationalityController,
-                            validator: viewModel.validateNationality,
-                            readOnly: true,
-                            onTap: () => _showNationalityPicker(context, viewModel),
-                          ),
-                          const SizedBox(height: 16),
-
-                          TextFormField(
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(10),
-                              PhoneFormatter(),
-                            ],
-                            decoration:
-                                _inputDecoration(context, "Phone number").copyWith(
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.only(left: 16, right: 12),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(2),
-                                          child: Image.network(
-                                            "https://flagcdn.com/w40/in.png",
-                                            width: 24,
-                                            height: 16,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) =>
-                                                const Icon(Icons.flag_outlined, size: 20),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Text(
-                                          "+91",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                          ),
-
-                          const SizedBox(height: 16),
-                          _buildField(
-                            context: context,
-                            label: "Where do you wish to go?",
-                            controller: viewModel.studyCountryController,
-                            validator: viewModel.validateStudyCountry,
-                            readOnly: true,
-                            onTap: () => _showStudyCountryPicker(context, viewModel),
-                          ),
-                          const SizedBox(height: 16),
-
-                          TextFormField(
-                            controller: viewModel.passwordController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            obscureText: viewModel.obscurePassword,
-                            validator: viewModel.validatePassword,
-                            decoration:
-                                _inputDecoration(context, "Set your password").copyWith(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      viewModel.obscurePassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                      color: Colors.grey[400],
-                                    ),
-                                    onPressed: () => viewModel.togglePasswordVisibility(),
-                                  ),
-                                ),
-                          ),
-
-                          const SizedBox(height: 24),
-
-                          const SizedBox(height: 16),
-
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: Checkbox(
-                                  value: viewModel.agreedToTerms,
-                                  onChanged: (val) => viewModel.toggleAgreedToTerms(val),
-                                  activeColor: AppColors.primaryRed,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
+                    child: AutofillGroup(
+                      child: Form(
+                        key: viewModel.formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 16),
+                            Text(
+                              "Choose from best country to work or study abroad",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: screenWidth < 350 ? 24 : 28,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.textBlack,
+                                height: 1.1,
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      color: AppColors.textGrey,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Let's make it happen.",
+                              style: TextStyle(
+                                fontSize: screenWidth < 350 ? 16 : 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textBlack,
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+
+                            _buildField(
+                              context: context,
+                              label: "Full name",
+                              hint: "As per your passport or ID proof",
+                              controller: viewModel.nameController,
+                              validator: viewModel.validateFullName,
+                              autofillHints: [AutofillHints.name],
+                            ),
+                            const SizedBox(height: 16),
+                            _buildField(
+                              context: context,
+                              label: "Country you live in",
+                              controller: viewModel.countryController,
+                              validator: viewModel.validateCountry,
+                              readOnly: true,
+                              onTap: () => _showCountryPicker(context, viewModel),
+                            ),
+                            const SizedBox(height: 16),
+                            _buildField(
+                              context: context,
+                              label: "City you live in",
+                              controller: viewModel.cityController,
+                              validator: viewModel.validateCity,
+                              readOnly: true,
+                              enabled: viewModel.isCountrySelected,
+                              onTap: viewModel.isCountrySelected
+                                  ? () => _showCityPicker(context, viewModel)
+                                  : null,
+                            ),
+                            const SizedBox(height: 16),
+                            _buildField(
+                              context: context,
+                              label: "Nationality",
+                              controller: viewModel.nationalityController,
+                              validator: viewModel.validateNationality,
+                              readOnly: true,
+                              onTap: () => _showNationalityPicker(context, viewModel),
+                            ),
+                            const SizedBox(height: 16),
+
+                            TextFormField(
+                              controller: viewModel.phoneController,
+                              autofillHints: const [AutofillHints.telephoneNumber],
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.number,
+                              validator: viewModel.validatePhone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                                PhoneFormatter(),
+                              ],
+                              decoration:
+                                  _inputDecoration(context, "Phone number").copyWith(
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(left: 16, right: 12),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const TextSpan(text: "I agree to the "),
-                                      TextSpan(
-                                        text: "Terms & Conditions",
-                                        style: const TextStyle(
-                                          color: AppColors.primaryRed,
-                                          fontWeight: FontWeight.bold,
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(2),
+                                        child: Image.network(
+                                          "https://flagcdn.com/w40/in.png",
+                                          width: 24,
+                                          height: 16,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) =>
+                                              const Icon(Icons.flag_outlined, size: 20),
                                         ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/terms-and-conditions/"),
                                       ),
-                                      const TextSpan(text: " and "),
-                                      TextSpan(
-                                        text: "Privacy Policy.",
-                                        style: const TextStyle(
-                                          color: AppColors.primaryRed,
+                                      const SizedBox(width: 8),
+                                      const Text(
+                                        "+91",
+                                        style: TextStyle(
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
                                         ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/privacy-policy/"),
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
 
-                          const SizedBox(height: 32),
+                            const SizedBox(height: 16),
+                            _buildField(
+                              context: context,
+                              label: "Where do you wish to go?",
+                              controller: viewModel.studyCountryController,
+                              validator: viewModel.validateStudyCountry,
+                              readOnly: true,
+                              onTap: () => _showStudyCountryPicker(context, viewModel),
+                            ),
+                            const SizedBox(height: 16),
 
+                            TextFormField(
+                              controller: viewModel.passwordController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              obscureText: viewModel.obscurePassword,
+                              validator: viewModel.validatePassword,
+                              decoration:
+                                  _inputDecoration(context, "Set your password").copyWith(
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    viewModel.obscurePassword
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                    color: Colors.grey[400],
+                                  ),
+                                  onPressed: () => viewModel.togglePasswordVisibility(),
+                                ),
+                              ),
+                            ),
 
-                          Container(
-                            width: double.infinity,
-                            height: 56,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryRed,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primaryRed.withOpacity(0.3),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 8),
+                            const SizedBox(height: 24),
+
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: Checkbox(
+                                    value: viewModel.agreedToTerms,
+                                    onChanged: (val) => viewModel.toggleAgreedToTerms(val),
+                                    activeColor: AppColors.primaryRed,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.textGrey,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      children: [
+                                        const TextSpan(text: "I agree to the "),
+                                        TextSpan(
+                                          text: "Terms & Conditions",
+                                          style: const TextStyle(
+                                            color: AppColors.primaryRed,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/terms-and-conditions/"),
+                                        ),
+                                        const TextSpan(text: " and "),
+                                        TextSpan(
+                                          text: "Privacy Policy.",
+                                          style: const TextStyle(
+                                            color: AppColors.primaryRed,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/privacy-policy/"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            child: ElevatedButton(
-                              onPressed: viewModel.isLoading
-                                  ? null
-                                    : () async {
+
+                            const SizedBox(height: 32),
+
+                            Container(
+                              width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryRed,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryRed.withValues(alpha: 0.3),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: viewModel.isLoading
+                                    ? null
+                                    : () {
                                         if (!viewModel.agreedToTerms) {
                                           CustomSnackbar.showError("Please agree to the Terms & Conditions");
                                           return;
                                         }
-                                        bool success = await viewModel.signUp(email);
-                                      if (success && context.mounted) {
-                                        final phone = viewModel.phoneController.text.trim();
-                                        Navigator.pop(context); // Close Register Sheet
-                                        OtpVerificationView.show(context, phone);
-                                      } else if (!success && context.mounted && viewModel.errorMessage != null) {
-                                        CustomSnackbar.showError(viewModel.errorMessage!);
-                                      }
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
+                                        if (viewModel.validateForm()) {
+                                          // Move to OTP without closing current sheet
+                                          OtpVerificationView.show(
+                                            context: context,
+                                            email: email,
+                                            password: viewModel.passwordController.text.trim(),
+                                            name: viewModel.nameController.text.trim(),
+                                            phoneNumber: viewModel.phoneController.text.trim(),
+                                            country: viewModel.countryController.text.trim(),
+                                          );
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.white,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 0,
                                 ),
-                                elevation: 0,
+                                child: viewModel.isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        "Continue",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                               ),
-                              child: viewModel.isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Text(
-                                      "Continue",
-                                      style: TextStyle(
-                                        fontSize: screenWidth < 350 ? 16 : 18,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                            const SizedBox(height: 40),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -416,12 +422,14 @@ class RegisterView extends StatelessWidget {
     bool readOnly = false,
     bool enabled = true,
     VoidCallback? onTap,
+    Iterable<String>? autofillHints,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
           controller: controller,
+          autofillHints: autofillHints,
           decoration: _inputDecoration(context, label).copyWith(
             fillColor: enabled ? Colors.grey[50] : Colors.grey[100],
           ),
@@ -500,6 +508,8 @@ class PhoneFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     String text = newValue.text.replaceAll(' ', '');
+    // No formatting here to keep it simple for now, or just space out.
+    // The previous logic was causing issues if not careful.
     if (text.length > 5) {
       text = '${text.substring(0, 5)} ${text.substring(5)}';
     }

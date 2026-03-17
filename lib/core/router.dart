@@ -48,8 +48,14 @@ class AppRouter {
       GoRoute(
         path: otp,
         builder: (context, state) {
-          final phone = state.extra as String? ?? '';
-          return OtpVerificationView(phoneNumber: phone);
+          final data = state.extra as Map<String, dynamic>? ?? {};
+          return OtpVerificationView(
+            email: data['email'] ?? '',
+            password: data['password'] ?? '',
+            name: data['name'] ?? '',
+            phoneNumber: data['phoneNumber'] ?? '',
+            country: data['country'] ?? '',
+          );
         },
       ),
       GoRoute(

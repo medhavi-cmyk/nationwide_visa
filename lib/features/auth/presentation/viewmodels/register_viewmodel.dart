@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import '../../data/auth_service.dart';
-import '../../data/models/user_model.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
-  
   RegisterViewModel() {
-    debugPrint("--- RegisterViewModel Initialized (CSC PRO Fixed) ---");
+    debugPrint("--- RegisterViewModel Initialized ---");
   }
 
   final nameController = TextEditingController();
@@ -30,48 +26,6 @@ class RegisterViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  void _setLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
-
-  void _setError(String? message) {
-    _errorMessage = message;
-    notifyListeners();
-  }
-
-  Future<bool> signUp(String email) async {
-    if (!validateForm()) return false;
-
-    _setLoading(true);
-    _setError(null);
-
-    try {
-      final userCredential = await _authService.signUpWithEmail(email, passwordController.text.trim());
-      if (userCredential != null && userCredential.user != null) {
-        debugPrint("Auth success for UID: ${userCredential.user!.uid}. Attempting Firestore save...");
-        final userModel = UserModel(
-          uid: userCredential.user!.uid,
-          email: email,
-          name: nameController.text.trim(),
-          phoneNumber: phoneController.text.trim(),
-          country: countryController.text.trim(),
-          createdAt: DateTime.now(),
-        );
-        debugPrint("REGISTER: Saving user data: ${userModel.toMap()}");
-        await _authService.saveUserData(userModel);
-        debugPrint("Firestore save completed. Proceeding to OTP.");
-        return true;
-      }
-      return false;
-    } catch (e) {
-      _setError("Sign up failed: $e");
-      return false;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
   @override
   void dispose() {
     nameController.dispose();
@@ -86,7 +40,7 @@ class RegisterViewModel extends ChangeNotifier {
 
   String? validateRequired(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
-      return "This Field is required to procceed";
+      return "This Field is required to proceed";
     }
     return null;
   }
@@ -101,7 +55,9 @@ class RegisterViewModel extends ChangeNotifier {
     if (value == null || value.trim().isEmpty) {
       return "Phone number is required";
     }
-    if (!RegExp(r'^\d{10}$').hasMatch(value.trim())) {
+    // Simple validation for 10 digits (ignoring spaces)
+    final digits = value.replaceAll(' ', '');
+    if (!RegExp(r'^\d{10}$').hasMatch(digits)) {
       return "Please enter a valid 10-digit phone number";
     }
     return null;
@@ -116,7 +72,7 @@ class RegisterViewModel extends ChangeNotifier {
     }
     final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
     if (!regex.hasMatch(value)) {
-      return "Password must have 8 characters with a number , symbol, uppercase and lower case";
+      return "Password must have 8 characters with a number, symbol, uppercase and lowercase";
     }
     return null;
   }
@@ -132,18 +88,12 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleReceiveUpdates(bool? value) {
-    receiveUpdates = value ?? false;
-    notifyListeners();
-  }
-
   void toggleAgreedToTerms(bool? value) {
     agreedToTerms = value ?? false;
     notifyListeners();
   }
 
   void updateCountry(Map<String, dynamic> country) {
-    debugPrint("--- Selected Country Data: $country ---");
     countryController.text = country['name'] ?? '';
     _selectedCountryId = country['id']?.toString();
     _selectedCountryIso2 = country['iso2']?.toString();
@@ -153,7 +103,6 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   void updateNationality(Map<String, dynamic> country) {
-    debugPrint("--- Selected Nationality Data: $country ---");
     nationalityController.text = country['name'] ?? '';
     notifyListeners();
   }
@@ -166,7 +115,6 @@ class RegisterViewModel extends ChangeNotifier {
   bool get isCountrySelected => countryController.text.isNotEmpty;
 
   Future<List<Map<String, dynamic>>> getAllCountries() async {
-    debugPrint("--- Fetching Countries ---");
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/country.json');
       final List<dynamic> data = json.decode(response);
@@ -198,9 +146,7 @@ class RegisterViewModel extends ChangeNotifier {
     if (_selectedCountryId == null && _selectedCountryIso2 == null) {
       return [];
     }
-
     await _loadStates();
-
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/city.json');
       final List<dynamic> data = json.decode(response);

@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'profile_setup_view.dart';
 import '../widgets/registration_progress_bar.dart';
 
-class OtpVerificationView extends StatelessWidget {
+class OtpVerificationView extends StatefulWidget {
+  final String email;
+  final String password;
+  final String name;
   final String phoneNumber;
+  final String country;
 
-  const OtpVerificationView({super.key, required this.phoneNumber});
+  const OtpVerificationView({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.phoneNumber,
+    required this.country,
+  });
 
-  static void show(BuildContext context, String phoneNumber) {
+  static void show({
+    required BuildContext context,
+    required String email,
+    required String password,
+    required String name,
+    required String phoneNumber,
+    required String country,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -19,9 +38,28 @@ class OtpVerificationView extends StatelessWidget {
       enableDrag: false,
       builder: (context) => ChangeNotifierProvider(
         create: (_) => AuthViewModel(),
-        child: OtpVerificationView(phoneNumber: phoneNumber),
+        child: OtpVerificationView(
+          email: email,
+          password: password,
+          name: name,
+          phoneNumber: phoneNumber,
+          country: country,
+        ),
       ),
     );
+  }
+
+  @override
+  State<OtpVerificationView> createState() => _OtpVerificationViewState();
+}
+
+class _OtpVerificationViewState extends State<OtpVerificationView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthViewModel>().sendOtp(widget.phoneNumber);
+    });
   }
 
   @override
@@ -30,12 +68,13 @@ class OtpVerificationView extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    final double otpBoxSize = (screenWidth - (24 * 2) - (12 * 3)) / 4;
-    final double actualBoxSize = otpBoxSize > 64 ? 64 : otpBoxSize;
+    // Adjusted for 6 boxes
+    final double otpBoxSize = (screenWidth - (24 * 2) - (8 * 5)) / 6;
+    final double actualBoxSize = otpBoxSize > 56 ? 56 : otpBoxSize;
     final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.7,
+      initialChildSize: 0.75,
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
@@ -76,7 +115,7 @@ class OtpVerificationView extends StatelessWidget {
                     children: [
                       const SizedBox(height: 16),
                       const Text(
-                        "Let's verify your account",
+                        "Verify your phone",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
@@ -86,7 +125,7 @@ class OtpVerificationView extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       const Text(
-                        "We want you to have a secure experience.",
+                        "We've sent a 6-digit code to your number.",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -100,8 +139,8 @@ class OtpVerificationView extends StatelessWidget {
                         child: Image.asset(
                           "assets/otp_image.png",
                           height: isKeyboardVisible
-                              ? screenHeight * 0.10
-                              : screenHeight * 0.13,
+                              ? screenHeight * 0.08
+                              : screenHeight * 0.12,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(
@@ -111,7 +150,7 @@ class OtpVerificationView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      if (!isKeyboardVisible) const SizedBox(height: 16),
                       RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
@@ -122,15 +161,16 @@ class OtpVerificationView extends StatelessWidget {
                           ),
                           children: [
                             const TextSpan(
-                              text: "Enter the 4-digit code sent via SMS to\n",
+                              text: "SMS sent to ",
                             ),
                             TextSpan(
-                              text: phoneNumber,
+                              text: widget.phoneNumber,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
+                                color: Colors.black,
                               ),
                             ),
-                            const TextSpan(text: " "),
+                            const TextSpan(text: ". "),
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: GestureDetector(
@@ -147,14 +187,15 @@ class OtpVerificationView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      // OTP Input row
+                      const SizedBox(height: 24),
+                      // OTP Input row (6 digits)
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(4, (index) {
-                          return SizedBox(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(6, (index) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
                             width: actualBoxSize,
-                            height: actualBoxSize,
+                            height: actualBoxSize * 1.2,
                             child: TextFormField(
                               controller: viewModel.controllers[index],
                               focusNode: viewModel.focusNodes[index],
@@ -163,20 +204,20 @@ class OtpVerificationView extends StatelessWidget {
                               maxLength: 1,
                               onChanged: (val) => viewModel.onCodeChanged(val, index),
                               style: TextStyle(
-                                fontSize: actualBoxSize > 50 ? 22 : 18,
+                                fontSize: actualBoxSize > 40 ? 20 : 16,
                                 fontWeight: FontWeight.bold,
                               ),
                               decoration: InputDecoration(
                                 counterText: "",
                                 contentPadding: EdgeInsets.zero,
                                 enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     color: Colors.grey[200]!,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: const BorderSide(
                                     color: AppColors.primaryRed,
                                     width: 2,
@@ -187,28 +228,34 @@ class OtpVerificationView extends StatelessWidget {
                           );
                         }),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Didn't receive a code? ",
-                            style: TextStyle(
+                          Text(
+                            viewModel.canResend
+                                ? "Didn't receive a code? "
+                                : "Resend code in ",
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                               color: Color(0xFF4B5563),
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              // Resend logic
-                            },
-                            child: const Text(
-                              "Resend Code",
+                            onTap: viewModel.canResend
+                                ? () => viewModel.resendCode(widget.phoneNumber)
+                                : null,
+                            child: Text(
+                              viewModel.canResend
+                                  ? "Resend Code"
+                                  : "00:${viewModel.secondsRemaining.toString().padLeft(2, '0')}",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.primaryRed,
+                                color: viewModel.canResend
+                                    ? AppColors.primaryRed
+                                    : AppColors.textGrey,
                               ),
                             ),
                           ),
@@ -224,25 +271,31 @@ class OtpVerificationView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryRed.withValues(
-                                alpha: 0.3,
-                              ),
+                              color: AppColors.primaryRed.withValues(alpha: 0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: ElevatedButton(
-                          onPressed: () {
-                            final navigator = Navigator.of(context);
-                            navigator.pop();
-                            
-                            Future.delayed(Duration.zero, () {
-                              if (context.mounted) {
-                                ProfileSetupView.show(context);
-                              }
-                            });
-                          },
+                          onPressed: viewModel.isLoading
+                              ? null
+                              : () async {
+                                  bool success = await viewModel.verifyAndRegister(
+                                    email: widget.email,
+                                    password: widget.password,
+                                    name: widget.name,
+                                    phoneNumber: widget.phoneNumber,
+                                    country: widget.country,
+                                  );
+
+                                  if (success && context.mounted) {
+                                    Navigator.pop(context); // Close OTP Sheet
+                                    ProfileSetupView.show(context);
+                                  } else if (!success && context.mounted && viewModel.errorMessage != null) {
+                                    CustomSnackbar.showError(viewModel.errorMessage!);
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             foregroundColor: Colors.white,
@@ -251,13 +304,22 @@ class OtpVerificationView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            "Verify",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
+                          child: viewModel.isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  "Verify & Register",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 16),

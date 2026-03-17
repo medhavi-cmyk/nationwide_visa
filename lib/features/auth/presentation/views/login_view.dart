@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
-import 'account_exists_view.dart';
 import 'register_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -67,247 +66,240 @@ class LoginView extends StatelessWidget {
                       right: 24.0,
                       bottom: MediaQuery.of(context).viewInsets.bottom + 10.0,
                     ),
-                    child: Form(
-                      key: viewModel.formKey,
-                      child: Column(
-                        children: [
-                          // Illustration / Logo Area
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 24),
-                            child: Image.asset(
-                              "assets/login_hero.jpg",
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                          const Text(
-                            "Your one-stop platform for all things study abroad",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: 'Montserrat',
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textBlack,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          // Email Field
-                          TextFormField(
-                            controller: viewModel.emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: viewModel.validateEmail,
-                            onChanged: (_) => viewModel.validateForm(), // Real-time validation
-                            decoration: InputDecoration(
-                              labelText: "Email address",
-                              labelStyle: const TextStyle(
-                                color: AppColors.textGrey,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              floatingLabelStyle: const TextStyle(
-                                color: AppColors.primaryRed,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 14,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: AppColors.borderGrey,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: AppColors.borderGrey,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryRed,
-                                  width: 2,
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryRed,
-                                ),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primaryRed,
-                                  width: 2,
-                                ),
+                    child: AutofillGroup(
+                      child: Form(
+                        key: viewModel.formKey,
+                        child: Column(
+                          children: [
+                            // Illustration / Logo Area
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 24),
+                              child: Image.asset(
+                                "assets/login_hero.jpg",
+                                fit: BoxFit.fitWidth,
                               ),
                             ),
-                          ),
-                          if (viewModel.showSuggestions) ...[
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              height: 32,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: ["@gmail.com", "@yahoo.com", "@outlook.com"]
-                                    .map((domain) => Padding(
-                                          padding: const EdgeInsets.only(right: 8),
-                                          child: ActionChip(
-                                            label: Text(
-                                              domain,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.primaryRed,
+                            const Text(
+                              "Your one-stop platform for all things study abroad",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontFamily: 'Montserrat',
+                                letterSpacing: 1,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textBlack,
+                                height: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            // Email Field
+                            TextFormField(
+                              controller: viewModel.emailController,
+                              autofillHints: const [AutofillHints.email],
+                              keyboardType: TextInputType.emailAddress,
+                              validator: viewModel.validateEmail,
+                              onChanged: (_) => viewModel.validateForm(), // Real-time validation
+                              decoration: InputDecoration(
+                                labelText: "Email address",
+                                labelStyle: const TextStyle(
+                                  color: AppColors.textGrey,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                floatingLabelStyle: const TextStyle(
+                                  color: AppColors.primaryRed,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.borderGrey,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.borderGrey,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primaryRed,
+                                    width: 2,
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primaryRed,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primaryRed,
+                                    width: 2,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[50],
+                              ),
+                            ),
+                            if (viewModel.showSuggestions) ...[
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                height: 32,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: ["@gmail.com", "@yahoo.com", "@outlook.com"]
+                                      .map((domain) => Padding(
+                                            padding: const EdgeInsets.only(right: 8),
+                                            child: ActionChip(
+                                              label: Text(
+                                                domain,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.primaryRed,
+                                                ),
                                               ),
+                                              backgroundColor: AppColors.primaryRed.withOpacity(0.05),
+                                              side: BorderSide(
+                                                color: AppColors.primaryRed.withOpacity(0.1),
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              onPressed: () {
+                                                viewModel.updateEmail(
+                                                  "${viewModel.emailController.text}$domain",
+                                                );
+                                              },
                                             ),
-                                            backgroundColor: AppColors.primaryRed.withOpacity(0.05),
-                                            side: BorderSide(
-                                              color: AppColors.primaryRed.withOpacity(0.1),
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                            onPressed: () {
-                                              viewModel.updateEmail(
-                                                "${viewModel.emailController.text}$domain",
-                                              );
-                                            },
-                                          ),
-                                        ))
-                                    .toList(),
+                                          ))
+                                      .toList(),
+                                ),
                               ),
-                            ),
-                          ],
-                          const SizedBox(height: 16),
-                          // Terms and Conditions
-                          RichText(
-                            textAlign: TextAlign.start,
-                            text: TextSpan(
-                              style: const TextStyle(
-                                color: AppColors.textGrey,
-                                fontSize: 13,
-                                height: 1.5,
-                              ),
-                              children: [
-                                const TextSpan(
-                                  text: "By proceeding, you agree to the ",
+                            ],
+                            const SizedBox(height: 16),
+                            // Terms and Conditions
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: const TextStyle(
+                                  color: AppColors.textGrey,
+                                  fontSize: 13,
+                                  height: 1.5,
                                 ),
-                                TextSpan(
-                                  text: "Terms & Conditions",
-                                  style: const TextStyle(
-                                    color: AppColors.primaryRed,
-                                    fontWeight: FontWeight.bold,
+                                children: [
+                                  const TextSpan(text: "By proceeding, you agree to the "),
+                                  TextSpan(
+                                    text: "Terms & Conditions",
+                                    style: const TextStyle(
+                                      color: AppColors.primaryRed,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
-                                ),
-                                const TextSpan(text: " and "),
-                                TextSpan(
-                                  text: "Privacy Policy.",
-                                  style: const TextStyle(
-                                    color: AppColors.primaryRed,
-                                    fontWeight: FontWeight.bold,
+                                  const TextSpan(text: " and "),
+                                  TextSpan(
+                                    text: "Privacy Policy.",
+                                    style: const TextStyle(
+                                      color: AppColors.primaryRed,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          // Continue Button
-                          Container(
-                            width: double.infinity,
-                            height: 56,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppColors.accentRed,
-                                  AppColors.primaryRed,
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primaryRed.withOpacity(0.3),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 8),
+                            ),
+                            const SizedBox(height: 32),
+                            // Continue Button
+                            Container(
+                              width: double.infinity,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryRed,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryRed.withOpacity(0.3),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: viewModel.isLoading
+                                    ? null
+                                    : () {
+                                        if (viewModel.formKey.currentState!.validate()) {
+                                          _launchRegister(context, viewModel.emailController.text.trim());
+                                        }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundColor: Colors.white,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 0,
                                 ),
+                                child: viewModel.isLoading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text(
+                                        "Continue",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            const Row(
+                              children: [
+                                Expanded(child: Divider()),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Text(
+                                    "or",
+                                    style: TextStyle(
+                                      color: AppColors.textGrey,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(child: Divider()),
                               ],
                             ),
-                            child: ElevatedButton(
+                            const SizedBox(height: 24),
+                            // Social Logins
+                            _buildSocialButton(
+                              "Continue with Google",
+                              iconWidget: Image.asset(
+                                "assets/google_logo.png",
+                                height: 20,
+                              ),
                               onPressed: viewModel.isLoading
                                   ? null
-                                  : () async {
-                                      await viewModel.checkEmailAndRedirect(
-                                        onAccountExists: (email) {
-                                          Navigator.pop(context);
-                                          AccountExistsView.show(context, email);
-                                        },
-                                        onNewUser: (email) {
-                                          Navigator.pop(context);
-                                          RegisterView.show(context, email);
-                                        },
-                                      );
-                                      if (context.mounted && viewModel.errorMessage != null) {
-                                        CustomSnackbar.showError(viewModel.errorMessage!);
-                                      }
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                foregroundColor: Colors.white,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: viewModel.isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : const Text(
-                                      "Continue",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          const Text(
-                            "OR",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          // Social Logins
-                          _buildSocialButton(
-                            "Continue with Google",
-                            iconWidget: Image.asset(
-                              "assets/google_logo.png",
-                              height: 20,
-                            ),
-                            onPressed: viewModel.isLoading
-                                ? null
                                   : () async {
                                       bool success = await viewModel.signInWithGoogle();
                                       if (success && context.mounted) {
@@ -317,31 +309,32 @@ class LoginView extends StatelessWidget {
                                         CustomSnackbar.showError(viewModel.errorMessage!);
                                       }
                                     },
-                          ),
-                          const SizedBox(height: 12),
-                          _buildSocialButton(
-                            "Continue with Apple",
-                            icon: Icons.apple,
-                            onPressed: () {
-                              // Apple Sign In placeholder
-                            },
-                          ),
-                          const SizedBox(height: 40),
-                          // Stats Row
-                          const IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                _StatItem(val: "4.7/5 ⭐", label: "Google rating"),
-                                SizedBox(width: 8),
-                                _StatItem(val: "100K+", label: "Students counselled"),
-                                SizedBox(width: 8),
-                                _StatItem(val: "75K+", label: "Courses available"),
-                              ],
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                            const SizedBox(height: 12),
+                            _buildSocialButton(
+                              "Continue with Apple",
+                              icon: Icons.apple,
+                              onPressed: () {
+                                // Apple Sign In placeholder
+                              },
+                            ),
+                            const SizedBox(height: 40),
+                            // Stats Row
+                            const IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _StatItem(val: "4.7/5 ⭐", label: "Google rating"),
+                                  SizedBox(width: 8),
+                                  _StatItem(val: "100K+", label: "Students counselled"),
+                                  SizedBox(width: 8),
+                                  _StatItem(val: "75K+", label: "Courses available"),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -352,6 +345,11 @@ class LoginView extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _launchRegister(BuildContext context, String email) {
+    Navigator.pop(context);
+    RegisterView.show(context, email);
   }
 
   Future<void> _launchURL(String urlString) async {

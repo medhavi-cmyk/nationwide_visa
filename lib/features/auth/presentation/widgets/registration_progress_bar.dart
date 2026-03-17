@@ -63,7 +63,7 @@ class RegistrationProgressBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primaryRed.withOpacity(0.2),
+                        color: AppColors.primaryRed.withValues(alpha: 0.2),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),

@@ -77,6 +77,57 @@ class AuthService {
     await _auth.signOut();
   }
 
+  // --- Phone Authentication (OTP) ---
+
+  // Verify Phone Number and send OTP
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required Function(String verificationId, int? resendToken) onCodeSent,
+    required Function(FirebaseAuthException e) onVerificationFailed,
+    required Function(PhoneAuthCredential credential) onVerificationCompleted,
+    required Function(String verificationId) onCodeAutoRetrievalTimeout,
+  }) async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: onVerificationCompleted,
+        verificationFailed: onVerificationFailed,
+        codeSent: onCodeSent,
+        codeAutoRetrievalTimeout: onCodeAutoRetrievalTimeout,
+        timeout: const Duration(seconds: 60),
+      );
+    } catch (e) {
+      debugPrint("Phone verification error: $e");
+      rethrow;
+    }
+  }
+
+  // Sign in with Phone Credential
+  Future<UserCredential> signInWithPhoneCredential(PhoneAuthCredential credential) async {
+    try {
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      debugPrint("Phone sign in error: $e");
+      rethrow;
+    }
+  }
+
+  // Link Email/Password to current user account
+  Future<void> linkEmailPassword(String email, String password) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw Exception("No user logged in to link info to");
+
+      final credential = EmailAuthProvider.credential(email: email, password: password);
+      await user.linkWithCredential(credential);
+    } catch (e) {
+      debugPrint("Linking email error: $e");
+      rethrow;
+    }
+  }
+
+  // --- End Phone Authentication ---
+
   // Save/Update user data in Firestore
   Future<void> saveUserData(UserModel user) async {
     try {
