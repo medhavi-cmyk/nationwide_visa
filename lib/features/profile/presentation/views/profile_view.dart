@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router.dart';
+import '../viewmodels/profile_viewmodel.dart';
 import '../widgets/edit_profile_sheet.dart';
 
 class ProfileView extends StatefulWidget {
@@ -135,7 +139,7 @@ class _ProfileViewState extends State<ProfileView> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: _buildLogoutButton(),
+                child: _buildLogoutButton(context),
               ),
             ),
 
@@ -533,10 +537,17 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  // ── LOG OUT BUTTON ───────────────────────────────────────────────────────────
-  Widget _buildLogoutButton() {
+  Widget _buildLogoutButton(BuildContext context) {
+    final viewModel = context.watch<MainProfileViewModel>();
     return OutlinedButton.icon(
-      onPressed: () {},
+      onPressed: viewModel.isLoading
+          ? null
+          : () async {
+              await viewModel.logout();
+              if (context.mounted) {
+                context.go(AppRouter.onboarding);
+              }
+            },
       icon: const Icon(
         Icons.logout_rounded,
         color: Color(0xFFEF4444),

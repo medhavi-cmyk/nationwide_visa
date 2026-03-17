@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nwdapp/core/router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
@@ -274,12 +276,9 @@ class LoginView extends StatelessWidget {
                                 ? null
                                 : () async {
                                     bool success = await viewModel.signInWithGoogle();
-                                    if (success) {
-                                      if (context.mounted) {
-                                        // Navigation after successful login would typically be handled by a listener or home screen logic
-                                        // For now, let's assume it redirects to home via router or state change
-                                        // Navigator.pop(context);
-                                      }
+                                    if (success && context.mounted) {
+                                      Navigator.pop(context);
+                                      context.go(AppRouter.home);
                                     }
                                   },
                           ),

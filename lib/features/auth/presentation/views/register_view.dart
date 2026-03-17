@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:nwdapp/features/auth/presentation/views/otp_verification_view.dart';
 import '../../../../core/app_colors.dart';
 import '../viewmodels/register_viewmodel.dart';
 import '../widgets/city_picker.dart';
@@ -280,8 +281,9 @@ class RegisterView extends StatelessWidget {
                                   : () async {
                                       bool success = await viewModel.signUp(email);
                                       if (success && context.mounted) {
-                                        // Navigator.pop(context);
-                                        // Usually redirect to home or profile setup
+                                        final phone = viewModel.phoneController.text.trim();
+                                        Navigator.pop(context); // Close Register Sheet
+                                        OtpVerificationView.show(context, phone);
                                       }
                                     },
                               style: ElevatedButton.styleFrom(

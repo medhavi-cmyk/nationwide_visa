@@ -8,6 +8,7 @@ import 'features/auth/presentation/viewmodels/login_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/register_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/auth_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/profile_viewmodel.dart';
+import 'features/profile/presentation/viewmodels/profile_viewmodel.dart';
 import 'core/app_colors.dart';
 import 'core/router.dart';
 import 'core/services/zego_chat_service.dart';
@@ -54,6 +55,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => MainProfileViewModel()),
       ],
       child: const MyApp(),
     ),

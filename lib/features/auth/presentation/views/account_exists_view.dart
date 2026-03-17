@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router.dart';
 import '../../../../core/app_colors.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
@@ -143,7 +145,8 @@ class AccountExistsView extends StatelessWidget {
                             : () async {
                                 bool success = await viewModel.signInWithGoogle();
                                 if (success && context.mounted) {
-                                  // Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  context.go(AppRouter.home);
                                 }
                               },
                       ),
