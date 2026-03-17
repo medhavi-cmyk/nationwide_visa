@@ -48,6 +48,7 @@ class RegisterViewModel extends ChangeNotifier {
     try {
       final userCredential = await _authService.signUpWithEmail(email, passwordController.text.trim());
       if (userCredential != null && userCredential.user != null) {
+        debugPrint("Auth success for UID: ${userCredential.user!.uid}. Attempting Firestore save...");
         final userModel = UserModel(
           uid: userCredential.user!.uid,
           email: email,
@@ -56,7 +57,9 @@ class RegisterViewModel extends ChangeNotifier {
           country: countryController.text.trim(),
           createdAt: DateTime.now(),
         );
+        debugPrint("REGISTER: Saving user data: ${userModel.toMap()}");
         await _authService.saveUserData(userModel);
+        debugPrint("Firestore save completed. Proceeding to OTP.");
         return true;
       }
       return false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:nwdapp/features/auth/presentation/views/otp_verification_view.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/register_viewmodel.dart';
 import '../widgets/city_picker.dart';
 import '../widgets/country_picker.dart';
@@ -251,15 +252,6 @@ class RegisterView extends StatelessWidget {
 
                           const SizedBox(height: 32),
 
-                          if (viewModel.errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: Text(
-                                viewModel.errorMessage!,
-                                style: const TextStyle(color: AppColors.primaryRed, fontSize: 13, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
 
                           Container(
                             width: double.infinity,
@@ -284,6 +276,8 @@ class RegisterView extends StatelessWidget {
                                         final phone = viewModel.phoneController.text.trim();
                                         Navigator.pop(context); // Close Register Sheet
                                         OtpVerificationView.show(context, phone);
+                                      } else if (!success && context.mounted && viewModel.errorMessage != null) {
+                                        CustomSnackbar.showError(viewModel.errorMessage!);
                                       }
                                     },
                               style: ElevatedButton.styleFrom(

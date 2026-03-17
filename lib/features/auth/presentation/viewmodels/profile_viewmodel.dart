@@ -85,22 +85,42 @@ class ProfileViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveProfile() async {
+    debugPrint("PROFILE: saveProfile() called");
     final user = _authService.currentUser;
-    if (user == null) return false;
+    if (user == null) {
+      debugPrint("PROFILE: Error - currentUser is NULL");
+      return false;
+    }
 
     _isLoading = true;
     notifyListeners();
 
     try {
-      final userModel = UserModel(
-        uid: user.uid,
-        email: user.email ?? '',
-        profession: _selectedStudyLevel,
-        // Using profession field for study level as an example, 
-        // or we could expand UserModel later.
-        gradingSystem: _selectedStartYear, 
-        cgpa: _selectedMonthRange,
-      );
+      // 1. Fetch existing user data first to avoid overwriting with nulls
+      final existingData = await _authService.getUserData(user.uid);
+      debugPrint("PROFILE: Raw user data from Firestore: ${existingData?.toMap()}");
+      
+      UserModel userModel;
+      if (existingData != null) {
+        // 2. Merge new fields into existing data
+        userModel = existingData.copyWith(
+          profession: _selectedStudyLevel,
+          gradingSystem: _selectedStartYear,
+          cgpa: _selectedMonthRange,
+        );
+        debugPrint("PROFILE: Merged user data: ${userModel.toMap()}");
+      } else {
+        debugPrint("PROFILE: No existing data found for UID: ${user.uid}. Creating new.");
+        // Fallback for new user without existing data
+        userModel = UserModel(
+          uid: user.uid,
+          email: user.email ?? '',
+          profession: _selectedStudyLevel,
+          gradingSystem: _selectedStartYear,
+          cgpa: _selectedMonthRange,
+          createdAt: DateTime.now(),
+        );
+      }
 
       await _authService.saveUserData(userModel);
       return true;

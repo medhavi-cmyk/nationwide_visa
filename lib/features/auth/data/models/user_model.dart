@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class UserModel {
   final String uid;
   final String email;
@@ -26,41 +28,49 @@ class UserModel {
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    final Map<String, dynamic> map = {
       'uid': uid,
       'email': email,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'profession': profession,
-      'country': country,
-      'gradingSystem': gradingSystem,
-      'cgpa': cgpa,
-      'preferredDestinations': preferredDestinations,
-      'preferredSubjects': preferredSubjects,
-      'createdAt': createdAt?.toIso8601String(),
     };
+    
+    if (name != null) map['name'] = name;
+    if (phoneNumber != null) map['phoneNumber'] = phoneNumber;
+    if (profession != null) map['profession'] = profession;
+    if (country != null) map['country'] = country;
+    if (gradingSystem != null) map['gradingSystem'] = gradingSystem;
+    if (cgpa != null) map['cgpa'] = cgpa;
+    if (preferredDestinations != null) map['preferredDestinations'] = preferredDestinations;
+    if (preferredSubjects != null) map['preferredSubjects'] = preferredSubjects;
+    if (createdAt != null) map['createdAt'] = createdAt!.toIso8601String();
+    
+    return map;
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
-      uid: map['uid'] ?? '',
-      email: map['email'] ?? '',
-      name: map['name'],
-      phoneNumber: map['phoneNumber'],
-      profession: map['profession'],
-      country: map['country'],
-      gradingSystem: map['gradingSystem'],
-      cgpa: map['cgpa'],
-      preferredDestinations: map['preferredDestinations'] != null
-          ? List<String>.from(map['preferredDestinations'])
-          : null,
-      preferredSubjects: map['preferredSubjects'] != null
-          ? List<String>.from(map['preferredSubjects'])
-          : null,
-      createdAt: map['createdAt'] != null
-          ? DateTime.parse(map['createdAt'])
-          : null,
-    );
+    try {
+      return UserModel(
+        uid: map['uid'] ?? '',
+        email: map['email'] ?? '',
+        name: map['name'],
+        phoneNumber: map['phoneNumber'],
+        profession: map['profession'],
+        country: map['country'],
+        gradingSystem: map['gradingSystem'],
+        cgpa: map['cgpa'],
+        preferredDestinations: map['preferredDestinations'] != null
+            ? List<String>.from(map['preferredDestinations'])
+            : null,
+        preferredSubjects: map['preferredSubjects'] != null
+            ? List<String>.from(map['preferredSubjects'])
+            : null,
+        createdAt: map['createdAt'] != null
+            ? DateTime.parse(map['createdAt'])
+            : null,
+      );
+    } catch (e) {
+      debugPrint("UserModel.fromMap Error: $e for map: $map");
+      rethrow;
+    }
   }
 
   UserModel copyWith({

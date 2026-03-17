@@ -205,6 +205,7 @@ class ProfileSetupView extends StatelessWidget {
                 onPressed: viewModel.isLoading
                     ? null
                     : () async {
+                        debugPrint("PROFILE_VIEW: 'Sign up' button tapped");
                         final success = await viewModel.saveProfile();
                         if (success && context.mounted) {
                           context.go(AppRouter.home);

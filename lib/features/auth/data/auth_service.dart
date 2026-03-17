@@ -80,12 +80,17 @@ class AuthService {
   // Save/Update user data in Firestore
   Future<void> saveUserData(UserModel user) async {
     try {
+      debugPrint("Attempting to save user data to Firestore for UID: ${user.uid}");
+      debugPrint("Project ID being used: ${_firestore.app.options.projectId}");
+      final dataToSave = user.toMap();
+      debugPrint("DATA BEING SENT TO FIRESTORE: $dataToSave");
       await _firestore.collection('users').doc(user.uid).set(
-            user.toMap(),
+            dataToSave,
             SetOptions(merge: true),
           );
+      debugPrint("Successfully saved user data to Firestore for UID: ${user.uid}");
     } catch (e) {
-      debugPrint("Save user data error: $e");
+      debugPrint("CRITICAL: Save user data error for UID ${user.uid}: $e");
       rethrow;
     }
   }
@@ -93,13 +98,16 @@ class AuthService {
   // Get user data from Firestore
   Future<UserModel?> getUserData(String uid) async {
     try {
+      debugPrint("AuthService: Fetching doc for UID: $uid");
       final doc = await _firestore.collection('users').doc(uid).get();
       if (doc.exists && doc.data() != null) {
+        debugPrint("AuthService: RAW DATA FROM FIRESTORE: ${doc.data()}");
         return UserModel.fromMap(doc.data()!);
       }
+      debugPrint("AuthService: Document does not exist for UID: $uid");
       return null;
     } catch (e) {
-      debugPrint("Get user data error: $e");
+      debugPrint("AuthService: Get user data error: $e");
       rethrow;
     }
   }

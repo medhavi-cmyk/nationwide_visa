@@ -5,6 +5,7 @@ import 'package:nwdapp/core/router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'account_exists_view.dart';
 import 'register_view.dart';
@@ -147,14 +148,6 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (viewModel.errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                viewModel.errorMessage!,
-                                style: const TextStyle(color: AppColors.primaryRed, fontSize: 12),
-                              ),
-                            ),
                           const SizedBox(height: 16),
                           // Terms and Conditions
                           RichText(
@@ -217,7 +210,8 @@ class LoginView extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: viewModel.isLoading
                                   ? null
-                                  : () => viewModel.checkEmailAndRedirect(
+                                  : () async {
+                                      await viewModel.checkEmailAndRedirect(
                                         onAccountExists: (email) {
                                           Navigator.pop(context);
                                           AccountExistsView.show(context, email);
@@ -226,7 +220,11 @@ class LoginView extends StatelessWidget {
                                           Navigator.pop(context);
                                           RegisterView.show(context, email);
                                         },
-                                      ),
+                                      );
+                                      if (context.mounted && viewModel.errorMessage != null) {
+                                        CustomSnackbar.showError(viewModel.errorMessage!);
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
@@ -274,13 +272,15 @@ class LoginView extends StatelessWidget {
                             ),
                             onPressed: viewModel.isLoading
                                 ? null
-                                : () async {
-                                    bool success = await viewModel.signInWithGoogle();
-                                    if (success && context.mounted) {
-                                      Navigator.pop(context);
-                                      context.go(AppRouter.home);
-                                    }
-                                  },
+                                  : () async {
+                                      bool success = await viewModel.signInWithGoogle();
+                                      if (success && context.mounted) {
+                                        Navigator.pop(context);
+                                        context.go(AppRouter.home);
+                                      } else if (!success && context.mounted && viewModel.errorMessage != null) {
+                                        CustomSnackbar.showError(viewModel.errorMessage!);
+                                      }
+                                    },
                           ),
                           const SizedBox(height: 12),
                           _buildSocialButton(

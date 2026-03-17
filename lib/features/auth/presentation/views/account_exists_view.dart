@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
 
@@ -77,13 +78,6 @@ class AccountExistsView extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                   ),
-                  if (viewModel.errorMessage != null)
-                    Text(
-                      viewModel.errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: AppColors.primaryRed, fontSize: 12, fontWeight: FontWeight.bold),
-                    )
-                  else
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
@@ -147,6 +141,8 @@ class AccountExistsView extends StatelessWidget {
                                 if (success && context.mounted) {
                                   Navigator.pop(context);
                                   context.go(AppRouter.home);
+                                } else if (!success && context.mounted && viewModel.errorMessage != null) {
+                                  CustomSnackbar.showError(viewModel.errorMessage!);
                                 }
                               },
                       ),
