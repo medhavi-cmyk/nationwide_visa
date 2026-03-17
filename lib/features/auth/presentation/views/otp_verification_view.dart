@@ -192,35 +192,39 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(6, (index) {
-                          return Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: actualBoxSize,
-                            height: actualBoxSize * 1.2,
-                            child: TextFormField(
-                              controller: viewModel.controllers[index],
-                              focusNode: viewModel.focusNodes[index],
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              maxLength: 1,
-                              onChanged: (val) => viewModel.onCodeChanged(val, index),
-                              style: TextStyle(
-                                fontSize: actualBoxSize > 40 ? 20 : 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              decoration: InputDecoration(
-                                counterText: "",
-                                contentPadding: EdgeInsets.zero,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: Colors.grey[200]!,
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              child: AspectRatio(
+                                aspectRatio: 0.8,
+                                child: TextFormField(
+                                  controller: viewModel.controllers[index],
+                                  focusNode: viewModel.focusNodes[index],
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 1,
+                                  onChanged: (val) =>
+                                      viewModel.onCodeChanged(val, index),
+                                  style: TextStyle(
+                                    fontSize: actualBoxSize > 40 ? 20 : 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.primaryRed,
-                                    width: 2,
+                                  decoration: InputDecoration(
+                                    counterText: "",
+                                    contentPadding: EdgeInsets.zero,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey[200]!,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: AppColors.primaryRed,
+                                        width: 2,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
