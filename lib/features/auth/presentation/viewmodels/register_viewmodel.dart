@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import '../../data/auth_service.dart';
 
 class RegisterViewModel extends ChangeNotifier {
+  final AuthService _authService = AuthService();
+  
   RegisterViewModel() {
     debugPrint("--- RegisterViewModel Initialized (CSC PRO Fixed) ---");
   }
@@ -18,6 +21,40 @@ class RegisterViewModel extends ChangeNotifier {
 
   bool receiveUpdates = true;
   bool obscurePassword = true;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  void _setError(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
+  Future<bool> signUp(String email) async {
+    if (!validateForm()) return false;
+
+    _setLoading(true);
+    _setError(null);
+
+    try {
+      final user = await _authService.signUpWithEmail(email, passwordController.text.trim());
+      // Here you could also save additional user data to Firestore
+      return user != null;
+    } catch (e) {
+      _setError("Sign up failed: $e");
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
 
   @override
   void dispose() {

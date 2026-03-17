@@ -41,6 +41,9 @@ dependencies:
   country_state_city_pro: ^0.0.6
   provider: ^6.1.2
   intl: ^0.19.0
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
+  google_sign_in: ^6.2.2
   zego_uikit_prebuilt_call: ^4.22.3
   zego_zim: ^2.27.0
   zego_uikit_signaling_plugin: ^2.8.20

@@ -145,6 +145,14 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (viewModel.errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                viewModel.errorMessage!,
+                                style: const TextStyle(color: AppColors.primaryRed, fontSize: 12),
+                              ),
+                            ),
                           const SizedBox(height: 16),
                           // Terms and Conditions
                           RichText(
@@ -198,27 +206,25 @@ class LoginView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primaryRed.withValues(alpha: 0.3),
+                                  color: AppColors.primaryRed.withOpacity(0.3),
                                   blurRadius: 15,
                                   offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (viewModel.validateForm()) {
-                                  String email = viewModel.emailController.text.trim();
-                                  if (email == 'test1@gmail.com') {
-                                    Navigator.pop(context);
-                                    AccountExistsView.show(context, email);
-                                  } else if (email == 'test2@gmail.com') {
-                                    Navigator.pop(context);
-                                    RegisterView.show(context, email);
-                                  } else {
-                                    debugPrint("Email is valid: $email");
-                                  }
-                                }
-                              },
+                              onPressed: viewModel.isLoading
+                                  ? null
+                                  : () => viewModel.checkEmailAndRedirect(
+                                        onAccountExists: (email) {
+                                          Navigator.pop(context);
+                                          AccountExistsView.show(context, email);
+                                        },
+                                        onNewUser: (email) {
+                                          Navigator.pop(context);
+                                          RegisterView.show(context, email);
+                                        },
+                                      ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
@@ -228,14 +234,23 @@ class LoginView extends StatelessWidget {
                                 ),
                                 elevation: 0,
                               ),
-                              child: const Text(
-                                "Continue",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: viewModel.isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Text(
+                                      "Continue",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -255,11 +270,26 @@ class LoginView extends StatelessWidget {
                               "assets/google_logo.png",
                               height: 20,
                             ),
+                            onPressed: viewModel.isLoading
+                                ? null
+                                : () async {
+                                    bool success = await viewModel.signInWithGoogle();
+                                    if (success) {
+                                      if (context.mounted) {
+                                        // Navigation after successful login would typically be handled by a listener or home screen logic
+                                        // For now, let's assume it redirects to home via router or state change
+                                        // Navigator.pop(context);
+                                      }
+                                    }
+                                  },
                           ),
                           const SizedBox(height: 12),
                           _buildSocialButton(
                             "Continue with Apple",
                             icon: Icons.apple,
+                            onPressed: () {
+                              // Apple Sign In placeholder
+                            },
                           ),
                           const SizedBox(height: 40),
                           // Stats Row
@@ -296,28 +326,32 @@ class LoginView extends StatelessWidget {
     }
   }
 
-  Widget _buildSocialButton(String text, {IconData? icon, Widget? iconWidget}) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black87),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (iconWidget != null) iconWidget else Icon(icon, size: 20, color: Colors.black87),
-          const SizedBox(width: 12),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+  Widget _buildSocialButton(String text, {IconData? icon, Widget? iconWidget, VoidCallback? onPressed}) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        width: double.infinity,
+        height: 56,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black87),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (iconWidget != null) iconWidget else Icon(icon, size: 20, color: Colors.black87),
+            const SizedBox(width: 12),
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

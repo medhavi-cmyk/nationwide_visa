@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
+import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
 
 class AccountExistsView extends StatelessWidget {
@@ -16,21 +18,25 @@ class AccountExistsView extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return AccountExistsView(email: email);
+        return ChangeNotifierProvider(
+          create: (_) => LoginViewModel(),
+          child: AccountExistsView(email: email),
+        );
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<LoginViewModel>();
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    
+
     final double vScale = screenHeight / 844.0;
     final double hScale = screenWidth / 390.0;
-    
+
     return Container(
-      height: screenHeight * 0.6,
+      height: screenHeight * 0.65,
       width: screenWidth > 600 ? 500 : double.infinity,
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -51,6 +57,8 @@ class AccountExistsView extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
+          if (viewModel.isLoading)
+            const LinearProgressIndicator(color: AppColors.primaryRed),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24 * hScale.clamp(0.8, 1.2)),
@@ -67,20 +75,27 @@ class AccountExistsView extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "Please choose Continue with Google to log in and proceed.",
+                  if (viewModel.errorMessage != null)
+                    Text(
+                      viewModel.errorMessage!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: (screenWidth < 350 ? 14 : 16) * vScale.clamp(0.9, 1.0),
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textBlack,
-                        height: 1.3,
+                      style: const TextStyle(color: AppColors.primaryRed, fontSize: 12, fontWeight: FontWeight.bold),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "Please choose Continue with Google to log in and proceed.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: (screenWidth < 350 ? 14 : 16) * vScale.clamp(0.9, 1.0),
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textBlack,
+                          height: 1.3,
+                        ),
                       ),
                     ),
-                  ),
-                  
+
                   Container(
                     width: (screenHeight < 700 ? 80 : 110) * vScale.clamp(0.7, 1.1),
                     height: (screenHeight < 700 ? 80 : 110) * vScale.clamp(0.7, 1.1),
@@ -94,7 +109,7 @@ class AccountExistsView extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -113,7 +128,7 @@ class AccountExistsView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   Column(
                     children: [
                       _buildSocialButton(
@@ -123,16 +138,27 @@ class AccountExistsView extends StatelessWidget {
                           "assets/google_logo.png",
                           height: 22 * vScale.clamp(0.8, 1.1),
                         ),
+                        onPressed: viewModel.isLoading
+                            ? null
+                            : () async {
+                                bool success = await viewModel.signInWithGoogle();
+                                if (success && context.mounted) {
+                                  // Navigator.pop(context);
+                                }
+                              },
                       ),
                       const SizedBox(height: 10),
                       _buildSocialButton(
                         context,
                         "Continue with Apple",
                         icon: Icons.apple,
+                        onPressed: () {
+                          // Apple sign in placeholder
+                        },
                       ),
                     ],
                   ),
-                  
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -171,32 +197,36 @@ class AccountExistsView extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialButton(BuildContext context, String text, {IconData? icon, Widget? iconWidget}) {
+  Widget _buildSocialButton(BuildContext context, String text, {IconData? icon, Widget? iconWidget, VoidCallback? onPressed}) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double vScale = (screenHeight / 844.0).clamp(0.8, 1.0);
-    
-    return Container(
-      width: double.infinity,
-      height: 54 * vScale,
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.textBlack.withValues(alpha: 0.5)),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (iconWidget != null) iconWidget else Icon(icon, size: 24 * vScale, color: Colors.black),
-          const SizedBox(width: 12),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: (screenWidth < 350 ? 16 : 18) * vScale,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textBlack,
+
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        width: double.infinity,
+        height: 54 * vScale,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.textBlack.withOpacity(0.5)),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (iconWidget != null) iconWidget else Icon(icon, size: 24 * vScale, color: Colors.black),
+            const SizedBox(width: 12),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: (screenWidth < 350 ? 16 : 18) * vScale,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textBlack,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

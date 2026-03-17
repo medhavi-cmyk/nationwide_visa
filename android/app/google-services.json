@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "765770707868",
+    "project_id": "nationwidevisas-4de21",
+    "storage_bucket": "nationwidevisas-4de21.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:765770707868:android:89fa23c69e583ce8200e59",
+        "android_client_info": {
+          "package_name": "com.example.nwdapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "765770707868-usjqe2t61m3ga42h7itrt456gd4p5ma9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nwdapp",
+            "certificate_hash": "1f5fd2af6c90c2581e482fd4ab78012403b9b3cc"
+          }
+        },
+        {
+          "client_id": "765770707868-aaoh31455b16lqmr0m9tmjgod3g7c0v2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBopLXFDC3IWGifmG1HGFwBM35wVwann4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "765770707868-aaoh31455b16lqmr0m9tmjgod3g7c0v2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "765770707868-3272okogcfd0sq0ipk7pkdjbj143k71m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.nwdapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

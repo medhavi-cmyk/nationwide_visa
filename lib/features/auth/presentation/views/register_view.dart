@@ -6,7 +6,6 @@ import '../widgets/city_picker.dart';
 import '../widgets/country_picker.dart';
 import '../widgets/destination_picker.dart';
 import '../widgets/registration_exit_confirmation.dart';
-import 'otp_verification_view.dart';
 
 class RegisterView extends StatelessWidget {
   final String email;
@@ -251,6 +250,16 @@ class RegisterView extends StatelessWidget {
 
                           const SizedBox(height: 32),
 
+                          if (viewModel.errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: Text(
+                                viewModel.errorMessage!,
+                                style: const TextStyle(color: AppColors.primaryRed, fontSize: 13, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
                           Container(
                             width: double.infinity,
                             height: 56,
@@ -259,21 +268,22 @@ class RegisterView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primaryRed.withValues(alpha: 0.3),
+                                  color: AppColors.primaryRed.withOpacity(0.3),
                                   blurRadius: 15,
                                   offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (viewModel.validateForm()) {
-                                  OtpVerificationView.show(
-                                    context,
-                                    "+91${viewModel.phoneController.text}",
-                                  );
-                                }
-                              },
+                              onPressed: viewModel.isLoading
+                                  ? null
+                                  : () async {
+                                      bool success = await viewModel.signUp(email);
+                                      if (success && context.mounted) {
+                                        // Navigator.pop(context);
+                                        // Usually redirect to home or profile setup
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 foregroundColor: Colors.white,
@@ -283,14 +293,23 @@ class RegisterView extends StatelessWidget {
                                 ),
                                 elevation: 0,
                               ),
-                              child: Text(
-                                "Continue",
-                                style: TextStyle(
-                                  fontSize: screenWidth < 350 ? 16 : 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: viewModel.isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Continue",
+                                      style: TextStyle(
+                                        fontSize: screenWidth < 350 ? 16 : 18,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 40),
