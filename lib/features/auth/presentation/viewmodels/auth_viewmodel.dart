@@ -140,14 +140,33 @@ class AuthViewModel extends ChangeNotifier {
       );
 
       debugPrint("--- Signing in with Phone Credential ---");
+      // Use the service to sign in
       final userCredential = await _authService.signInWithPhoneCredential(credential);
       final user = userCredential.user;
 
       if (user != null) {
         debugPrint("--- Successfully signed in with Phone. UID: ${user.uid} ---");
         
-        debugPrint("--- Linking Email and Password ---");
-        await _authService.linkEmailPassword(email, password);
+        // Check if Email provider is already linked
+        bool isEmailLinked = user.providerData.any((p) => p.providerId == 'password');
+        
+        if (isEmailLinked) {
+          debugPrint("--- Email provider already linked to this Phone UID. ---");
+          // If already linked, we check if the account's email matches.
+          // Note: user.email might be null or different if multiple providers exist.
+        } else {
+          debugPrint("--- Linking Email and Password ---");
+          try {
+            await _authService.linkEmailPassword(email, password);
+          } catch (e) {
+            // Handle specifically the case where it's already linked but our check missed it
+            if (e.toString().contains('provider-already-linked')) {
+              debugPrint("--- Provider already linked (caught from exception) ---");
+            } else {
+              rethrow;
+            }
+          }
+        }
 
         debugPrint("--- Saving User Data to Firestore ---");
         final userModel = UserModel(
@@ -166,7 +185,14 @@ class AuthViewModel extends ChangeNotifier {
       return false;
     } catch (e) {
       debugPrint("--- Verify/Register Error: $e ---");
-      _setError("Verification failed: $e");
+      String errorMsg = e.toString();
+      if (errorMsg.contains('credential-already-in-use')) {
+        _setError("This email is already linked to another account.");
+      } else if (errorMsg.contains('provider-already-linked')) {
+        _setError("This account already has an email linked.");
+      } else {
+        _setError("Verification failed: $e");
+      }
       return false;
     } finally {
       _setLoading(false);

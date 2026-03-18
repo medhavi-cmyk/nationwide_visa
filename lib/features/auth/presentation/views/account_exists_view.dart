@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nwdapp/features/auth/presentation/views/forgot_password_view.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router.dart';
@@ -10,10 +11,7 @@ import 'login_view.dart';
 class AccountExistsView extends StatelessWidget {
   final String email;
 
-  const AccountExistsView({
-    super.key,
-    required this.email,
-  });
+  const AccountExistsView({super.key, required this.email});
 
   static void show(BuildContext context, String email) {
     showModalBottomSheet(
@@ -64,7 +62,9 @@ class AccountExistsView extends StatelessWidget {
             const LinearProgressIndicator(color: AppColors.primaryRed),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24 * hScale.clamp(0.8, 1.2)),
+              padding: EdgeInsets.symmetric(
+                horizontal: 24 * hScale.clamp(0.8, 1.2),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -72,37 +72,47 @@ class AccountExistsView extends StatelessWidget {
                   Text(
                     "Your account exists",
                     style: TextStyle(
-                      fontSize: (screenWidth < 350 ? 22 : 28) * vScale.clamp(0.8, 1.0),
+                      fontSize:
+                          (screenWidth < 350 ? 22 : 28) *
+                          vScale.clamp(0.8, 1.0),
                       fontWeight: FontWeight.w800,
                       color: AppColors.textBlack,
                       letterSpacing: -0.5,
                     ),
                   ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        "Please enter your password or use Google to log in.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: (screenWidth < 350 ? 14 : 15) * vScale.clamp(0.9, 1.0),
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textGrey,
-                          height: 1.3,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      "Please enter your password or use Google to log in.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize:
+                            (screenWidth < 350 ? 14 : 15) *
+                            vScale.clamp(0.9, 1.0),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textGrey,
+                        height: 1.3,
                       ),
                     ),
+                  ),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.email_outlined, size: 20 * vScale.clamp(0.8, 1.1), color: AppColors.textBlack),
+                      Icon(
+                        Icons.email_outlined,
+                        size: 20 * vScale.clamp(0.8, 1.1),
+                        color: AppColors.textBlack,
+                      ),
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
                           email,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: (screenWidth < 350 ? 14 : 16) * vScale.clamp(0.9, 1.0),
+                            fontSize:
+                                (screenWidth < 350 ? 14 : 16) *
+                                vScale.clamp(0.9, 1.0),
                             fontWeight: FontWeight.bold,
                             color: AppColors.textBlack,
                           ),
@@ -116,7 +126,11 @@ class AccountExistsView extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
                         viewModel.errorMessage!,
-                        style: const TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -129,20 +143,64 @@ class AccountExistsView extends StatelessWidget {
                     decoration: InputDecoration(
                       labelText: "Password",
                       labelStyle: const TextStyle(color: AppColors.textGrey),
-                      floatingLabelStyle: const TextStyle(color: AppColors.primaryRed, fontWeight: FontWeight.bold),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.borderGrey)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.borderGrey)),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.primaryRed, width: 2)),
+                      floatingLabelStyle: const TextStyle(
+                        color: AppColors.primaryRed,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(
+                          color: AppColors.borderGrey,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(
+                          color: AppColors.borderGrey,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(
+                          color: AppColors.primaryRed,
+                          width: 2,
+                        ),
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          viewModel.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                          viewModel.obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
                           color: AppColors.textGrey,
                         ),
                         onPressed: () => viewModel.togglePasswordVisibility(),
                       ),
                       filled: true,
                       fillColor: Colors.grey[50],
+                    ),
+                  ),
+
+                  // Forgot Password Button
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: viewModel.isLoading
+                          ? null
+                          : () {
+                              ForgotPasswordView.show(context);
+                            },
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyle(
+                          color: AppColors.primaryRed,
+                          fontSize: 14 * vScale.clamp(0.9, 1.0),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
 
@@ -154,23 +212,42 @@ class AccountExistsView extends StatelessWidget {
                       onPressed: viewModel.isLoading
                           ? null
                           : () async {
-                              bool success = await viewModel.signInWithEmail(viewModel.passwordController.text.trim());
+                              bool success = await viewModel.signInWithEmail(
+                                viewModel.passwordController.text.trim(),
+                              );
                               if (success && context.mounted) {
                                 Navigator.pop(context);
                                 context.go(AppRouter.home);
                               } else if (!success && context.mounted) {
-                                CustomSnackbar.showError(viewModel.errorMessage ?? "Sign in failed");
+                                CustomSnackbar.showError(
+                                  viewModel.errorMessage ?? "Sign in failed",
+                                );
                               }
                             },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryRed,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                         elevation: 0,
                       ),
                       child: viewModel.isLoading
-                          ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                          : const Text("Log In", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              "Log In",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                     ),
                   ),
 
@@ -179,7 +256,13 @@ class AccountExistsView extends StatelessWidget {
                       Expanded(child: Divider()),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text("or", style: TextStyle(color: AppColors.textGrey, fontWeight: FontWeight.w500)),
+                        child: Text(
+                          "or",
+                          style: TextStyle(
+                            color: AppColors.textGrey,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                       Expanded(child: Divider()),
                     ],
@@ -197,12 +280,17 @@ class AccountExistsView extends StatelessWidget {
                         onPressed: viewModel.isLoading
                             ? null
                             : () async {
-                                bool success = await viewModel.signInWithGoogle();
+                                bool success = await viewModel
+                                    .signInWithGoogle();
                                 if (success && context.mounted) {
                                   Navigator.pop(context);
                                   context.go(AppRouter.home);
-                                } else if (!success && context.mounted && viewModel.errorMessage != null) {
-                                  CustomSnackbar.showError(viewModel.errorMessage!);
+                                } else if (!success &&
+                                    context.mounted &&
+                                    viewModel.errorMessage != null) {
+                                  CustomSnackbar.showError(
+                                    viewModel.errorMessage!,
+                                  );
                                 }
                               },
                       ),
@@ -256,7 +344,13 @@ class AccountExistsView extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialButton(BuildContext context, String text, {IconData? icon, Widget? iconWidget, VoidCallback? onPressed}) {
+  Widget _buildSocialButton(
+    BuildContext context,
+    String text, {
+    IconData? icon,
+    Widget? iconWidget,
+    VoidCallback? onPressed,
+  }) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double vScale = (screenHeight / 844.0).clamp(0.8, 1.0);
@@ -274,7 +368,10 @@ class AccountExistsView extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (iconWidget != null) iconWidget else Icon(icon, size: 24 * vScale, color: Colors.black),
+            if (iconWidget != null)
+              iconWidget
+            else
+              Icon(icon, size: 24 * vScale, color: Colors.black),
             const SizedBox(width: 12),
             Text(
               text,

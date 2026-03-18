@@ -5,13 +5,17 @@ import '../../data/models/user_model.dart';
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;
 
-  LoginViewModel({AuthService? authService}) : _authService = authService ?? AuthService();
+  LoginViewModel({AuthService? authService})
+    : _authService = authService ?? AuthService();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _isResetEmailSent = false;
+  bool get isResetEmailSent => _isResetEmailSent;
 
   bool _obscurePassword = true;
   bool get obscurePassword => _obscurePassword;
@@ -121,10 +125,37 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final userCredential = await _authService.signInWithEmail(emailController.text.trim(), password);
+      final userCredential = await _authService.signInWithEmail(
+        emailController.text.trim(),
+        password,
+      );
       return userCredential != null;
     } catch (e) {
       _setError("Sign in failed: $e");
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> sendPasswordResetEmail() async {
+    String email = emailController.text.trim();
+    if (email.isEmpty) {
+      _setError("Please enter your email");
+      return false;
+    }
+
+    _setLoading(true);
+    _setError(null);
+    _isResetEmailSent = false;
+
+    try {
+      await _authService.sendPasswordResetEmail(email);
+      _isResetEmailSent = true;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError("Failed to send reset email: $e");
       return false;
     } finally {
       _setLoading(false);
@@ -135,7 +166,10 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final userCredential = await _authService.signUpWithEmail(emailController.text.trim(), password);
+      final userCredential = await _authService.signUpWithEmail(
+        emailController.text.trim(),
+        password,
+      );
       if (userCredential != null && userCredential.user != null) {
         final userModel = UserModel(
           uid: userCredential.user!.uid,

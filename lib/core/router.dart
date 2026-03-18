@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/home/presentation/views/home_view.dart';
 import '../features/auth/presentation/views/login_view.dart';
@@ -18,6 +19,25 @@ class AppRouter {
   
   static final GoRouter router = GoRouter(
     initialLocation: onboarding,
+    redirect: (context, state) {
+      final user = FirebaseAuth.instance.currentUser;
+      final bool isLoggingIn = state.matchedLocation == onboarding ||
+          state.matchedLocation == login ||
+          state.matchedLocation == register ||
+          state.matchedLocation == accountExists ||
+          state.matchedLocation == otp;
+
+      if (user != null) {
+        // If already logged in, don't show onboarding/login screens
+        if (isLoggingIn) return home;
+      } else {
+        // If not logged in and trying to access home/profile-setup, force login
+        if (state.matchedLocation == home || state.matchedLocation == profileSetup) {
+          return onboarding;
+        }
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: onboarding,

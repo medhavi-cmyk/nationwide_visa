@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nwdapp/core/globals.dart';
 import '../../main.dart';
 import '../app_colors.dart';
 
@@ -27,9 +28,7 @@ class CustomSnackbar {
         ),
         backgroundColor: isError ? AppColors.primaryRed : AppColors.success,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(20),
         duration: const Duration(seconds: 4),
       ),

@@ -63,11 +63,21 @@ class AuthService {
   // Check if email exists
   Future<bool> doesEmailExist(String email) async {
     try {
-      final list = await _auth.fetchSignInMethodsForEmail(email);
-      return list.isNotEmpty;
+      final normalizedEmail = email.trim().toLowerCase();
+      // 1. Try Firebase Auth first
+      final list = await _auth.fetchSignInMethodsForEmail(normalizedEmail);
+      if (list.isNotEmpty) return true;
+      
+      // 2. Fallback: Check Firestore 'users' collection
+      final querySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: normalizedEmail)
+          .get();
+      
+      return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       debugPrint("Check email error: $e");
-      rethrow;
+      return false;
     }
   }
 
@@ -75,6 +85,16 @@ class AuthService {
   Future<void> signOut() async {
     await _googleSignIn.signOut();
     await _auth.signOut();
+  }
+
+  // --- Password Reset ---
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      debugPrint("Password reset error: $e");
+      rethrow;
+    }
   }
 
   // --- Phone Authentication (OTP) ---
