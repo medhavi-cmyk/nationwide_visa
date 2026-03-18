@@ -3,12 +3,18 @@ import '../../data/auth_service.dart';
 import '../../data/models/user_model.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
+
+  LoginViewModel({AuthService? authService}) : _authService = authService ?? AuthService();
   final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _obscurePassword = true;
+  bool get obscurePassword => _obscurePassword;
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
@@ -16,6 +22,7 @@ class LoginViewModel extends ChangeNotifier {
   @override
   void dispose() {
     emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -38,6 +45,21 @@ class LoginViewModel extends ChangeNotifier {
       return "Please enter a valid email";
     }
     return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your password";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return null;
+  }
+
+  void togglePasswordVisibility() {
+    _obscurePassword = !_obscurePassword;
+    notifyListeners();
   }
 
   bool validateForm() {
@@ -99,8 +121,8 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _setError(null);
     try {
-      final user = await _authService.signInWithEmail(emailController.text.trim(), password);
-      return user != null;
+      final userCredential = await _authService.signInWithEmail(emailController.text.trim(), password);
+      return userCredential != null;
     } catch (e) {
       _setError("Sign in failed: $e");
       return false;

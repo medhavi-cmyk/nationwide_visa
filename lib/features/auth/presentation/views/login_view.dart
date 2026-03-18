@@ -8,6 +8,7 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
+import 'account_exists_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -241,9 +242,10 @@ class LoginView extends StatelessWidget {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
-                                        if (viewModel.formKey.currentState!.validate()) {
-                                          _launchRegister(context, viewModel.emailController.text.trim());
-                                        }
+                                        viewModel.checkEmailAndRedirect(
+                                          onAccountExists: (email) => AccountExistsView.show(context, email),
+                                          onNewUser: (email) => RegisterView.show(context, email),
+                                        );
                                       },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
@@ -347,10 +349,7 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  void _launchRegister(BuildContext context, String email) {
-    Navigator.pop(context);
-    RegisterView.show(context, email);
-  }
+
 
   Future<void> _launchURL(String urlString) async {
     final Uri url = Uri.parse(urlString);
