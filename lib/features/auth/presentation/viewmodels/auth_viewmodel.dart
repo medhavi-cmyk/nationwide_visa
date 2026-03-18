@@ -5,7 +5,7 @@ import '../../data/auth_service.dart';
 import '../../data/models/user_model.dart';
 
 class AuthViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
   
   // Changed to 6 digits to match Firebase default
   final List<TextEditingController> controllers = List.generate(
@@ -26,7 +26,7 @@ class AuthViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  AuthViewModel();
+  AuthViewModel({AuthService? authService}) : _authService = authService ?? AuthService();
 
   void _setLoading(bool value) {
     _isLoading = value;
