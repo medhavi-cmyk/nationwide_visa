@@ -9,20 +9,20 @@ class TrendingServices extends StatelessWidget {
     final programs = [
       {
         'title': 'Canada PNP Programs',
-        'offer': 'EXPRESS OFFER',
-        'price': 'GBP 2,500',
-        'university': 'Ontario PNP',
+        'offer': 'LATEST DRAWS',
+        'price': 'Ontario | BC | Alberta',
+        'university': 'Multiple Streams',
       },
       {
-        'title': 'Spouse PR Visa',
-        'offer': 'FAST TRACK',
-        'price': 'GBP 1,800',
-        'university': 'Saskatchewan',
+        'title': 'Australia Skilled Migration',
+        'offer': 'POINTS BASED',
+        'price': 'Subclass 189 / 190',
+        'university': 'Skilled Visa',
       },
       {
-        'title': 'German Opportunity Card',
-        'offer': 'NEW',
-        'price': 'EUR 2,000',
+        'title': 'Germany Opportunity Card',
+        'offer': 'NEW PROGRAM',
+        'price': 'Chancenkarte',
         'university': 'Germany Gov',
       },
     ];

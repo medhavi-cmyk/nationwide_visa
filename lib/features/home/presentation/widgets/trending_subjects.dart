@@ -6,12 +6,13 @@ class TrendingSubjects extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subjects = [
-      "Business",
-      "Education",
-      "Business Administration",
-      "Computer Sciences",
-      "Law",
+    final visaTypes = [
+      "PR Visa",
+      "Work Visa",
+      "Study Visa",
+      "Visitor Visa",
+      "Dependent Visa",
+      "Business Visa",
     ];
 
     return Column(
@@ -24,7 +25,7 @@ class TrendingSubjects extends StatelessWidget {
               Icon(Icons.book_outlined, color: AppColors.textGrey, size: 20),
               SizedBox(width: 8),
               Text(
-                "Trending Subjects",
+                "Popular Visa Types",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -40,14 +41,14 @@ class TrendingSubjects extends StatelessWidget {
           child: Wrap(
             spacing: 12,
             runSpacing: 12,
-            children: subjects.map((subject) => _buildSubjectChip(subject)).toList(),
+            children: visaTypes.map((visa) => _buildVisaChip(visa)).toList(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSubjectChip(String label) {
+  Widget _buildVisaChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(

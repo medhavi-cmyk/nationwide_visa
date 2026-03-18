@@ -33,17 +33,17 @@ class WhatsNew extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildNewCard(
-                  icon: Icons.account_balance_wallet_outlined,
-                  title: "Funds",
-                  subtitle: "Explore education\nloans",
+                  icon: Icons.notifications_active_outlined,
+                  title: "Latest Draws",
+                  subtitle: "EE Draw Mar 03:\n725 candidates invited",
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: _buildNewCard(
-                  icon: Icons.home_outlined,
-                  title: "Stays",
-                  subtitle: "Find affordable\nstays",
+                  icon: Icons.update_outlined,
+                  title: "PNP News",
+                  subtitle: "Ontario & Alberta\nlatest PNP updates",
                 ),
               ),
             ],
@@ -60,7 +60,7 @@ class WhatsNew extends StatelessWidget {
   }) {
     return Container(
       padding: const EdgeInsets.all(20),
-      height: 140,
+      constraints: const BoxConstraints(minHeight: 140),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -80,12 +80,16 @@ class WhatsNew extends StatelessWidget {
             children: [
               Icon(icon, color: AppColors.textGrey, size: 24),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textBlack,
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textBlack,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
