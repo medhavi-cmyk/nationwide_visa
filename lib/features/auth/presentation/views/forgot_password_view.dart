@@ -13,9 +13,14 @@ class ForgotPasswordView extends StatelessWidget {
       backgroundColor: Colors.transparent,
       context: context,
       builder: (context) {
-        return ChangeNotifierProvider(
-          create: (_) => LoginViewModel(),
-          child: const ForgotPasswordView(),
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ChangeNotifierProvider(
+            create: (_) => LoginViewModel(),
+            child: const ForgotPasswordView(),
+          ),
         );
       },
     );
@@ -30,10 +35,11 @@ class ForgotPasswordView extends StatelessWidget {
     final hScale = screenWidth / 390.0;
 
     return Container(
-      constraints: BoxConstraints(minHeight: screenHeight * 0.35),
+      height: screenHeight * 0.35,
       width: double.infinity,
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(

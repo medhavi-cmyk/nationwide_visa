@@ -34,6 +34,7 @@ class RegistrationSuccessView extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
           Container(
@@ -51,6 +52,7 @@ class RegistrationSuccessView extends StatelessWidget {
           const SizedBox(height: 32),
           const Text(
             "Registration Successful!",
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w900,
@@ -90,10 +92,7 @@ class RegistrationSuccessView extends StatelessWidget {
               ),
               child: const Text(
                 "Go to Home",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
