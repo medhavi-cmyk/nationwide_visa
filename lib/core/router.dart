@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
@@ -7,6 +9,7 @@ import '../features/auth/presentation/views/register_view.dart';
 import '../features/auth/presentation/views/account_exists_view.dart';
 import '../features/auth/presentation/views/otp_verification_view.dart';
 import '../features/auth/presentation/views/profile_setup_view.dart';
+import '../features/auth/data/auth_service.dart';
 
 class AppRouter {
   static const String onboarding = '/';
@@ -19,7 +22,8 @@ class AppRouter {
   
   static final GoRouter router = GoRouter(
     initialLocation: onboarding,
-    redirect: (context, state) {
+    refreshListenable: GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+    redirect: (context, state) async {
       final user = FirebaseAuth.instance.currentUser;
       final bool isLoggingIn = state.matchedLocation == onboarding ||
           state.matchedLocation == login ||
@@ -28,8 +32,23 @@ class AppRouter {
           state.matchedLocation == otp;
 
       if (user != null) {
-        // If already logged in, don't show onboarding/login screens
-        if (isLoggingIn) return home;
+        // If logged in, check if profile is complete
+        final isComplete = await AuthService().isUserComplete(user.uid);
+        
+        if (!isComplete) {
+          // If profile is incomplete, force them to stay in the auth/onboarding flow
+          return isLoggingIn ? null : onboarding;
+        }
+
+        // --- NEW: Bypass home redirect if already in onboarding flow ---
+        // This prevents GoRouter from snatching the user away before the success modal shows.
+        if (isLoggingIn || state.matchedLocation == profileSetup) {
+          return null;
+        }
+
+        if (state.matchedLocation == onboarding) {
+          return home;
+        }
       } else {
         // If not logged in and trying to access home/profile-setup, force login
         if (state.matchedLocation == home || state.matchedLocation == profileSetup) {
@@ -75,6 +94,9 @@ class AppRouter {
             name: data['name'] ?? '',
             phoneNumber: data['phoneNumber'] ?? '',
             country: data['country'] ?? '',
+            city: data['city'] ?? '',
+            nationality: data['nationality'] ?? '',
+            studyCountry: data['studyCountry'] ?? '',
           );
         },
       ),
@@ -84,4 +106,21 @@ class AppRouter {
       ),
     ],
   );
+}
+
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
 }

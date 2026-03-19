@@ -210,8 +210,14 @@ class ProfileSetupView extends StatelessWidget {
                         debugPrint("PROFILE_VIEW: 'Sign up' button tapped");
                         final success = await viewModel.saveProfile();
                         if (success && context.mounted) {
+                          final parentContext = Navigator.of(context).context;
                           Navigator.pop(context); // Close Profile Setup
-                          RegistrationSuccessView.show(context);
+                          
+                          Future.delayed(const Duration(milliseconds: 100), () {
+                            if (parentContext.mounted) {
+                              RegistrationSuccessView.show(parentContext);
+                            }
+                          });
                         }
                       },
                 style: ElevatedButton.styleFrom(

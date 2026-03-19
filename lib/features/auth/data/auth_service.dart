@@ -44,19 +44,40 @@ class AuthService {
   // Sign in with Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      // Force account picker by signing out first
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      return await _auth.signInWithCredential(credential);
+      final UserCredential userCredential = await _auth.signInWithCredential(authCredential);
+      return userCredential;
     } catch (e) {
       debugPrint("Google sign in error: $e");
       rethrow;
+    }
+  }
+
+  // Check if user profile is complete
+  Future<bool> isUserComplete(String uid) async {
+    try {
+      final userData = await getUserData(uid);
+      if (userData == null) return false;
+      
+      // Mandatory fields for "complete" profile
+      return userData.phoneNumber != null && 
+             userData.country != null && 
+             userData.city != null && 
+             userData.nationality != null &&
+             userData.studyCountry != null;
+    } catch (e) {
+      debugPrint("Check user complete error: $e");
+      return false;
     }
   }
 

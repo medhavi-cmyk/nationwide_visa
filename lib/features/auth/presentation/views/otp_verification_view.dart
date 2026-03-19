@@ -12,6 +12,9 @@ class OtpVerificationView extends StatefulWidget {
   final String name;
   final String phoneNumber;
   final String country;
+  final String city;
+  final String nationality;
+  final String studyCountry;
 
   const OtpVerificationView({
     super.key,
@@ -20,6 +23,9 @@ class OtpVerificationView extends StatefulWidget {
     required this.name,
     required this.phoneNumber,
     required this.country,
+    required this.city,
+    required this.nationality,
+    required this.studyCountry,
   });
 
   static void show({
@@ -29,6 +35,9 @@ class OtpVerificationView extends StatefulWidget {
     required String name,
     required String phoneNumber,
     required String country,
+    required String city,
+    required String nationality,
+    required String studyCountry,
   }) {
     showModalBottomSheet(
       context: context,
@@ -44,6 +53,9 @@ class OtpVerificationView extends StatefulWidget {
           name: name,
           phoneNumber: phoneNumber,
           country: country,
+          city: city,
+          nationality: nationality,
+          studyCountry: studyCountry,
         ),
       ),
     );
@@ -133,6 +145,25 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           color: Color(0xFF4B5563),
                         ),
                       ),
+                      if (viewModel.errorMessage != null) ...[
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.red[50],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            viewModel.errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 16),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(24),
@@ -291,11 +322,22 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                     name: widget.name,
                                     phoneNumber: widget.phoneNumber,
                                     country: widget.country,
+                                    city: widget.city,
+                                    nationality: widget.nationality,
+                                    studyCountry: widget.studyCountry,
                                   );
 
                                   if (success && context.mounted) {
+                                    // Use a local variable for the parent context to ensure it stays valid
+                                    final parentContext = Navigator.of(context).context;
                                     Navigator.pop(context); // Close OTP Sheet
-                                    ProfileSetupView.show(context);
+                                    
+                                    // Give the sheet a moment to close before showing the next one
+                                    Future.delayed(const Duration(milliseconds: 100), () {
+                                      if (parentContext.mounted) {
+                                        ProfileSetupView.show(parentContext);
+                                      }
+                                    });
                                   } else if (!success && context.mounted && viewModel.errorMessage != null) {
                                     CustomSnackbar.showError(viewModel.errorMessage!);
                                   }

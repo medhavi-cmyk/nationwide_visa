@@ -15,10 +15,22 @@ import '../widgets/registration_progress_bar.dart';
 
 class RegisterView extends StatelessWidget {
   final String email;
+  final bool isGoogleOnboarding;
+  final String? initialName;
 
-  const RegisterView({super.key, required this.email});
+  const RegisterView({
+    super.key,
+    required this.email,
+    this.isGoogleOnboarding = false,
+    this.initialName,
+  });
 
-  static void show(BuildContext context, String email) {
+  static void show(
+    BuildContext context, {
+    required String email,
+    bool isGoogleOnboarding = false,
+    String? initialName,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -27,8 +39,14 @@ class RegisterView extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return ChangeNotifierProvider(
-          create: (_) => RegisterViewModel(),
-          child: RegisterView(email: email),
+          create: (_) => RegisterViewModel()
+            ..setGoogleOnboarding(isGoogleOnboarding)
+            ..prefillFromGoogle(name: initialName),
+          child: RegisterView(
+            email: email,
+            isGoogleOnboarding: isGoogleOnboarding,
+            initialName: initialName,
+          ),
         );
       },
     );
@@ -215,26 +233,28 @@ class RegisterView extends StatelessWidget {
                               readOnly: true,
                               onTap: () => _showStudyCountryPicker(context, viewModel),
                             ),
-                            const SizedBox(height: 16),
-
-                            TextFormField(
-                              controller: viewModel.passwordController,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              obscureText: viewModel.obscurePassword,
-                              validator: viewModel.validatePassword,
-                              decoration:
-                                  _inputDecoration(context, "Set your password").copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    viewModel.obscurePassword
-                                        ? Icons.visibility_off_outlined
-                                        : Icons.visibility_outlined,
-                                    color: Colors.grey[400],
-                                  ),
-                                  onPressed: () => viewModel.togglePasswordVisibility(),
-                                ),
-                              ),
-                            ),
+ 
+                             if (!viewModel.isGoogleOnboarding) ...[
+                               const SizedBox(height: 16),
+                               TextFormField(
+                                 controller: viewModel.passwordController,
+                                 autovalidateMode: AutovalidateMode.onUserInteraction,
+                                 obscureText: viewModel.obscurePassword,
+                                 validator: viewModel.validatePassword,
+                                 decoration:
+                                     _inputDecoration(context, "Set your password").copyWith(
+                                   suffixIcon: IconButton(
+                                     icon: Icon(
+                                       viewModel.obscurePassword
+                                           ? Icons.visibility_off_outlined
+                                           : Icons.visibility_outlined,
+                                       color: Colors.grey[400],
+                                     ),
+                                     onPressed: () => viewModel.togglePasswordVisibility(),
+                                   ),
+                                 ),
+                               ),
+                             ],
 
                             const SizedBox(height: 24),
 
@@ -314,17 +334,24 @@ class RegisterView extends StatelessWidget {
                                           CustomSnackbar.showError("Please agree to the Terms & Conditions");
                                           return;
                                         }
-                                        if (viewModel.validateForm()) {
-                                          // Move to OTP without closing current sheet
-                                          OtpVerificationView.show(
-                                            context: context,
-                                            email: email,
-                                            password: viewModel.passwordController.text.trim(),
-                                            name: viewModel.nameController.text.trim(),
-                                            phoneNumber: viewModel.phoneController.text.trim(),
-                                            country: viewModel.countryController.text.trim(),
-                                          );
-                                        }
+                                          if (viewModel.validateForm()) {
+                                            final parentContext = Navigator.of(context).context;
+                                            Navigator.pop(context); // Close Register Sheet
+                                            
+                                            OtpVerificationView.show(
+                                              context: parentContext,
+                                              email: email,
+                                              password: viewModel.isGoogleOnboarding 
+                                                  ? "" // No password for Google
+                                                  : viewModel.passwordController.text.trim(),
+                                              name: viewModel.nameController.text.trim(),
+                                              phoneNumber: viewModel.phoneController.text.trim(),
+                                              country: viewModel.countryController.text.trim(),
+                                              city: viewModel.cityController.text.trim(),
+                                              nationality: viewModel.nationalityController.text.trim(),
+                                              studyCountry: viewModel.studyCountryController.text.trim(),
+                                            );
+                                          }
                                       },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,

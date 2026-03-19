@@ -16,6 +16,19 @@ class RegisterViewModel extends ChangeNotifier {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  bool isGoogleOnboarding = false;
+
+  void setGoogleOnboarding(bool value) {
+    isGoogleOnboarding = value;
+    notifyListeners();
+  }
+
+  void prefillFromGoogle({String? name, String? email}) {
+    if (name != null) nameController.text = name;
+    // email is handled by the view transition typically, but we can set it if needed
+    notifyListeners();
+  }
+
   bool receiveUpdates = true;
   bool obscurePassword = true;
   bool agreedToTerms = false;
@@ -67,6 +80,8 @@ class RegisterViewModel extends ChangeNotifier {
       validateRequired(value, "Study country");
 
   String? validatePassword(String? value) {
+    if (isGoogleOnboarding) return null; // No password needed for Google users
+    
     if (value == null || value.trim().isEmpty) {
       return "Password is required";
     }

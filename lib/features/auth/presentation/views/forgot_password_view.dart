@@ -30,11 +30,10 @@ class ForgotPasswordView extends StatelessWidget {
     final hScale = screenWidth / 390.0;
 
     return Container(
-      height: screenHeight * 0.4,
+      constraints: BoxConstraints(minHeight: screenHeight * 0.35),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(

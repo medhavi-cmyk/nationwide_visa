@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nwdapp/features/auth/presentation/views/login_view.dart';
 import 'package:nwdapp/features/auth/presentation/views/profile_setup_view.dart';
 import '../../../../core/app_colors.dart';
@@ -18,6 +19,17 @@ class OnboardingView extends StatefulWidget {
 class _OnboardingViewState extends State<OnboardingView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-resume onboarding if user is already logged in but incomplete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (FirebaseAuth.instance.currentUser != null) {
+        LoginView.show(context);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

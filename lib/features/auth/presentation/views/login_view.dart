@@ -9,6 +9,7 @@ import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
 import 'account_exists_view.dart';
+import '../../data/auth_service.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -242,9 +243,16 @@ class LoginView extends StatelessWidget {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
+                                        final parentContext = Navigator.of(context).context;
                                         viewModel.checkEmailAndRedirect(
-                                          onAccountExists: (email) => AccountExistsView.show(context, email),
-                                          onNewUser: (email) => RegisterView.show(context, email),
+                                          onAccountExists: (email) {
+                                            Navigator.pop(context);
+                                            AccountExistsView.show(parentContext, email);
+                                          },
+                                          onNewUser: (email) {
+                                            Navigator.pop(context);
+                                            RegisterView.show(parentContext, email: email);
+                                          },
                                         );
                                       },
                                 style: ElevatedButton.styleFrom(
@@ -303,14 +311,30 @@ class LoginView extends StatelessWidget {
                               onPressed: viewModel.isLoading
                                   ? null
                                   : () async {
-                                      bool success = await viewModel.signInWithGoogle();
-                                      if (success && context.mounted) {
-                                        Navigator.pop(context);
-                                        context.go(AppRouter.home);
-                                      } else if (!success && context.mounted && viewModel.errorMessage != null) {
-                                        CustomSnackbar.showError(viewModel.errorMessage!);
-                                      }
-                                    },
+                                       bool success = await viewModel.signInWithGoogle();
+                                       if (success && context.mounted) {
+                                         Navigator.pop(context);
+                                         context.go(AppRouter.home);
+                                       } else if (!success && context.mounted) {
+                                         if (viewModel.errorMessage != null) {
+                                           CustomSnackbar.showError(viewModel.errorMessage!);
+                                         } else {
+                                           // User is authenticated but incomplete
+                                           final user = AuthService().currentUser;
+                                           if (user != null) {
+                                             final parentContext = Navigator.of(context).context;
+                                            Navigator.pop(context); // Close Login Sheet
+                                            
+                                            RegisterView.show(
+                                              parentContext,
+                                              email: user.email ?? "",
+                                              isGoogleOnboarding: true,
+                                              initialName: user.displayName,
+                                            );
+                                           }
+                                         }
+                                       }
+                                     },
                             ),
                             const SizedBox(height: 12),
                             _buildSocialButton(

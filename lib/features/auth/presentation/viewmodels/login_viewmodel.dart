@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/auth_service.dart';
 import '../../data/models/user_model.dart';
 
@@ -103,18 +104,27 @@ class LoginViewModel extends ChangeNotifier {
     try {
       final userCredential = await _authService.signInWithGoogle();
       if (userCredential != null && userCredential.user != null) {
-        final userModel = UserModel(
-          uid: userCredential.user!.uid,
-          email: userCredential.user!.email ?? '',
-          name: userCredential.user!.displayName,
-          createdAt: DateTime.now(),
-        );
-        await _authService.saveUserData(userModel);
+        final String uid = userCredential.user!.uid;
+        final bool isComplete = await _authService.isUserComplete(uid);
+        
+        if (!isComplete) {
+          debugPrint("--- User incomplete. Triggering onboarding ---");
+          return false; // Return false to indicate "Incomplete", or we can return a custom result
+        }
         return true;
       }
       return false;
+    } on Exception catch (e) {
+      String errorMsg = e.toString();
+      if (errorMsg.contains('PlatformException')) {
+        // Specifically extract the error code from platform exceptions
+        _setError("Google Error: ${errorMsg.split(',').first.split(':').last.trim()}");
+      } else {
+        _setError("Google sign in failed: $e");
+      }
+      return false;
     } catch (e) {
-      _setError("Google sign in failed: $e");
+      _setError("An unexpected error occurred: $e");
       return false;
     } finally {
       _setLoading(false);
@@ -131,7 +141,19 @@ class LoginViewModel extends ChangeNotifier {
       );
       return userCredential != null;
     } catch (e) {
-      _setError("Sign in failed: $e");
+      if (e is FirebaseAuthException) {
+        if (e.code == 'user-not-found') {
+          _setError("No account found with this email.");
+        } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+          _setError("Incorrect password. Please try again.");
+        } else if (e.code == 'user-disabled') {
+          _setError("This account has been disabled.");
+        } else {
+          _setError("Sign in failed: ${e.message}");
+        }
+      } else {
+        _setError("Sign in error: $e");
+      }
       return false;
     } finally {
       _setLoading(false);

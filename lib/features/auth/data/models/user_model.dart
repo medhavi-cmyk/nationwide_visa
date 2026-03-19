@@ -7,6 +7,9 @@ class UserModel {
   final String? phoneNumber;
   final String? profession;
   final String? country;
+  final String? city;
+  final String? nationality;
+  final String? studyCountry;
   final String? gradingSystem;
   final String? cgpa;
   final List<String>? preferredDestinations;
@@ -20,6 +23,9 @@ class UserModel {
     this.phoneNumber,
     this.profession,
     this.country,
+    this.city,
+    this.nationality,
+    this.studyCountry,
     this.gradingSystem,
     this.cgpa,
     this.preferredDestinations,
@@ -37,6 +43,9 @@ class UserModel {
     if (phoneNumber != null) map['phoneNumber'] = phoneNumber;
     if (profession != null) map['profession'] = profession;
     if (country != null) map['country'] = country;
+    if (city != null) map['city'] = city;
+    if (nationality != null) map['nationality'] = nationality;
+    if (studyCountry != null) map['studyCountry'] = studyCountry;
     if (gradingSystem != null) map['gradingSystem'] = gradingSystem;
     if (cgpa != null) map['cgpa'] = cgpa;
     if (preferredDestinations != null) map['preferredDestinations'] = preferredDestinations;
@@ -55,6 +64,9 @@ class UserModel {
         phoneNumber: map['phoneNumber'],
         profession: map['profession'],
         country: map['country'],
+        city: map['city'],
+        nationality: map['nationality'],
+        studyCountry: map['studyCountry'],
         gradingSystem: map['gradingSystem'],
         cgpa: map['cgpa'],
         preferredDestinations: map['preferredDestinations'] != null
@@ -80,6 +92,9 @@ class UserModel {
     String? phoneNumber,
     String? profession,
     String? country,
+    String? city,
+    String? nationality,
+    String? studyCountry,
     String? gradingSystem,
     String? cgpa,
     List<String>? preferredDestinations,
@@ -93,6 +108,9 @@ class UserModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       profession: profession ?? this.profession,
       country: country ?? this.country,
+      city: city ?? this.city,
+      nationality: nationality ?? this.nationality,
+      studyCountry: studyCountry ?? this.studyCountry,
       gradingSystem: gradingSystem ?? this.gradingSystem,
       cgpa: cgpa ?? this.cgpa,
       preferredDestinations: preferredDestinations ?? this.preferredDestinations,

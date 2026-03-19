@@ -70,6 +70,9 @@ void main() {
         name: 'Test',
         phoneNumber: '1234567890',
         country: 'India',
+        city: 'Mumbai',
+        nationality: 'Indian',
+        studyCountry: 'Canada',
       );
       
       expect(result, false);
