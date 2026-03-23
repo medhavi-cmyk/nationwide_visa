@@ -106,7 +106,7 @@ class LoginViewModel extends ChangeNotifier {
       if (userCredential != null && userCredential.user != null) {
         final String uid = userCredential.user!.uid;
         final bool isComplete = await _authService.isUserComplete(uid);
-        
+
         if (!isComplete) {
           debugPrint("--- User incomplete. Triggering onboarding ---");
           return false; // Return false to indicate "Incomplete", or we can return a custom result
@@ -118,7 +118,9 @@ class LoginViewModel extends ChangeNotifier {
       String errorMsg = e.toString();
       if (errorMsg.contains('PlatformException')) {
         // Specifically extract the error code from platform exceptions
-        _setError("Google Error: ${errorMsg.split(',').first.split(':').last.trim()}");
+        _setError(
+          "Google Error: ${errorMsg.split(',').first.split(':').last.trim()}",
+        );
       } else {
         _setError("Google sign in failed: $e");
       }
@@ -139,12 +141,21 @@ class LoginViewModel extends ChangeNotifier {
         emailController.text.trim(),
         password,
       );
-      return userCredential != null;
+      if (userCredential != null && userCredential.user != null) {
+        final bool isComplete = await _authService.isUserComplete(userCredential.user!.uid);
+        if (!isComplete) {
+          debugPrint("--- User incomplete. Triggering onboarding ---");
+          return false; // Return false without setting errorMessage to indicate "Incomplete"
+        }
+        return true;
+      }
+      return false;
     } catch (e) {
       if (e is FirebaseAuthException) {
         if (e.code == 'user-not-found') {
           _setError("No account found with this email.");
-        } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        } else if (e.code == 'wrong-password' ||
+            e.code == 'invalid-credential') {
           _setError("Incorrect password. Please try again.");
         } else if (e.code == 'user-disabled') {
           _setError("This account has been disabled.");

@@ -19,13 +19,16 @@ class AppRouter {
   static const String accountExists = '/account-exists';
   static const String otp = '/otp';
   static const String profileSetup = '/profile-setup';
-  
+
   static final GoRouter router = GoRouter(
     initialLocation: onboarding,
-    refreshListenable: GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+    refreshListenable: GoRouterRefreshStream(
+      FirebaseAuth.instance.authStateChanges(),
+    ),
     redirect: (context, state) async {
       final user = FirebaseAuth.instance.currentUser;
-      final bool isLoggingIn = state.matchedLocation == onboarding ||
+      final bool isLoggingIn =
+          state.matchedLocation == onboarding ||
           state.matchedLocation == login ||
           state.matchedLocation == register ||
           state.matchedLocation == accountExists ||
@@ -34,7 +37,7 @@ class AppRouter {
       if (user != null) {
         // If logged in, check if profile is complete
         final isComplete = await AuthService().isUserComplete(user.uid);
-        
+
         if (!isComplete) {
           // If profile is incomplete, force them to stay in the auth/onboarding flow
           return isLoggingIn ? null : onboarding;
@@ -51,7 +54,8 @@ class AppRouter {
         }
       } else {
         // If not logged in and trying to access home/profile-setup, force login
-        if (state.matchedLocation == home || state.matchedLocation == profileSetup) {
+        if (state.matchedLocation == home ||
+            state.matchedLocation == profileSetup) {
           return onboarding;
         }
       }
@@ -62,14 +66,8 @@ class AppRouter {
         path: onboarding,
         builder: (context, state) => const OnboardingView(),
       ),
-      GoRoute(
-        path: home,
-        builder: (context, state) => const HomeView(),
-      ),
-      GoRoute(
-        path: login,
-        builder: (context, state) => const LoginView(),
-      ),
+      GoRoute(path: home, builder: (context, state) => const HomeView()),
+      GoRoute(path: login, builder: (context, state) => const LoginView()),
       GoRoute(
         path: register,
         builder: (context, state) {
@@ -112,8 +110,8 @@ class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen(
-          (dynamic _) => notifyListeners(),
-        );
+      (dynamic _) => notifyListeners(),
+    );
   }
 
   late final StreamSubscription<dynamic> _subscription;

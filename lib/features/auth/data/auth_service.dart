@@ -49,13 +49,16 @@ class AuthService {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final AuthCredential authCredential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential = await _auth.signInWithCredential(authCredential);
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        authCredential,
+      );
       return userCredential;
     } catch (e) {
       debugPrint("Google sign in error: $e");
@@ -68,13 +71,13 @@ class AuthService {
     try {
       final userData = await getUserData(uid);
       if (userData == null) return false;
-      
+
       // Mandatory fields for "complete" profile
-      return userData.phoneNumber != null && 
-             userData.country != null && 
-             userData.city != null && 
-             userData.nationality != null &&
-             userData.studyCountry != null;
+      return userData.phoneNumber != null &&
+          userData.country != null &&
+          userData.city != null &&
+          userData.nationality != null &&
+          userData.studyCountry != null;
     } catch (e) {
       debugPrint("Check user complete error: $e");
       return false;
@@ -88,13 +91,13 @@ class AuthService {
       // 1. Try Firebase Auth first
       final list = await _auth.fetchSignInMethodsForEmail(normalizedEmail);
       if (list.isNotEmpty) return true;
-      
+
       // 2. Fallback: Check Firestore 'users' collection
       final querySnapshot = await _firestore
           .collection('users')
           .where('email', isEqualTo: normalizedEmail)
           .get();
-      
+
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       debugPrint("Check email error: $e");
@@ -144,7 +147,9 @@ class AuthService {
   }
 
   // Sign in with Phone Credential
-  Future<UserCredential> signInWithPhoneCredential(PhoneAuthCredential credential) async {
+  Future<UserCredential> signInWithPhoneCredential(
+    PhoneAuthCredential credential,
+  ) async {
     try {
       return await _auth.signInWithCredential(credential);
     } catch (e) {
@@ -159,7 +164,10 @@ class AuthService {
       final user = _auth.currentUser;
       if (user == null) throw Exception("No user logged in to link info to");
 
-      final credential = EmailAuthProvider.credential(email: email, password: password);
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
       await user.linkWithCredential(credential);
     } catch (e) {
       debugPrint("Linking email error: $e");
@@ -172,15 +180,19 @@ class AuthService {
   // Save/Update user data in Firestore
   Future<void> saveUserData(UserModel user) async {
     try {
-      debugPrint("Attempting to save user data to Firestore for UID: ${user.uid}");
+      debugPrint(
+        "Attempting to save user data to Firestore for UID: ${user.uid}",
+      );
       debugPrint("Project ID being used: ${_firestore.app.options.projectId}");
       final dataToSave = user.toMap();
       debugPrint("DATA BEING SENT TO FIRESTORE: $dataToSave");
-      await _firestore.collection('users').doc(user.uid).set(
-            dataToSave,
-            SetOptions(merge: true),
-          );
-      debugPrint("Successfully saved user data to Firestore for UID: ${user.uid}");
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .set(dataToSave, SetOptions(merge: true));
+      debugPrint(
+        "Successfully saved user data to Firestore for UID: ${user.uid}",
+      );
     } catch (e) {
       debugPrint("CRITICAL: Save user data error for UID ${user.uid}: $e");
       rethrow;

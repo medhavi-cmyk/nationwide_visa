@@ -7,6 +7,8 @@ import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
+import 'register_view.dart';
+import '../../data/auth_service.dart';
 
 class AccountExistsView extends StatelessWidget {
   final String email;
@@ -219,9 +221,25 @@ class AccountExistsView extends StatelessWidget {
                                 Navigator.pop(context);
                                 context.go(AppRouter.home);
                               } else if (!success && context.mounted) {
-                                CustomSnackbar.showError(
-                                  viewModel.errorMessage ?? "Sign in failed",
-                                );
+                                if (viewModel.errorMessage != null) {
+                                  CustomSnackbar.showError(
+                                    viewModel.errorMessage ?? "Sign in failed",
+                                  );
+                                } else {
+                                  // User is authenticated but incomplete
+                                  final user = AuthService().currentUser;
+                                  if (user != null) {
+                                    final parentContext = Navigator.of(context).context;
+                                    Navigator.pop(context);
+                                    
+                                    RegisterView.show(
+                                      parentContext,
+                                      email: user.email ?? "",
+                                      isGoogleOnboarding: true, // Hide password field
+                                      initialName: user.displayName,
+                                    );
+                                  }
+                                }
                               }
                             },
                       style: ElevatedButton.styleFrom(
@@ -285,12 +303,26 @@ class AccountExistsView extends StatelessWidget {
                                 if (success && context.mounted) {
                                   Navigator.pop(context);
                                   context.go(AppRouter.home);
-                                } else if (!success &&
-                                    context.mounted &&
-                                    viewModel.errorMessage != null) {
-                                  CustomSnackbar.showError(
-                                    viewModel.errorMessage!,
-                                  );
+                                } else if (!success && context.mounted) {
+                                  if (viewModel.errorMessage != null) {
+                                    CustomSnackbar.showError(
+                                      viewModel.errorMessage!,
+                                    );
+                                  } else {
+                                    // User is authenticated but incomplete
+                                    final user = AuthService().currentUser;
+                                    if (user != null) {
+                                      final parentContext = Navigator.of(context).context;
+                                      Navigator.pop(context);
+                                      
+                                      RegisterView.show(
+                                        parentContext,
+                                        email: user.email ?? "",
+                                        isGoogleOnboarding: true,
+                                        initialName: user.displayName,
+                                      );
+                                    }
+                                  }
                                 }
                               },
                       ),
