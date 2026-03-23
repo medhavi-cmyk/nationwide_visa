@@ -71,13 +71,27 @@ class _EmailVerificationContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                "We've sent a verification link to your email address. Please click the link to verify your account.",
+              RichText(
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.textGrey,
-                  height: 1.5,
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textGrey,
+                    height: 1.5,
+                  ),
+                  children: [
+                    const TextSpan(text: "We've sent a verification link to "),
+                    TextSpan(
+                      text: viewModel.email,
+                      style: const TextStyle(
+                        color: AppColors.textBlack,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const TextSpan(
+                      text: ". Please click the link to verify your account.",
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 48),

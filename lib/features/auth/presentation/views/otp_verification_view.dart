@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nwdapp/core/router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
@@ -175,10 +177,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) =>
                               const Icon(
-                            Icons.security,
-                            size: 60,
-                            color: Colors.grey,
-                          ),
+                                Icons.security,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
                         ),
                       ),
                       if (!isKeyboardVisible) const SizedBox(height: 16),
@@ -191,9 +193,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                             fontWeight: FontWeight.w500,
                           ),
                           children: [
-                            const TextSpan(
-                              text: "SMS sent to ",
-                            ),
+                            const TextSpan(text: "SMS sent to "),
                             TextSpan(
                               text: widget.phoneNumber,
                               style: const TextStyle(
@@ -205,7 +205,7 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                             WidgetSpan(
                               alignment: PlaceholderAlignment.middle,
                               child: GestureDetector(
-                                onTap: () => Navigator.pop(context),
+                                onTap: () => GoRouter.of(context).go(AppRouter.register),
                                 child: const Text(
                                   "Change number",
                                   style: TextStyle(
@@ -226,7 +226,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           children: List.generate(6, (index) {
                             return Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
                                 child: AspectRatio(
                                   aspectRatio: 0.8,
                                   child: TextFormField(
@@ -234,31 +236,33 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                     focusNode: viewModel.focusNodes[index],
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.number,
-                                    autofillHints: const [AutofillHints.oneTimeCode],
+                                    autofillHints: const [
+                                      AutofillHints.oneTimeCode,
+                                    ],
                                     onChanged: (val) =>
                                         viewModel.onCodeChanged(val, index),
-                                  style: TextStyle(
-                                    fontSize: actualBoxSize > 40 ? 20 : 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  decoration: InputDecoration(
-                                    counterText: "",
-                                    contentPadding: EdgeInsets.zero,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
-                                        color: Colors.grey[200]!,
+                                    style: TextStyle(
+                                      fontSize: actualBoxSize > 40 ? 20 : 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    decoration: InputDecoration(
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.zero,
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey[200]!,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          color: AppColors.primaryRed,
+                                          width: 2,
+                                        ),
                                       ),
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        color: AppColors.primaryRed,
-                                        width: 2,
-                                      ),
-                                    ),
                                   ),
-                                ),
                                 ),
                               ),
                             );
@@ -308,7 +312,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           borderRadius: BorderRadius.circular(30),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryRed.withValues(alpha: 0.3),
+                              color: AppColors.primaryRed.withValues(
+                                alpha: 0.3,
+                              ),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -318,30 +324,40 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                           onPressed: viewModel.isLoading
                               ? null
                               : () async {
-                                  bool success = await viewModel.verifyAndRegister(
-                                    email: widget.email,
-                                    password: widget.password,
-                                    name: widget.name,
-                                    phoneNumber: widget.phoneNumber,
-                                    country: widget.country,
-                                    city: widget.city,
-                                    nationality: widget.nationality,
-                                    studyCountry: widget.studyCountry,
-                                  );
+                                  bool success = await viewModel
+                                      .verifyAndRegister(
+                                        email: widget.email,
+                                        password: widget.password,
+                                        name: widget.name,
+                                        phoneNumber: widget.phoneNumber,
+                                        country: widget.country,
+                                        city: widget.city,
+                                        nationality: widget.nationality,
+                                        studyCountry: widget.studyCountry,
+                                      );
 
                                   if (success && context.mounted) {
                                     // Use a local variable for the parent context to ensure it stays valid
-                                    final parentContext = Navigator.of(context).context;
+                                    final parentContext = Navigator.of(
+                                      context,
+                                    ).context;
                                     Navigator.pop(context); // Close OTP Sheet
-                                    
+
                                     // Give the sheet a moment to close before showing the next one
-                                    Future.delayed(const Duration(milliseconds: 100), () {
-                                      if (parentContext.mounted) {
-                                        ProfileSetupView.show(parentContext);
-                                      }
-                                    });
-                                  } else if (!success && context.mounted && viewModel.errorMessage != null) {
-                                    CustomSnackbar.showError(viewModel.errorMessage!);
+                                    Future.delayed(
+                                      const Duration(milliseconds: 100),
+                                      () {
+                                        if (parentContext.mounted) {
+                                          ProfileSetupView.show(parentContext);
+                                        }
+                                      },
+                                    );
+                                  } else if (!success &&
+                                      context.mounted &&
+                                      viewModel.errorMessage != null) {
+                                    CustomSnackbar.showError(
+                                      viewModel.errorMessage!,
+                                    );
                                   }
                                 },
                           style: ElevatedButton.styleFrom(

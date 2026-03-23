@@ -195,6 +195,7 @@ class AuthViewModel extends ChangeNotifier {
           nationality: nationality,
           studyCountry: studyCountry,
           createdAt: DateTime.now(),
+          isEmailVerified: false,
         );
         // We use merge: true in saveUserData by default in AuthService
         await _authService.saveUserData(userModel);
@@ -232,6 +233,7 @@ class AuthViewModel extends ChangeNotifier {
               nationality: nationality,
               studyCountry: studyCountry,
               createdAt: DateTime.now(),
+              isEmailVerified: false,
             );
             try {
               debugPrint("--- [TEST BYPASS] Attempting Firestore save Task ---");

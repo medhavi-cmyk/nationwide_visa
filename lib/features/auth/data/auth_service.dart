@@ -199,6 +199,20 @@ class AuthService {
     }
   }
 
+  // Update only email verification status in Firestore
+  Future<void> updateEmailVerificationStatus(String uid, bool isVerified) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .set({'isEmailVerified': isVerified}, SetOptions(merge: true));
+      debugPrint("Updated Firestore verification status for $uid to $isVerified");
+    } catch (e) {
+      debugPrint("Error updating verification status: $e");
+      rethrow;
+    }
+  }
+
   // Get user data from Firestore
   Future<UserModel?> getUserData(String uid) async {
     try {

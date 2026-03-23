@@ -15,6 +15,8 @@ class UserModel {
   final List<String>? preferredDestinations;
   final List<String>? preferredSubjects;
   final DateTime? createdAt;
+  final bool isEmailVerified;
+
 
   UserModel({
     required this.uid,
@@ -31,6 +33,7 @@ class UserModel {
     this.preferredDestinations,
     this.preferredSubjects,
     this.createdAt,
+    this.isEmailVerified = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -51,6 +54,7 @@ class UserModel {
     if (preferredDestinations != null) map['preferredDestinations'] = preferredDestinations;
     if (preferredSubjects != null) map['preferredSubjects'] = preferredSubjects;
     if (createdAt != null) map['createdAt'] = createdAt!.toIso8601String();
+    map['isEmailVerified'] = isEmailVerified;
     
     return map;
   }
@@ -78,6 +82,7 @@ class UserModel {
         createdAt: map['createdAt'] != null
             ? DateTime.parse(map['createdAt'])
             : null,
+        isEmailVerified: map['isEmailVerified'] ?? false,
       );
     } catch (e) {
       debugPrint("UserModel.fromMap Error: $e for map: $map");
@@ -100,6 +105,7 @@ class UserModel {
     List<String>? preferredDestinations,
     List<String>? preferredSubjects,
     DateTime? createdAt,
+    bool? isEmailVerified,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -116,6 +122,7 @@ class UserModel {
       preferredDestinations: preferredDestinations ?? this.preferredDestinations,
       preferredSubjects: preferredSubjects ?? this.preferredSubjects,
       createdAt: createdAt ?? this.createdAt,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
     );
   }
 }

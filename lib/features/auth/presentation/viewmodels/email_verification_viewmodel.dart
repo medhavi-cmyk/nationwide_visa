@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
+import '../../data/auth_service.dart';
 
 class EmailVerificationViewModel extends ChangeNotifier {
   Timer? _timer;
@@ -12,8 +13,10 @@ class EmailVerificationViewModel extends ChangeNotifier {
 
   bool get isChecking => _isChecking;
   bool get isResending => _isResending;
+  String get email => _auth.currentUser?.email ?? '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthService _authService = AuthService();
 
   EmailVerificationViewModel() {
     startVerificationPolling();
@@ -30,10 +33,12 @@ class EmailVerificationViewModel extends ChangeNotifier {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
       final user = _auth.currentUser;
       if (user == null) return;
-      
+
       await user.reload();
       if (user.emailVerified) {
         timer.cancel();
+        // Update Firestore flag
+        await _authService.updateEmailVerificationStatus(user.uid, true);
         notifyListeners();
         // The router will automatically detect the state change and route them to Profile Setup or Home!
       }
@@ -60,20 +65,25 @@ class EmailVerificationViewModel extends ChangeNotifier {
   Future<void> manualCheckVerification(BuildContext context) async {
     _isChecking = true;
     notifyListeners();
-    
+
     try {
       final user = _auth.currentUser;
       if (user != null) {
         await user.reload();
         if (user.emailVerified) {
           _timer?.cancel();
+          // Update Firestore flag
+          await _authService.updateEmailVerificationStatus(user.uid, true);
+          
           if (context.mounted) {
             CustomSnackbar.showSuccess("Email verified successfully!");
             // Navigate to home (or onboarding will redirect based on guard)
             context.go(AppRouter.home);
           }
         } else {
-          CustomSnackbar.showError("Email not verified yet. Please check your inbox.");
+          CustomSnackbar.showError(
+            "Email not verified yet. Please check your inbox.",
+          );
         }
       }
     } catch (e) {
@@ -88,7 +98,7 @@ class EmailVerificationViewModel extends ChangeNotifier {
     _timer?.cancel();
     await _auth.signOut();
     if (context.mounted) {
-      context.go(AppRouter.onboarding);
+      context.go(AppRouter.login);
     }
   }
 }
