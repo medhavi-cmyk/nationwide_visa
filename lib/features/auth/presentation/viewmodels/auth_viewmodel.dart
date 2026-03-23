@@ -260,6 +260,24 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   void onCodeChanged(String value, int index) {
+    // Handle Autofill or paste
+    if (value.length >= 6) {
+      String code = value.substring(0, 6);
+      for (int i = 0; i < 6; i++) {
+        controllers[i].text = code[i];
+      }
+      focusNodes[5].unfocus();
+      notifyListeners();
+      return;
+    }
+
+    // Keep only the most recently typed character if length > 1
+    if (value.length > 1) {
+      controllers[index].text = value.substring(value.length - 1);
+      controllers[index].selection = TextSelection.collapsed(offset: 1);
+      value = controllers[index].text;
+    }
+
     if (value.length == 1 && index < 5) {
       focusNodes[index + 1].requestFocus();
     }

@@ -113,7 +113,7 @@ void main() {
         email: 'test@example.com',
         password: 'password',
         name: 'test',
-        phoneNumber: '+1',
+        phoneNumber: '+1234567890',
         country: 'US',
         city: 'NY',
         nationality: 'US',
@@ -121,7 +121,7 @@ void main() {
       );
 
       expect(result, false);
-      expect(viewModel.errorMessage, 'Please enter the complete OTP');
+      expect(viewModel.errorMessage, 'Please enter the 6-digit code');
     });
 
     test('verifyAndRegister fails without a valid verification info', () async {

@@ -220,22 +220,23 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       ),
                       const SizedBox(height: 24),
                       // OTP Input row (6 digits)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(6, (index) {
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: AspectRatio(
-                                aspectRatio: 0.8,
-                                child: TextFormField(
-                                  controller: viewModel.controllers[index],
-                                  focusNode: viewModel.focusNodes[index],
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 1,
-                                  onChanged: (val) =>
-                                      viewModel.onCodeChanged(val, index),
+                      AutofillGroup(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(6, (index) {
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                child: AspectRatio(
+                                  aspectRatio: 0.8,
+                                  child: TextFormField(
+                                    controller: viewModel.controllers[index],
+                                    focusNode: viewModel.focusNodes[index],
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    autofillHints: const [AutofillHints.oneTimeCode],
+                                    onChanged: (val) =>
+                                        viewModel.onCodeChanged(val, index),
                                   style: TextStyle(
                                     fontSize: actualBoxSize > 40 ? 20 : 16,
                                     fontWeight: FontWeight.bold,
@@ -258,12 +259,13 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                     ),
                                   ),
                                 ),
+                                ),
                               ),
-                            ),
-                          );
-                        }),
+                            );
+                          }),
+                        ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
