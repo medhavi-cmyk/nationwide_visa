@@ -3,7 +3,20 @@ import '../../data/auth_service.dart';
 import '../../data/models/user_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
+
+  ProfileViewModel({AuthService? authService})
+      : _authService = authService ?? AuthService() {
+    final currentYear = DateTime.now().year;
+    _years = [
+      currentYear.toString(),
+      (currentYear + 1).toString(),
+      (currentYear + 2).toString(),
+      "Help me decide",
+    ];
+    _selectedStartYear = _years[0];
+  }
+
   bool _isLoading = false;
   
   bool get isLoading => _isLoading;
@@ -27,16 +40,6 @@ class ProfileViewModel extends ChangeNotifier {
     "Other",
   ];
 
-  ProfileViewModel() {
-    final currentYear = DateTime.now().year;
-    _years = [
-      currentYear.toString(),
-      (currentYear + 1).toString(),
-      (currentYear + 2).toString(),
-      "Help me decide",
-    ];
-    _selectedStartYear = _years[0];
-  }
 
   // Getters
   String? get selectedStudyLevel => _selectedStudyLevel;
