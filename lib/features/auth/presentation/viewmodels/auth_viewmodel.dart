@@ -161,18 +161,25 @@ class AuthViewModel extends ChangeNotifier {
         // Check if Email provider is already linked
         bool isEmailLinked = user.providerData.any((p) => p.providerId == 'password');
         
-        if (isEmailLinked || password.isEmpty) {
-          debugPrint("--- Skipping Email linking (Already linked or no password provided) ---");
-        } else {
-          debugPrint("--- Linking Email and Password ---");
-          try {
-            await _authService.linkEmailPassword(email, password);
-          } catch (e) {
-            // Handle specifically the case where it's already linked but our check missed it
-            if (e.toString().contains('provider-already-linked')) {
-              debugPrint("--- Provider already linked (caught from exception) ---");
-            } else {
-              rethrow;
+        if (password.isNotEmpty) {
+          if (isEmailLinked) {
+            debugPrint("--- Phone account already has an Email/Password. Unlinking old provider to attach new credentials! ---");
+            try {
+              await user.unlink('password');
+              await _authService.linkEmailPassword(email, password);
+            } catch (e) {
+              debugPrint("Warning: Failed to overwrite test credentials: $e");
+            }
+          } else {
+            debugPrint("--- Linking Email and Password ---");
+            try {
+              await _authService.linkEmailPassword(email, password);
+            } catch (e) {
+              if (e.toString().contains('provider-already-linked')) {
+                debugPrint("--- Provider already linked (caught from exception) ---");
+              } else {
+                rethrow;
+              }
             }
           }
         }
