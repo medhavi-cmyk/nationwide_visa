@@ -199,6 +199,16 @@ class AuthViewModel extends ChangeNotifier {
         // We use merge: true in saveUserData by default in AuthService
         await _authService.saveUserData(userModel);
         
+        // Send email verification if they just registered with an email/password
+        if (!user.emailVerified && password.isNotEmpty) {
+          try {
+            await user.sendEmailVerification();
+            debugPrint("--- Verification email sent to $email! ---");
+          } catch(e) {
+            debugPrint("--- Failed to send verification email: $e ---");
+          }
+        }
+        
         debugPrint("--- Registration Complete! ---");
         return true;
       }
@@ -227,6 +237,15 @@ class AuthViewModel extends ChangeNotifier {
               debugPrint("--- [TEST BYPASS] Attempting Firestore save Task ---");
               await _authService.saveUserData(userModel).timeout(const Duration(seconds: 5));
               debugPrint("--- [TEST BYPASS] Firestore Save Success! ---");
+              
+              if (!user.emailVerified && password.isNotEmpty) {
+                try {
+                  await user.sendEmailVerification();
+                  debugPrint("--- [TEST BYPASS] Verification email sent! ---");
+                } catch(e) {
+                 debugPrint("--- [TEST BYPASS] Failed to send verification email: $e ---");
+                }
+              }
             } catch (saveError) {
               debugPrint("--- [TEST BYPASS] Firestore Save Failed: $saveError ---");
               _setError("Test bypass saved locally, but Firestore error: $saveError");

@@ -9,6 +9,7 @@ import '../features/auth/presentation/views/register_view.dart';
 import '../features/auth/presentation/views/account_exists_view.dart';
 import '../features/auth/presentation/views/otp_verification_view.dart';
 import '../features/auth/presentation/views/profile_setup_view.dart';
+import '../features/auth/presentation/views/email_verification_view.dart';
 import '../features/auth/data/auth_service.dart';
 
 class AppRouter {
@@ -19,6 +20,7 @@ class AppRouter {
   static const String accountExists = '/account-exists';
   static const String otp = '/otp';
   static const String profileSetup = '/profile-setup';
+  static const String emailVerification = '/email-verification';
 
   static final GoRouter router = GoRouter(
     initialLocation: onboarding,
@@ -32,9 +34,19 @@ class AppRouter {
           state.matchedLocation == login ||
           state.matchedLocation == register ||
           state.matchedLocation == accountExists ||
+          state.matchedLocation == emailVerification ||
           state.matchedLocation == otp;
 
       if (user != null) {
+        // --- NEW: Email Verification Guard ---
+        bool requiresVerification = user.providerData.any((p) => p.providerId == 'password') && !user.emailVerified;
+        
+        if (requiresVerification) {
+          // Only redirect them to email verification if they are not already there
+          if (state.matchedLocation == emailVerification) return null;
+          return emailVerification;
+        }
+
         // If logged in, check if profile is complete
         final isComplete = await AuthService().isUserComplete(user.uid);
 
@@ -101,6 +113,10 @@ class AppRouter {
       GoRoute(
         path: profileSetup,
         builder: (context, state) => const ProfileSetupView(),
+      ),
+      GoRoute(
+        path: emailVerification,
+        builder: (context, state) => const EmailVerificationView(),
       ),
     ],
   );

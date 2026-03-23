@@ -9,6 +9,7 @@ import 'features/auth/presentation/viewmodels/register_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/auth_viewmodel.dart';
 import 'features/auth/presentation/viewmodels/profile_viewmodel.dart';
 import 'features/profile/presentation/viewmodels/profile_viewmodel.dart';
+import 'features/auth/presentation/viewmodels/email_verification_viewmodel.dart';
 import 'core/app_colors.dart';
 import 'core/router.dart';
 import 'core/globals.dart';
@@ -57,6 +58,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => MainProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => EmailVerificationViewModel()),
       ],
       child: const MyApp(),
     ),

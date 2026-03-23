@@ -61,7 +61,10 @@ class AccountExistsView extends StatelessWidget {
             ),
           ),
           if (viewModel.isLoading)
-            const LinearProgressIndicator(color: AppColors.primaryRed),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: const LinearProgressIndicator(color: AppColors.primaryRed),
+            ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -229,13 +232,16 @@ class AccountExistsView extends StatelessWidget {
                                   // User is authenticated but incomplete
                                   final user = AuthService().currentUser;
                                   if (user != null) {
-                                    final parentContext = Navigator.of(context).context;
+                                    final parentContext = Navigator.of(
+                                      context,
+                                    ).context;
                                     Navigator.pop(context);
-                                    
+
                                     RegisterView.show(
                                       parentContext,
                                       email: user.email ?? "",
-                                      isGoogleOnboarding: true, // Hide password field
+                                      isGoogleOnboarding:
+                                          true, // Hide password field
                                       initialName: user.displayName,
                                     );
                                   }
@@ -312,9 +318,11 @@ class AccountExistsView extends StatelessWidget {
                                     // User is authenticated but incomplete
                                     final user = AuthService().currentUser;
                                     if (user != null) {
-                                      final parentContext = Navigator.of(context).context;
+                                      final parentContext = Navigator.of(
+                                        context,
+                                      ).context;
                                       Navigator.pop(context);
-                                      
+
                                       RegisterView.show(
                                         parentContext,
                                         email: user.email ?? "",

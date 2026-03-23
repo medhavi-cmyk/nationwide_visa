@@ -137,7 +137,9 @@ class _DestinationStoryViewState extends State<DestinationStoryView>
                         children: List.generate(_totalSegments, (index) {
                           return Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                              ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(2),
                                 child: AnimatedBuilder(
@@ -150,13 +152,18 @@ class _DestinationStoryViewState extends State<DestinationStoryView>
                                       progress = _controller.value;
                                     }
 
-                                    return LinearProgressIndicator(
-                                      value: progress,
-                                      backgroundColor:
-                                          Colors.white.withValues(alpha: 0.3),
-                                      valueColor:
-                                          const AlwaysStoppedAnimation(Colors.white),
-                                      minHeight: 3,
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: LinearProgressIndicator(
+                                        value: progress,
+                                        backgroundColor: Colors.white
+                                            .withValues(alpha: 0.3),
+                                        valueColor:
+                                            const AlwaysStoppedAnimation(
+                                              Colors.white,
+                                            ),
+                                        minHeight: 3,
+                                      ),
                                     );
                                   },
                                 ),
@@ -208,7 +215,9 @@ class _DestinationStoryViewState extends State<DestinationStoryView>
                       Text(
                         currentSlide.title,
                         style: TextStyle(
-                          color: currentSlide.stats != null ? Colors.white : const Color(0xFFFFEB3B),
+                          color: currentSlide.stats != null
+                              ? Colors.white
+                              : const Color(0xFFFFEB3B),
                           fontSize: currentSlide.stats != null ? 40 : 36,
                           fontWeight: FontWeight.bold,
                           height: 1.1,
