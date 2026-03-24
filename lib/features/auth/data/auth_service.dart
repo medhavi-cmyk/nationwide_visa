@@ -8,6 +8,9 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  
+  // Cache for user completeness status to avoid redundant Firestore calls
+  static final Map<String, bool> _isCompleteCache = {};
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -68,16 +71,25 @@ class AuthService {
 
   // Check if user profile is complete
   Future<bool> isUserComplete(String uid) async {
+    // Check cache first
+    if (_isCompleteCache.containsKey(uid) && _isCompleteCache[uid] == true) {
+      return true;
+    }
+
     try {
       final userData = await getUserData(uid);
       if (userData == null) return false;
 
       // Mandatory fields for "complete" profile
-      return userData.phoneNumber != null &&
+      final isComplete = userData.phoneNumber != null &&
           userData.country != null &&
           userData.city != null &&
           userData.nationality != null &&
           userData.studyCountry != null;
+
+      // Update cache
+      _isCompleteCache[uid] = isComplete;
+      return isComplete;
     } catch (e) {
       debugPrint("Check user complete error: $e");
       return false;
@@ -190,6 +202,15 @@ class AuthService {
           .collection('users')
           .doc(user.uid)
           .set(dataToSave, SetOptions(merge: true));
+      
+      // Update completeness cache
+      final isComplete = user.phoneNumber != null &&
+          user.country != null &&
+          user.city != null &&
+          user.nationality != null &&
+          user.studyCountry != null;
+      _isCompleteCache[user.uid] = isComplete;
+
       debugPrint(
         "Successfully saved user data to Firestore for UID: ${user.uid}",
       );

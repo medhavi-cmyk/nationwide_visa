@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,10 +45,9 @@ void main() async {
   final zegoService = ZegoChatService();
   await zegoService.init();
 
-  // Mock login for MVP
-  // In a real app, this would happen after authentication
+  // Mock login for MVP - Non-blocking to speed up startup
   final String userId = 'user_${DateTime.now().millisecondsSinceEpoch}';
-  await zegoService.login(userId, 'Demo User');
+  unawaited(zegoService.login(userId, 'Demo User'));
 
   runApp(
     MultiProvider(

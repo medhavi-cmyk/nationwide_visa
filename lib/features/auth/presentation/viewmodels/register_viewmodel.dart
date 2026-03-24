@@ -16,6 +16,11 @@ class RegisterViewModel extends ChangeNotifier {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  // Static caches for JSON data to avoid repeated parsing
+  static List<Map<String, dynamic>>? _cachedCountries;
+  static Map<String, String>? _cachedStates;
+  static List<Map<String, dynamic>>? _cachedCities;
+
   bool isGoogleOnboarding = false;
 
   void setGoogleOnboarding(bool value) {
@@ -125,15 +130,16 @@ class RegisterViewModel extends ChangeNotifier {
   String? _selectedCountryId;
   String? _selectedCountryIso2;
   String? _selectedCountryIso3;
-  final Map<String, String> _stateNames = {};
 
   bool get isCountrySelected => countryController.text.isNotEmpty;
 
   Future<List<Map<String, dynamic>>> getAllCountries() async {
+    if (_cachedCountries != null) return _cachedCountries!;
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/country.json');
       final List<dynamic> data = json.decode(response);
-      return data.cast<Map<String, dynamic>>();
+      _cachedCountries = data.cast<Map<String, dynamic>>();
+      return _cachedCountries!;
     } catch (e) {
       debugPrint("--- Error loading countries: $e ---");
       return [];
@@ -141,15 +147,16 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadStates() async {
-    if (_stateNames.isNotEmpty) return;
+    if (_cachedStates != null) return;
     try {
       final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/state.json');
       final List<dynamic> data = json.decode(response);
+      _cachedStates = {};
       for (var state in data) {
         final id = state['id']?.toString();
         final name = state['name']?.toString();
         if (id != null && name != null) {
-          _stateNames[id] = name;
+          _cachedStates![id] = name;
         }
       }
     } catch (e) {
@@ -162,11 +169,14 @@ class RegisterViewModel extends ChangeNotifier {
       return [];
     }
     await _loadStates();
+    
     try {
-      final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/city.json');
-      final List<dynamic> data = json.decode(response);
+      if (_cachedCities == null) {
+        final String response = await rootBundle.loadString('packages/country_state_city_pro/assets/city.json');
+        _cachedCities = json.decode(response).cast<Map<String, dynamic>>();
+      }
       
-      final filtered = data.where((city) {
+      final filtered = _cachedCities!.where((city) {
         final countryId = city['country_id']?.toString();
         return countryId == _selectedCountryId || 
                countryId == _selectedCountryIso2 || 
@@ -174,7 +184,7 @@ class RegisterViewModel extends ChangeNotifier {
       }).map((cityData) {
         final city = Map<String, dynamic>.from(cityData);
         final stateId = city['state_id']?.toString();
-        final stateName = _stateNames[stateId];
+        final stateName = _cachedStates?[stateId];
         
         if (stateName != null) {
           city['displayName'] = "${city['name']}, $stateName";
