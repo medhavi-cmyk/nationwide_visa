@@ -51,8 +51,8 @@ class AppRouter {
         final isComplete = await AuthService().isUserComplete(user.uid);
 
         if (!isComplete) {
-          // If profile is incomplete, force them to stay in the auth/onboarding flow
-          return isLoggingIn ? null : onboarding;
+          // If profile is incomplete, force them to the profile setup screen
+          return (state.matchedLocation == profileSetup) ? null : profileSetup;
         }
 
         // --- NEW: Bypass home redirect if already in onboarding flow ---
