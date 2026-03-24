@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/router.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
-import 'dart:io' show Platform;
 
 class RegistrationSuccessView extends StatelessWidget {
   const RegistrationSuccessView({super.key});

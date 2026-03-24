@@ -6,7 +6,6 @@ import 'package:nwdapp/core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
 import '../../../../core/widgets/platform/platform_text_field.dart';
 import '../../../../core/widgets/platform/platform_indicator.dart';
-import 'dart:io' show Platform;
 
 class ForgotPasswordView extends StatelessWidget {
   const ForgotPasswordView({super.key});

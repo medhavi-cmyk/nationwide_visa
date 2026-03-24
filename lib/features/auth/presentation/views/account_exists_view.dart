@@ -364,7 +364,7 @@ class AccountExistsView extends StatelessWidget {
         width: double.infinity,
         height: 54 * vScale,
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.textBlack.withOpacity(0.5)),
+          border: Border.all(color: AppColors.textBlack.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(

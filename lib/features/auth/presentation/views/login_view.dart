@@ -123,9 +123,9 @@ class LoginView extends StatelessWidget {
                                                   color: AppColors.primaryRed,
                                                 ),
                                               ),
-                                              backgroundColor: AppColors.primaryRed.withOpacity(0.05),
+                                              backgroundColor: AppColors.primaryRed.withValues(alpha: 0.05),
                                               side: BorderSide(
-                                                color: AppColors.primaryRed.withOpacity(0.1),
+                                                color: AppColors.primaryRed.withValues(alpha: 0.1),
                                               ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20),

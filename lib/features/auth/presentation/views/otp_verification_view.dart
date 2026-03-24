@@ -9,7 +9,6 @@ import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'profile_setup_view.dart';
 import '../widgets/registration_progress_bar.dart';
-import 'dart:io' show Platform;
 
 class OtpVerificationView extends StatefulWidget {
   final String email;

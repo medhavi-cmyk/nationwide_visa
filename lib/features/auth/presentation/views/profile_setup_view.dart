@@ -6,7 +6,6 @@ import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/profile_viewmodel.dart';
 import '../widgets/registration_progress_bar.dart';
 import 'registration_success_view.dart';
-import 'dart:io' show Platform;
 
 class ProfileSetupView extends StatelessWidget {
   const ProfileSetupView({super.key});

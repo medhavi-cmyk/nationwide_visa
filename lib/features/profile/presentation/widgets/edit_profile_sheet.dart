@@ -8,7 +8,6 @@ import '../../../../features/auth/presentation/widgets/city_picker.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
 import '../../../../core/widgets/platform/platform_text_button.dart';
 import '../../../../core/widgets/platform/platform_text_field.dart';
-import '../../../../core/app_colors.dart';
 
 void showEditProfileSheet(BuildContext context) {
   showModalBottomSheet(
@@ -1461,6 +1460,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                         final s = filtered[index];
                         final isSelected = _prefSubjects.contains(s);
                         return ListTile(
+                          visualDensity: VisualDensity.compact, // Added to reduce default vertical padding
                           contentPadding: EdgeInsets.zero,
                           title: Text(
                             s,
