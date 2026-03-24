@@ -4,9 +4,12 @@ import 'package:nwdapp/core/router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'profile_setup_view.dart';
 import '../widgets/registration_progress_bar.dart';
+import 'dart:io' show Platform;
 
 class OtpVerificationView extends StatefulWidget {
   final String email;
@@ -304,23 +307,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                       ),
                       const SizedBox(height: 24),
                       // Verify Button
-                      Container(
+                      SizedBox(
                         width: double.infinity,
                         height: 54,
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryRed,
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryRed.withValues(
-                                alpha: 0.3,
-                              ),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton(
+                        child: PlatformButton(
                           onPressed: viewModel.isLoading
                               ? null
                               : () async {
@@ -360,28 +350,17 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                     );
                                   }
                                 },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: Colors.white,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
                           child: viewModel.isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
+                              ? const PlatformIndicator(
+                                  color: Colors.white,
+                                  radius: 10,
                                 )
                               : const Text(
                                   "Verify & Register",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
+                                    color: Colors.white,
                                   ),
                                 ),
                         ),

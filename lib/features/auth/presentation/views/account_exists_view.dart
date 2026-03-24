@@ -5,10 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
 import 'register_view.dart';
 import '../../data/auth_service.dart';
+import 'dart:io' show Platform;
 
 class AccountExistsView extends StatelessWidget {
   final String email;
@@ -63,7 +67,9 @@ class AccountExistsView extends StatelessWidget {
           if (viewModel.isLoading)
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
-              child: const LinearProgressIndicator(color: AppColors.primaryRed),
+              child: Platform.isIOS
+                  ? const PlatformIndicator()
+                  : const LinearProgressIndicator(color: AppColors.primaryRed),
             ),
           Expanded(
             child: Padding(
@@ -141,51 +147,19 @@ class AccountExistsView extends StatelessWidget {
                     ),
 
                   // Password Field
-                  TextFormField(
+                  PlatformTextField(
                     controller: viewModel.passwordController,
                     obscureText: viewModel.obscurePassword,
                     validator: viewModel.validatePassword,
-                    decoration: InputDecoration(
-                      labelText: "Password",
-                      labelStyle: const TextStyle(color: AppColors.textGrey),
-                      floatingLabelStyle: const TextStyle(
-                        color: AppColors.primaryRed,
-                        fontWeight: FontWeight.bold,
+                    labelText: "Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        viewModel.obscurePassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        color: AppColors.textGrey,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.borderGrey,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.borderGrey,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryRed,
-                          width: 2,
-                        ),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          viewModel.obscurePassword
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: AppColors.textGrey,
-                        ),
-                        onPressed: () => viewModel.togglePasswordVisibility(),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[50],
+                      onPressed: () => viewModel.togglePasswordVisibility(),
                     ),
                   ),
 
@@ -213,7 +187,7 @@ class AccountExistsView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
+                    child: PlatformButton(
                       onPressed: viewModel.isLoading
                           ? null
                           : () async {
@@ -248,22 +222,10 @@ class AccountExistsView extends StatelessWidget {
                                 }
                               }
                             },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryRed,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 0,
-                      ),
                       child: viewModel.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
+                          ? const PlatformIndicator(
+                              color: Colors.white,
+                              radius: 10,
                             )
                           : const Text(
                               "Log In",

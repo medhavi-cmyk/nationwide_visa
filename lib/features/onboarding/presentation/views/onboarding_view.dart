@@ -5,6 +5,7 @@ import 'package:nwdapp/features/auth/presentation/views/login_view.dart';
 import 'package:nwdapp/features/auth/presentation/views/profile_setup_view.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/router.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
 import '../../widgets/onboarding_page_one.dart';
 import '../../widgets/onboarding_page_two.dart';
 import '../../widgets/onboarding_page_three.dart';
@@ -65,7 +66,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             bottom: 40,
             left: 24,
             right: 24,
-            child: ElevatedButton(
+            child: PlatformButton(
               onPressed: () {
                 if (_currentPage < 2) {
                   _pageController.nextPage(
@@ -76,20 +77,13 @@ class _OnboardingViewState extends State<OnboardingView> {
                   LoginView.show(context);
                 }
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: AppColors.primaryRed,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 0,
-              ),
+              backgroundColor: Colors.white,
               child: Text(
                 _currentPage == 2 ? "Get Started" : "Continue",
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: AppColors.primaryRed,
                 ),
               ),
             ),

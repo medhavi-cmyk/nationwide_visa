@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 import '../../../../core/app_colors.dart';
 import 'upcoming_meetings_view.dart';
 import 'history_meetings_view.dart';
@@ -45,20 +47,54 @@ class _MeetingsViewState extends State<MeetingsView> with SingleTickerProviderSt
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                dividerColor: Colors.transparent,
-                indicatorColor: Colors.transparent,
-                unselectedLabelColor: AppColors.textGrey,
-                labelColor: Colors.white,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                tabs: [
-                  _buildTab('Upcoming', 0),
-                  _buildTab('History', 1),
-                ],
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Platform.isIOS
+                  ? SizedBox(
+                      width: double.infinity,
+                      child: CupertinoSlidingSegmentedControl<int>(
+                        groupValue: _tabController.index,
+                        children: {
+                          0: Text(
+                            'Upcoming',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: _tabController.index == 0
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                          1: Text(
+                            'History',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: _tabController.index == 1
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        },
+                        onValueChanged: (int? value) {
+                          if (value != null) {
+                            setState(() {
+                              _tabController.index = value;
+                            });
+                          }
+                        },
+                      ),
+                    )
+                  : TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      dividerColor: Colors.transparent,
+                      indicatorColor: Colors.transparent,
+                      unselectedLabelColor: AppColors.textGrey,
+                      labelColor: Colors.white,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      tabs: [
+                        _buildTab('Upcoming', 0),
+                        _buildTab('History', 1),
+                      ],
+                    ),
             ),
             const SizedBox(height: 16),
             Expanded(

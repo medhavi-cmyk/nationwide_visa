@@ -3,6 +3,10 @@ import 'package:provider/provider.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'package:nwdapp/core/app_colors.dart';
 import 'package:nwdapp/core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
+import 'dart:io' show Platform;
 
 class ForgotPasswordView extends StatelessWidget {
   const ForgotPasswordView({super.key});
@@ -78,21 +82,14 @@ class ForgotPasswordView extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
+                    child: PlatformButton(
                       onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryRed,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 0,
-                      ),
                       child: const Text(
                         "Got it!",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -121,48 +118,16 @@ class ForgotPasswordView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  TextFormField(
+                  PlatformTextField(
                     controller: viewModel.emailController,
                     validator: viewModel.validateEmail,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      labelStyle: const TextStyle(color: AppColors.textGrey),
-                      floatingLabelStyle: const TextStyle(
-                        color: AppColors.primaryRed,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.borderGrey,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.borderGrey,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryRed,
-                          width: 2,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                    ),
+                    labelText: "Email",
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton(
+                    child: PlatformButton(
                       onPressed: viewModel.isLoading
                           ? null
                           : () async {
@@ -180,28 +145,17 @@ class ForgotPasswordView extends StatelessWidget {
                                 );
                               }
                             },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryRed,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 0,
-                      ),
                       child: viewModel.isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
+                          ? const PlatformIndicator(
+                              color: Colors.white,
+                              radius: 10,
                             )
                           : const Text(
                               "Send Reset Email",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
+                                color: Colors.white,
                               ),
                             ),
                     ),

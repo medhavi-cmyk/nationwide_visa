@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
 import 'destination_story_view.dart';
@@ -183,26 +185,45 @@ class _PopularDestinationsState extends State<PopularDestinations> {
   };
 
   void _openStory(String name, String icon) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => DestinationStoryView(
-          name: name,
-          countryIcon: icon,
-          slides: countryStories[name] ?? 
-            [StorySlide(title: "Exploring $name", subtitle: "Coming soon!")],
-          onProgress: (viewedSegments) {
-            if (mounted) {
-              setState(() {
-                final current = _destinationProgress[name] ?? 0;
-                if (viewedSegments > current) {
-                  _destinationProgress[name] = viewedSegments;
+    final route = Platform.isIOS
+        ? CupertinoPageRoute(
+            builder: (context) => DestinationStoryView(
+              name: name,
+              countryIcon: icon,
+              slides: countryStories[name] ??
+                  [StorySlide(title: "Exploring $name", subtitle: "Coming soon!")],
+              onProgress: (viewedSegments) {
+                if (mounted) {
+                  setState(() {
+                    final current = _destinationProgress[name] ?? 0;
+                    if (viewedSegments > current) {
+                      _destinationProgress[name] = viewedSegments;
+                    }
+                  });
                 }
-              });
-            }
-          },
-        ),
-      ),
-    );
+              },
+            ),
+          )
+        : MaterialPageRoute(
+            builder: (context) => DestinationStoryView(
+              name: name,
+              countryIcon: icon,
+              slides: countryStories[name] ??
+                  [StorySlide(title: "Exploring $name", subtitle: "Coming soon!")],
+              onProgress: (viewedSegments) {
+                if (mounted) {
+                  setState(() {
+                    final current = _destinationProgress[name] ?? 0;
+                    if (viewedSegments > current) {
+                      _destinationProgress[name] = viewedSegments;
+                    }
+                  });
+                }
+              },
+            ),
+          );
+
+    Navigator.of(context).push(route);
   }
 
   @override

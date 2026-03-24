@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:nwdapp/features/meetings/presentation/view_models/meetings_view_model.dart';
@@ -7,6 +9,7 @@ import 'package:nwdapp/features/meetings/presentation/widgets/meeting_feedback_b
 import 'package:nwdapp/features/meetings/presentation/widgets/referral_bottom_sheet.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
 
 class UpcomingMeetingsView extends StatelessWidget {
   const UpcomingMeetingsView({super.key});
@@ -26,7 +29,7 @@ class UpcomingMeetingsView extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: PlatformButton(
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -35,12 +38,14 @@ class UpcomingMeetingsView extends StatelessWidget {
                       builder: (context) => const MeetingFeedbackBottomSheet(),
                     );
                   },
-                  child: const Text("Test Review", style: TextStyle(fontSize: 12)),
+                  backgroundColor: Colors.white,
+                  child: const Text("Test Review",
+                      style: TextStyle(fontSize: 12, color: AppColors.primaryRed)),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: OutlinedButton(
+                child: PlatformButton(
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
@@ -49,7 +54,9 @@ class UpcomingMeetingsView extends StatelessWidget {
                       builder: (context) => const ReferralBottomSheet(),
                     );
                   },
-                  child: const Text("Test Referral", style: TextStyle(fontSize: 12)),
+                  backgroundColor: Colors.white,
+                  child: const Text("Test Referral",
+                      style: TextStyle(fontSize: 12, color: AppColors.primaryRed)),
                 ),
               ),
             ],
@@ -213,24 +220,35 @@ class UpcomingMeetingsView extends StatelessWidget {
                           onTap: () {
                             final String callId =
                                 "session_${meeting.fullDateTime.millisecondsSinceEpoch}";
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ZegoUIKitPrebuiltCall(
-                                  appID: 456153833,
-                                  // Placeholder: USER MUST REPLACE
-                                  appSign:
-                                      'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce',
-                                  // Placeholder: USER MUST REPLACE
-                                  userID:
-                                      'user_${DateTime.now().millisecondsSinceEpoch}',
-                                  userName: 'User Name',
-                                  callID: callId,
-                                  config:
-                                      ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall(),
-                                ),
-                              ),
-                            ).then((value) {
+                            final route = Platform.isIOS
+                                ? CupertinoPageRoute(
+                                    builder: (context) => ZegoUIKitPrebuiltCall(
+                                      appID: 456153833,
+                                      appSign:
+                                          'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce',
+                                      userID:
+                                          'user_${DateTime.now().millisecondsSinceEpoch}',
+                                      userName: 'User Name',
+                                      callID: callId,
+                                      config: ZegoUIKitPrebuiltCallConfig
+                                          .oneOnOneVideoCall(),
+                                    ),
+                                  )
+                                : MaterialPageRoute(
+                                    builder: (context) => ZegoUIKitPrebuiltCall(
+                                      appID: 456153833,
+                                      appSign:
+                                          'f7f65b6470a65a66515a52fda1f726f849f2140076a3743a62553222e32347ce',
+                                      userID:
+                                          'user_${DateTime.now().millisecondsSinceEpoch}',
+                                      userName: 'User Name',
+                                      callID: callId,
+                                      config: ZegoUIKitPrebuiltCallConfig
+                                          .oneOnOneVideoCall(),
+                                    ),
+                                  );
+
+                            Navigator.push(context, route).then((value) {
                               // Show feedback bottom sheet after the call ends
                               showModalBottomSheet(
                                 context: context,
@@ -266,56 +284,28 @@ class UpcomingMeetingsView extends StatelessWidget {
           ],
 
           // CTA Button
-          Container(
-            width: double.infinity,
-            height: 56,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFFE91E63), AppColors.primaryRed],
-              ),
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryRed.withValues(alpha: 0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
+          PlatformButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const BookingBottomSheet(),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.calendar_today_outlined, size: 20),
+                const SizedBox(width: 12),
+                Text(
+                  isBooked ? "Reschedule session" : "Book session now",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => const BookingBottomSheet(),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                elevation: 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.calendar_today_outlined, size: 20),
-                  const SizedBox(width: 12),
-                  Text(
-                    isBooked ? "Reschedule session" : "Book session now",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
           const SizedBox(height: 24),

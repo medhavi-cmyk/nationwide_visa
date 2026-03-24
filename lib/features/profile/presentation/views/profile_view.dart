@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router.dart';
 import '../viewmodels/profile_viewmodel.dart';
 import '../widgets/edit_profile_sheet.dart';
+import '../../../../core/widgets/platform/platform_scaffold.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
 
 class ProfileView extends StatefulWidget {
   final VoidCallback? onNavigateToChat;
@@ -29,10 +31,9 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PlatformScaffold(
       backgroundColor: _bgGrey,
-      body: SafeArea(
-        child: CustomScrollView(
+      body: CustomScrollView(
           slivers: [
             // Page Title
             SliverToBoxAdapter(
@@ -163,7 +164,6 @@ class _ProfileViewState extends State<ProfileView> {
             const SliverToBoxAdapter(child: SizedBox(height: 30)),
           ],
         ),
-      ),
     );
   }
 
@@ -275,20 +275,14 @@ class _ProfileViewState extends State<ProfileView> {
             Center(
               child: SizedBox(
                 width: 130,
-                height: 40,
-                child: ElevatedButton(
+                child: PlatformButton(
                   onPressed: () => showEditProfileSheet(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _primaryRed,
-                    foregroundColor: Colors.white,
-                    shape: const StadiumBorder(),
-                    elevation: 0,
-                  ),
                   child: Text(
                     'Edit',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -411,31 +405,14 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFC00A15), Color(0xFFE53935)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: widget.onNavigateToMeet,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        shape: const StadiumBorder(),
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Text(
-                        'Book a Session',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                  child: PlatformButton(
+                    onPressed: widget.onNavigateToMeet,
+                    child: Text(
+                      'Book a Session',
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -539,7 +516,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   Widget _buildLogoutButton(BuildContext context) {
     final viewModel = context.watch<MainProfileViewModel>();
-    return OutlinedButton.icon(
+    return PlatformButton(
       onPressed: viewModel.isLoading
           ? null
           : () async {
@@ -548,24 +525,25 @@ class _ProfileViewState extends State<ProfileView> {
                 context.go(AppRouter.onboarding);
               }
             },
-      icon: const Icon(
-        Icons.logout_rounded,
-        color: Color(0xFFEF4444),
-        size: 20,
-      ),
-      label: Text(
-        'Log out',
-        style: GoogleFonts.poppins(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFFEF4444),
-        ),
-      ),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 52),
-        side: const BorderSide(color: Color(0xFFEF4444), width: 1.5),
-        shape: const StadiumBorder(),
-        backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.logout_rounded,
+            color: Color(0xFFEF4444),
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Log out',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFFEF4444),
+            ),
+          ),
+        ],
       ),
     );
   }

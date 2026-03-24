@@ -5,6 +5,10 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../features/auth/presentation/widgets/country_picker.dart';
 import '../../../../features/auth/presentation/widgets/city_picker.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_text_button.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
+import '../../../../core/app_colors.dart';
 
 void showEditProfileSheet(BuildContext context) {
   showModalBottomSheet(
@@ -31,7 +35,6 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
   static const Color _textGrey = Color(0xFF6B7280);
   static const Color _borderGrey = Color(0xFFE2E8EF);
   static const Color _red = Color(0xFFC00A15);
-  static const Color _redLight = Color(0xFFE53935);
 
   final _nameCtrl = TextEditingController(text: 'Medhavi Sharma');
   final _emailCtrl = TextEditingController(
@@ -295,17 +298,12 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Full name
-                  TextFormField(
+                  PlatformTextField(
                     controller: _nameCtrl,
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: _textDark,
-                    ),
+                    labelText: 'Full name',
                     validator: (v) => (v == null || v.trim().isEmpty)
                         ? 'Full name is required'
                         : null,
-                    decoration: _inputDeco(label: 'Full name'),
                   ),
                   const SizedBox(height: 6),
                   Padding(
@@ -353,21 +351,14 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   const SizedBox(height: 12),
 
                   // Email — read-only / non-editable
-                  TextFormField(
+                  PlatformTextField(
                     controller: _emailCtrl,
                     readOnly: true,
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: _textGrey,
-                    ),
-                    decoration: _inputDeco(label: 'Email Address').copyWith(
-                      fillColor: const Color(0xFFF9FAFB),
-                      suffixIcon: const Icon(
-                        Icons.lock_outline_rounded,
-                        size: 18,
-                        color: Color(0xFF9CA3AF),
-                      ),
+                    labelText: 'Email Address',
+                    suffixIcon: const Icon(
+                      Icons.lock_outline_rounded,
+                      size: 18,
+                      color: Color(0xFF9CA3AF),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -381,34 +372,6 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
           _buildBottomButtons(),
         ],
       ),
-    );
-  }
-
-  InputDecoration _inputDeco({required String label}) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: GoogleFonts.poppins(fontSize: 12, color: _textGrey),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      contentPadding: const EdgeInsets.fromLTRB(16, 20, 16, 14),
-      filled: true,
-      fillColor: Colors.white,
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: _borderGrey, width: 1.2),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: _red, width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: _red, width: 1.2),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: _red, width: 1.5),
-      ),
-      errorStyle: GoogleFonts.poppins(fontSize: 11, color: _red),
     );
   }
 
@@ -587,14 +550,10 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
               const Text('🇮🇳', style: TextStyle(fontSize: 22)),
               const SizedBox(width: 10),
               Expanded(
-                child: TextFormField(
+                child: PlatformTextField(
                   controller: _phoneCtrl,
                   keyboardType: TextInputType.phone,
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: _textDark,
-                  ),
+                  labelText: 'Phone number',
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
                       return 'Phone number is required';
@@ -605,18 +564,6 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    hintText: 'Phone number',
-                    prefixText: '+91  ',
-                    prefixStyle: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: _textDark,
-                    ),
-                    errorStyle: GoogleFonts.poppins(fontSize: 11, color: _red),
-                  ),
                 ),
               ),
             ],
@@ -643,14 +590,9 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
         children: [
           // Cancel
           Expanded(
-            child: OutlinedButton(
+            child: PlatformButton(
               onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 52),
-                shape: const StadiumBorder(),
-                side: const BorderSide(color: Color(0xFFE5E7EB), width: 1.5),
-                backgroundColor: const Color(0xFFF3F4F6),
-              ),
+              backgroundColor: const Color(0xFFF3F4F6),
               child: Text(
                 'Cancel',
                 style: GoogleFonts.poppins(
@@ -664,28 +606,16 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
           const SizedBox(width: 12),
           // Save — red gradient
           Expanded(
-            child: GestureDetector(
-              onTap: () {
+            child: PlatformButton(
+              onPressed: () {
                 if (_validate()) Navigator.pop(context);
               },
-              child: Container(
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [_red, _redLight],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  'Save',
-                  style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+              child: Text(
+                'Save',
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -1145,63 +1075,11 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     String? label, // always-visible small label on top (like _qualDropdown)
     TextInputType? keyboardType,
   }) {
-    if (label != null) {
-      // Wrap in a container with a persistent label, same style as _qualDropdown
-      return Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFF9FAFB),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: _borderGrey, width: 1.2),
-        ),
-        padding: const EdgeInsets.fromLTRB(16, 8, 12, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.poppins(fontSize: 11, color: _textGrey),
-            ),
-            TextField(
-              controller: controller,
-              keyboardType: keyboardType,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: _textDark,
-              ),
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: hint,
-                hintStyle: GoogleFonts.poppins(fontSize: 14, color: _textGrey),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return TextField(
+    return PlatformTextField(
       controller: controller,
       keyboardType: keyboardType,
-      style: GoogleFonts.poppins(fontSize: 14, color: _textDark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.poppins(fontSize: 14, color: _textGrey),
-        filled: true,
-        fillColor: const Color(0xFFF9FAFB),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _borderGrey, width: 1.2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _red, width: 1.5),
-        ),
-      ),
+      labelText: label,
+      hintText: hint,
     );
   }
 
@@ -1212,14 +1090,9 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     return Row(
       children: [
         Expanded(
-          child: OutlinedButton(
+          child: PlatformButton(
             onPressed: onCancel,
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 48),
-              shape: const StadiumBorder(),
-              side: const BorderSide(color: _borderGrey, width: 1.5),
-              backgroundColor: const Color(0xFFF3F4F6),
-            ),
+            backgroundColor: const Color(0xFFF3F4F6),
             child: Text(
               'Cancel',
               style: GoogleFonts.poppins(
@@ -1232,26 +1105,14 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: GestureDetector(
-            onTap: onSave,
-            child: Container(
-              height: 48,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [_red, _redLight],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                'Save',
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
+          child: PlatformButton(
+            onPressed: onSave,
+            child: Text(
+              'Save',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
               ),
             ),
           ),
@@ -1261,7 +1122,6 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
   }
 
   // ── PREFERENCES TAB ───────────────────────────────────────────────────────────
-
 
   Widget _buildPreferences() {
     return Column(
@@ -1277,16 +1137,27 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   onTap: () => _showWheelPicker(
                     title: 'Select Destination',
                     options: [
-                      'Canada', 'Australia', 'Germany', 'United Kingdom',
-                      'United States', 'New Zealand', 'Ireland', 'France',
-                      'Netherlands', 'Singapore', 'UAE', 'Other',
+                      'Canada',
+                      'Australia',
+                      'Germany',
+                      'United Kingdom',
+                      'United States',
+                      'New Zealand',
+                      'Ireland',
+                      'France',
+                      'Netherlands',
+                      'Singapore',
+                      'UAE',
+                      'Other',
                     ],
                     currentValue: _prefDestination,
                     onSelect: (v) => setState(() => _prefDestination = v),
                   ),
                   child: _qualField(
                     hint: 'Preferred destination',
-                    label: _prefDestination != null ? 'Preferred destination' : null,
+                    label: _prefDestination != null
+                        ? 'Preferred destination'
+                        : null,
                     value: _prefDestination,
                     isSelected: _prefDestination != null,
                   ),
@@ -1318,7 +1189,10 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                         onTap: () => _showWheelPicker(
                           title: 'Select Month',
                           options: [
-                            'Jan - Mar', 'Apr - June', 'Jul - Sep', 'Oct - Dec',
+                            'Jan - Mar',
+                            'Apr - June',
+                            'Jul - Sep',
+                            'Oct - Dec',
                           ],
                           currentValue: _prefStartMonth,
                           onSelect: (v) => setState(() => _prefStartMonth = v),
@@ -1340,15 +1214,22 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   onTap: () => _showWheelPicker(
                     title: 'Select Study Level',
                     options: [
-                      'Foundation', 'Undergraduate', 'Postgraduate',
-                      'Doctorate', 'PhD / Doctoral', 'Diploma', 'Certificate',
+                      'Foundation',
+                      'Undergraduate',
+                      'Postgraduate',
+                      'Doctorate',
+                      'PhD / Doctoral',
+                      'Diploma',
+                      'Certificate',
                     ],
                     currentValue: _prefStudyLevel,
                     onSelect: (v) => setState(() => _prefStudyLevel = v),
                   ),
                   child: _qualField(
                     hint: 'Preferred study level',
-                    label: _prefStudyLevel != null ? 'Preferred study level' : null,
+                    label: _prefStudyLevel != null
+                        ? 'Preferred study level'
+                        : null,
                     value: _prefStudyLevel,
                     isSelected: _prefStudyLevel != null,
                   ),
@@ -1371,22 +1252,11 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 GestureDetector(
                   onTap: _showSubjectPicker,
                   child: AbsorbPointer(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search subjects',
-                        hintStyle: GoogleFonts.poppins(fontSize: 14, color: _textGrey),
-                        prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
-                        filled: true,
-                        fillColor: const Color(0xFFF9FAFB),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: _borderGrey, width: 1.2),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: _red, width: 1.5),
-                        ),
+                    child: PlatformTextField(
+                      hintText: 'Search subjects',
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Color(0xFF9CA3AF),
                       ),
                     ),
                   ),
@@ -1398,7 +1268,9 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _prefSubjects.map((s) => _subjectChip(s)).toList(),
+                    children: _prefSubjects
+                        .map((s) => _subjectChip(s))
+                        .toList(),
                   ),
                 ],
               ],
@@ -1464,7 +1336,9 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
         return StatefulBuilder(
           builder: (context, setPickerState) {
             final filtered = allSubjects
-                .where((s) => s.toLowerCase().contains(_subjectQuery.toLowerCase()))
+                .where(
+                  (s) => s.toLowerCase().contains(_subjectQuery.toLowerCase()),
+                )
                 .toList();
 
             return Container(
@@ -1498,7 +1372,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                           color: _textDark,
                         ),
                       ),
-                      TextButton(
+                      PlatformTextButton(
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           'Done',
@@ -1513,24 +1387,14 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   ),
                   const SizedBox(height: 10),
                   // Search box in picker
-                  TextField(
+                  PlatformTextField(
                     controller: _subjectSearchCtrl,
-                    onChanged: (q) => setPickerState(() => _subjectQuery = q),
-                    style: GoogleFonts.poppins(fontSize: 14, color: _textDark),
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
-                      filled: true,
-                      fillColor: const Color(0xFFF9FAFB),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: _red),
-                      ),
+                    onFieldSubmitted: (q) =>
+                        setPickerState(() => _subjectQuery = q),
+                    hintText: 'Search',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Color(0xFF9CA3AF),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -1550,7 +1414,10 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                       runSpacing: 8,
                       children: _prefSubjects.map((s) {
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF5F3FF),
                             borderRadius: BorderRadius.circular(20),
@@ -1572,7 +1439,11 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                                   setState(() => _prefSubjects.remove(s));
                                   setPickerState(() {});
                                 },
-                                child: const Icon(Icons.close, size: 16, color: Color(0xFF6D28D9)),
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Color(0xFF6D28D9),
+                                ),
                               ),
                             ],
                           ),
@@ -1595,12 +1466,18 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                             s,
                             style: GoogleFonts.poppins(
                               fontSize: 16,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
                               color: _textDark,
                             ),
                           ),
                           trailing: isSelected
-                              ? const Icon(Icons.check, color: Colors.black, size: 20)
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.black,
+                                  size: 20,
+                                )
                               : null,
                           onTap: () {
                             setState(() {
@@ -1681,24 +1558,28 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 ),
               ),
               const Divider(height: 1, thickness: 1, color: Color(0xFFF3F4F6)),
-              
+
               // Picker
               Expanded(
                 child: CupertinoPicker(
                   itemExtent: 45,
-                  scrollController: FixedExtentScrollController(initialItem: tempIndex),
+                  scrollController: FixedExtentScrollController(
+                    initialItem: tempIndex,
+                  ),
                   onSelectedItemChanged: (index) => tempIndex = index,
                   children: options
-                      .map((d) => Center(
-                            child: Text(
-                              d,
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: _textDark,
-                              ),
+                      .map(
+                        (d) => Center(
+                          child: Text(
+                            d,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: _textDark,
                             ),
-                          ))
+                          ),
+                        ),
+                      )
                       .toList(),
                 ),
               ),

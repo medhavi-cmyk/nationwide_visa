@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/router.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import 'dart:io' show Platform;
 
 class RegistrationSuccessView extends StatelessWidget {
   const RegistrationSuccessView({super.key});
@@ -71,28 +73,18 @@ class RegistrationSuccessView extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Container(
+          SizedBox(
             width: double.infinity,
             height: 56,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primaryRed, AppColors.accentRed],
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: ElevatedButton(
+            child: PlatformButton(
               onPressed: () => context.go(AppRouter.home),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
               child: const Text(
                 "Go to Home",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

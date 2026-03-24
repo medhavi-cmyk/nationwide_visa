@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
 import '../viewmodels/email_verification_viewmodel.dart';
+import '../../../../core/widgets/platform/platform_scaffold.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 
 class EmailVerificationView extends StatelessWidget {
   const EmailVerificationView({super.key});
@@ -23,20 +26,12 @@ class _EmailVerificationContent extends StatelessWidget {
     final viewModel = context.watch<EmailVerificationViewModel>();
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return PlatformScaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          "Verify Email",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => viewModel.cancelSetup(context),
-        ),
+      title: "Verify Email",
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+        onPressed: () => viewModel.cancelSetup(context),
       ),
       body: SafeArea(
         child: Padding(
@@ -97,67 +92,39 @@ class _EmailVerificationContent extends StatelessWidget {
               const SizedBox(height: 48),
               
               // I have verified button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: viewModel.isChecking
-                      ? null
-                      : () => viewModel.manualCheckVerification(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryRed,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: viewModel.isChecking
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                        )
-                      : const Text(
-                          "I've Verified It",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
+              PlatformButton(
+                onPressed: viewModel.isChecking
+                    ? null
+                    : () => viewModel.manualCheckVerification(context),
+                child: viewModel.isChecking
+                    ? const PlatformIndicator(color: Colors.white)
+                    : const Text(
+                        "I've Verified It",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
                         ),
-                ),
+                      ),
               ),
               const SizedBox(height: 16),
               
               // Resend Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: OutlinedButton(
-                  onPressed: viewModel.isResending
-                      ? null
-                      : () => viewModel.sendVerificationEmail(),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.primaryRed, width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: viewModel.isResending
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(color: AppColors.primaryRed, strokeWidth: 2),
-                        )
-                      : const Text(
-                          "Resend Email",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.primaryRed,
-                          ),
+              PlatformButton(
+                onPressed: viewModel.isResending
+                    ? null
+                    : () => viewModel.sendVerificationEmail(),
+                backgroundColor: Colors.white,
+                child: viewModel.isResending
+                    ? const PlatformIndicator(color: AppColors.primaryRed)
+                    : const Text(
+                        "Resend Email",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryRed,
                         ),
-                ),
+                      ),
               ),
               
               const Spacer(),

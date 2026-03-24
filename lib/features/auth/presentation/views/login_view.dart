@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
 import 'account_exists_view.dart';
@@ -96,62 +99,11 @@ class LoginView extends StatelessWidget {
                             ),
                             const SizedBox(height: 14),
                             // Email Field
-                            TextFormField(
+                            PlatformTextField(
                               controller: viewModel.emailController,
-                              autofillHints: const [AutofillHints.email],
                               keyboardType: TextInputType.emailAddress,
                               validator: viewModel.validateEmail,
-                              onChanged: (_) => viewModel.validateForm(), // Real-time validation
-                              decoration: InputDecoration(
-                                labelText: "Email address",
-                                labelStyle: const TextStyle(
-                                  color: AppColors.textGrey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                floatingLabelStyle: const TextStyle(
-                                  color: AppColors.primaryRed,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.borderGrey,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.borderGrey,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.primaryRed,
-                                    width: 2,
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.primaryRed,
-                                  ),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                  borderSide: const BorderSide(
-                                    color: AppColors.primaryRed,
-                                    width: 2,
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
-                              ),
+                              labelText: "Email address",
                             ),
                             if (viewModel.showSuggestions) ...[
                               const SizedBox(height: 12),
@@ -225,21 +177,10 @@ class LoginView extends StatelessWidget {
                             ),
                             const SizedBox(height: 32),
                             // Continue Button
-                            Container(
+                            SizedBox(
                               width: double.infinity,
                               height: 56,
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryRed,
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primaryRed.withOpacity(0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: ElevatedButton(
+                              child: PlatformButton(
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
@@ -255,23 +196,10 @@ class LoginView extends StatelessWidget {
                                           },
                                         );
                                       },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundColor: Colors.white,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  elevation: 0,
-                                ),
                                 child: viewModel.isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
+                                    ? const PlatformIndicator(
+                                        color: Colors.white,
+                                        radius: 10,
                                       )
                                     : const Text(
                                         "Continue",

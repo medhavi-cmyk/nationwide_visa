@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/app_colors.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/profile_viewmodel.dart';
 import '../widgets/registration_progress_bar.dart';
 import 'registration_success_view.dart';
+import 'dart:io' show Platform;
 
 class ProfileSetupView extends StatelessWidget {
   const ProfileSetupView({super.key});
@@ -194,16 +197,10 @@ class ProfileSetupView extends StatelessWidget {
           // Sign Up Button - Fixed at bottom
           Padding(
             padding: const EdgeInsets.only(top: 12),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: 54,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.primaryRed, AppColors.accentRed],
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: ElevatedButton(
+              child: PlatformButton(
                 onPressed: viewModel.isLoading
                     ? null
                     : () async {
@@ -220,26 +217,18 @@ class ProfileSetupView extends StatelessWidget {
                           });
                         }
                       },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.white,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
                 child: viewModel.isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                    ? const PlatformIndicator(
+                        color: Colors.white,
+                        radius: 10,
                       )
                     : const Text(
                         "Sign up",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
               ),
             ),

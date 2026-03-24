@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:nwdapp/features/auth/presentation/views/otp_verification_view.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../core/widgets/platform/platform_button.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
+import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/register_viewmodel.dart';
 import '../widgets/city_picker.dart';
 import '../widgets/country_picker.dart';
@@ -180,46 +183,37 @@ class RegisterView extends StatelessWidget {
                             ),
                             const SizedBox(height: 16),
 
-                            TextFormField(
+                            PlatformTextField(
                               controller: viewModel.phoneController,
-                              autofillHints: const [AutofillHints.telephoneNumber],
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
                               keyboardType: TextInputType.number,
                               validator: viewModel.validatePhone,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(10),
-                                PhoneFormatter(),
-                              ],
-                              decoration:
-                                  _inputDecoration(context, "Phone number").copyWith(
-                                prefixIcon: Padding(
-                                  padding: const EdgeInsets.only(left: 16, right: 12),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(2),
-                                        child: Image.network(
-                                          "https://flagcdn.com/w40/in.png",
-                                          width: 24,
-                                          height: 16,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) =>
-                                              const Icon(Icons.flag_outlined, size: 20),
-                                        ),
+                              labelText: "Phone number",
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.only(left: 16, right: 12),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(2),
+                                      child: Image.network(
+                                        "https://flagcdn.com/w40/in.png",
+                                        width: 24,
+                                        height: 16,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) =>
+                                            const Icon(Icons.flag_outlined, size: 20),
                                       ),
-                                      const SizedBox(width: 8),
-                                      const Text(
-                                        "+91",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      "+91",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -236,22 +230,19 @@ class RegisterView extends StatelessWidget {
  
                              if (!viewModel.isGoogleOnboarding) ...[
                                const SizedBox(height: 16),
-                               TextFormField(
+                               PlatformTextField(
                                  controller: viewModel.passwordController,
-                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                  obscureText: viewModel.obscurePassword,
                                  validator: viewModel.validatePassword,
-                                 decoration:
-                                     _inputDecoration(context, "Set your password").copyWith(
-                                   suffixIcon: IconButton(
-                                     icon: Icon(
-                                       viewModel.obscurePassword
-                                           ? Icons.visibility_off_outlined
-                                           : Icons.visibility_outlined,
-                                       color: Colors.grey[400],
-                                     ),
-                                     onPressed: () => viewModel.togglePasswordVisibility(),
+                                 labelText: "Set your password",
+                                 suffixIcon: IconButton(
+                                   icon: Icon(
+                                     viewModel.obscurePassword
+                                         ? Icons.visibility_off_outlined
+                                         : Icons.visibility_outlined,
+                                     color: Colors.grey[400],
                                    ),
+                                   onPressed: () => viewModel.togglePasswordVisibility(),
                                  ),
                                ),
                              ],
@@ -312,21 +303,10 @@ class RegisterView extends StatelessWidget {
 
                             const SizedBox(height: 32),
 
-                            Container(
+                            SizedBox(
                               width: double.infinity,
                               height: 56,
-                              decoration: BoxDecoration(
-                                color: AppColors.primaryRed,
-                                borderRadius: BorderRadius.circular(30),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primaryRed.withValues(alpha: 0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
-                              ),
-                              child: ElevatedButton(
+                              child: PlatformButton(
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
@@ -353,23 +333,10 @@ class RegisterView extends StatelessWidget {
                                             );
                                           }
                                       },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundColor: Colors.white,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  elevation: 0,
-                                ),
                                 child: viewModel.isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
+                                    ? const PlatformIndicator(
+                                        color: Colors.white,
+                                        radius: 10,
                                       )
                                     : const Text(
                                         "Continue",
@@ -454,16 +421,12 @@ class RegisterView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextFormField(
+        PlatformTextField(
           controller: controller,
-          autofillHints: autofillHints,
-          decoration: _inputDecoration(context, label).copyWith(
-            fillColor: enabled ? Colors.grey[50] : Colors.grey[100],
-          ),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          labelText: label,
+          enabled: enabled,
           validator: validator,
           readOnly: readOnly,
-          enabled: enabled,
           onTap: onTap,
         ),
         if (hint != null) ...[
@@ -489,42 +452,6 @@ class RegisterView extends StatelessWidget {
     if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
       debugPrint('Could not launch $urlString');
     }
-  }
-
-  InputDecoration _inputDecoration(BuildContext context, String label) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: TextStyle(
-        color: Colors.grey[400],
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.grey[200]!),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.grey[200]!),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.primaryRed, width: 2),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.red, width: 1),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.red, width: 2),
-      ),
-      errorMaxLines: 3,
-      errorStyle: const TextStyle(fontSize: 12, height: 1.2),
-      filled: true,
-      fillColor: Colors.grey[50],
-    );
   }
 }
 

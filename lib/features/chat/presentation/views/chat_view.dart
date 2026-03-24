@@ -7,6 +7,8 @@ import 'package:zego_zim/zego_zim.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/services/zego_chat_service.dart';
 import '../widgets/attachment_bottom_sheet.dart';
+import '../../../../core/widgets/platform/platform_scaffold.dart';
+import '../../../../core/widgets/platform/platform_text_field.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -205,108 +207,103 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PlatformScaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leadingWidth: 40,
-        leading: GestureDetector(
-          onTap: () => context.go('/home'),
-          child: const Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: AppColors.textBlack,
-              size: 20,
-            ),
+      titleWidget: Row(
+        children: [
+          Stack(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: _chatService.currentUserID == "test_counselor"
+                    ? const NetworkImage(
+                        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop',
+                      )
+                    : const NetworkImage(
+                        'https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?q=80&w=687&auto=format&fit=crop',
+                      ),
+                backgroundColor: Colors.purple.withValues(alpha: 0.1),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-        title: Row(
-          children: [
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: _chatService.currentUserID == "test_counselor"
-                      ? const NetworkImage(
-                          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop',
-                        )
-                      : const NetworkImage(
-                          'https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?q=80&w=687&auto=format&fit=crop',
-                        ),
-                  backgroundColor: Colors.purple.withValues(alpha: 0.1),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _chatService.currentUserID == "test_counselor"
+                    ? "Counselor (Test)"
+                    : "User (Test)",
+                style: const TextStyle(
+                  color: AppColors.textBlack,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
-                    ),
-                  ),
+              ),
+              Text(
+                _chatService.currentUserID == "test_counselor"
+                    ? "Counselor"
+                    : "User",
+                style: TextStyle(
+                  color: AppColors.textGrey.withValues(alpha: 0.7),
+                  fontSize: 14,
                 ),
-              ],
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _chatService.currentUserID == "test_counselor"
-                      ? "Counselor (Test)"
-                      : "User (Test)",
-                  style: TextStyle(
-                    color: AppColors.textBlack,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  _chatService.currentUserID == "test_counselor"
-                      ? "Counselor"
-                      : "User",
-                  style: TextStyle(
-                    color: AppColors.textGrey.withValues(alpha: 0.7),
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.settings, color: AppColors.primaryRed),
-            onSelected: (value) async {
-              if (value == 'counselor') {
-                await _chatService.login("test_counselor", "Test Counselor");
-                setState(() {
-                  _targetUserID = "test_user";
-                  _messages.clear();
-                });
-              } else {
-                await _chatService.login("test_user", "Test User");
-                setState(() {
-                  _targetUserID = "test_counselor";
-                  _messages.clear();
-                });
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'user', child: Text('Login as User')),
-              const PopupMenuItem(
-                value: 'counselor',
-                child: Text('Login as Counselor'),
               ),
             ],
           ),
         ],
       ),
+      leading: GestureDetector(
+        onTap: () => context.go('/home'),
+        child: const Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.textBlack,
+            size: 20,
+          ),
+        ),
+      ),
+      actions: [
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.settings, color: AppColors.primaryRed),
+          onSelected: (value) async {
+            if (value == 'counselor') {
+              await _chatService.login("test_counselor", "Test Counselor");
+              setState(() {
+                _targetUserID = "test_user";
+                _messages.clear();
+              });
+            } else {
+              await _chatService.login("test_user", "Test User");
+              setState(() {
+                _targetUserID = "test_counselor";
+                _messages.clear();
+              });
+            }
+          },
+          itemBuilder: (context) => [
+            const PopupMenuItem(value: 'user', child: Text('Login as User')),
+            const PopupMenuItem(
+              value: 'counselor',
+              child: Text('Login as Counselor'),
+            ),
+          ],
+        ),
+      ],
       body: Column(
         children: [
           Expanded(
@@ -486,36 +483,18 @@ class _ChatViewState extends State<ChatView> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F4F6),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: const Color(0xFF1F2937),
-                      ), // Dark border from screenshot
-                    ),
-                    child: TextField(
-                      controller: _commentController,
-                      onChanged: (text) {
-                        _typingTimer?.cancel();
-                        _chatService.sendTypingStatus(_targetUserID, true);
-                        _typingTimer = Timer(const Duration(seconds: 3), () {
-                          _chatService.sendTypingStatus(_targetUserID, false);
-                        });
-                        setState(() {});
-                      },
-                      onSubmitted: (_) => _sendMessage(),
-                      decoration: const InputDecoration(
-                        hintText: "Write a message",
-                        hintStyle: TextStyle(
-                          color: Color(0xFF9CA3AF),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
+                  child: PlatformTextField(
+                    controller: _commentController,
+                    hintText: "Write a message",
+                    onChanged: (text) {
+                      _typingTimer?.cancel();
+                      _chatService.sendTypingStatus(_targetUserID, true);
+                      _typingTimer = Timer(const Duration(seconds: 3), () {
+                        _chatService.sendTypingStatus(_targetUserID, false);
+                      });
+                      setState(() {});
+                    },
+                    onFieldSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 const SizedBox(width: 12),
