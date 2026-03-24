@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 import '../../app_colors.dart';
 
 class PlatformIndicator extends StatelessWidget {
@@ -15,7 +14,8 @@ class PlatformIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
       return CupertinoActivityIndicator(
         color: color,
         radius: radius,

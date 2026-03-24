@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 
 class PlatformTextButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -16,7 +15,8 @@ class PlatformTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
       return CupertinoButton(
         onPressed: onPressed,
         padding: padding ?? EdgeInsets.zero,

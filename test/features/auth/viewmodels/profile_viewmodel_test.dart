@@ -3,9 +3,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:nwdapp/features/auth/presentation/viewmodels/profile_viewmodel.dart';
 import 'package:nwdapp/features/auth/data/auth_service.dart';
 import 'package:nwdapp/features/auth/data/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 class FakeUserModel extends Fake implements UserModel {}
+class MockUser extends Mock implements User {}
 
 void main() {
   late ProfileViewModel viewModel;
@@ -81,6 +83,11 @@ void main() {
       viewModel.setStartYear('2026');
       viewModel.setMonthRange('Apr - June');
 
+      final mockUser = MockUser();
+      when(() => mockUser.uid).thenReturn('test-uid');
+      when(() => mockUser.email).thenReturn('test@example.com');
+      when(() => mockAuthService.currentUser).thenReturn(mockUser);
+      when(() => mockAuthService.getUserData(any())).thenAnswer((_) async => null);
       when(() => mockAuthService.saveUserData(any())).thenAnswer((_) async {});
 
       final success = await viewModel.saveProfile();

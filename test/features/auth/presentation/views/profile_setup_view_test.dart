@@ -95,7 +95,7 @@ void main() {
 
     await pumpAndShowProfile(tester);
 
-    final signUpBtn = find.widgetWithText(ElevatedButton, 'Sign up');
+    final signUpBtn = find.text('Sign up');
     await tester.ensureVisible(signUpBtn);
     await tester.tap(signUpBtn);
     await tester.pumpAndSettle();

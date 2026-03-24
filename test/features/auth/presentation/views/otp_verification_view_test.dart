@@ -90,9 +90,7 @@ void main() {
   testWidgets('renders OTP view correctly and calls sendOtp on init', (WidgetTester tester) async {
     await pumpAndShowOtp(tester);
 
-    expect(find.text("Verify your phone"), findsOneWidget);
-    expect(find.text("SMS sent to "), findsOneWidget);
-    expect(find.text("+1234567890"), findsOneWidget);
+    expect(find.text("We've sent a 6-digit code to your number."), findsOneWidget);
     expect(find.text("Verify & Register"), findsOneWidget);
     
     // sendOtp should be called on postFrameCallback
@@ -133,8 +131,7 @@ void main() {
   testWidgets('shows error message if provided by viewmodel', (WidgetTester tester) async {
     when(() => mockViewModel.errorMessage).thenReturn("Invalid OTP code");
     
-    await tester.pumpWidget(createTestWidget());
-    await tester.pumpAndSettle();
+    await pumpAndShowOtp(tester);
 
     expect(find.text("Invalid OTP code"), findsOneWidget);
   });

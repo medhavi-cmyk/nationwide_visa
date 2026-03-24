@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 import '../../app_colors.dart';
 
 class PlatformTextField extends StatelessWidget {
@@ -41,7 +40,8 @@ class PlatformTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

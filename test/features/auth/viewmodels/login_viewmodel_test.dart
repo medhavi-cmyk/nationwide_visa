@@ -6,8 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 class MockUserCredential extends Mock implements UserCredential {}
+class MockUser extends Mock implements User {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late LoginViewModel viewModel;
   late MockAuthService mockAuthService;
 
@@ -88,7 +90,11 @@ void main() {
     });
 
     test('signInWithGoogle returns true if user has a complete profile', () async {
-      when(() => mockAuthService.signInWithGoogle()).thenAnswer((_) async => MockUserCredential());
+      final mockUser = MockUser();
+      when(() => mockUser.uid).thenReturn('test-uid');
+      final mockCredential = MockUserCredential();
+      when(() => mockCredential.user).thenReturn(mockUser);
+      when(() => mockAuthService.signInWithGoogle()).thenAnswer((_) async => mockCredential);
       when(() => mockAuthService.isUserComplete(any())).thenAnswer((_) async => true);
 
       final result = await viewModel.signInWithGoogle();

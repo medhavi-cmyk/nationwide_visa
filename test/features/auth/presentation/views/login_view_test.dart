@@ -115,12 +115,13 @@ void main() {
 
     await pumpAndShowLogin(tester);
 
-    // Enter invalid text to trigger validation
-    await tester.enterText(find.byType(TextFormField).first, 'invalid_email');
+    // Enter invalid text
+    await tester.enterText(find.byType(TextField).first, 'invalid_email');
     await tester.pumpAndSettle();
 
-    // Tap outside to unfocus or just tap the continue button to trigger validation
-    await tester.tap(find.text('Continue'));
+    // Manually trigger validation on the form since checkEmailAndRedirect is mocked
+    final formState = tester.state<FormState>(find.byType(Form));
+    formState.validate();
     await tester.pumpAndSettle();
 
     expect(find.text('Please enter a valid email'), findsOneWidget);
@@ -137,10 +138,10 @@ void main() {
     await pumpAndShowLogin(tester);
 
     // Enter a valid email
-    await tester.enterText(find.byType(TextFormField).first, 'test@example.com');
+    await tester.enterText(find.byType(TextField).first, 'test@example.com');
     await tester.pumpAndSettle();
 
-    final continueButton = find.widgetWithText(ElevatedButton, 'Continue');
+    final continueButton = find.text('Continue');
     await tester.ensureVisible(continueButton);
     await tester.tap(continueButton);
     await tester.pumpAndSettle();

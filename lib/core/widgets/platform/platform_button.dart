@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 import '../../app_colors.dart';
 
 class PlatformButton extends StatelessWidget {
@@ -23,7 +22,8 @@ class PlatformButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
       return CupertinoButton(
         padding: padding ?? EdgeInsets.zero,
         onPressed: onPressed,

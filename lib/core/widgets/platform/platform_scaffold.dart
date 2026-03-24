@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 
 class PlatformScaffold extends StatelessWidget {
   final Widget body;
@@ -24,7 +23,8 @@ class PlatformScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) {
       return CupertinoPageScaffold(
         backgroundColor: backgroundColor ?? CupertinoColors.systemBackground,
         navigationBar: title != null || titleWidget != null || leading != null || actions != null

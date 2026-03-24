@@ -84,8 +84,7 @@ void main() {
   }
 
   testWidgets('renders account exists correctly', (WidgetTester tester) async {
-    await tester.pumpWidget(createTestWidget());
-    await tester.pumpAndSettle();
+    await pumpAndShowLogin(tester);
 
     expect(find.text("Your account exists"), findsOneWidget);
     expect(find.text("test@example.com"), findsOneWidget);
@@ -95,12 +94,12 @@ void main() {
   });
 
   testWidgets('calls signInWithEmail when Log In is tapped', (WidgetTester tester) async {
-    when(() => mockViewModel.signInWithEmail(any())).thenAnswer((_) async => false);
+    when(() => mockViewModel.signInWithEmail(any())).thenAnswer((_) async => true);
     passwordController.text = "password123";
 
     await pumpAndShowLogin(tester);
 
-    final loginBtn = find.widgetWithText(ElevatedButton, 'Log In');
+    final loginBtn = find.text('Log In');
     await tester.ensureVisible(loginBtn);
     await tester.tap(loginBtn);
     await tester.pumpAndSettle();

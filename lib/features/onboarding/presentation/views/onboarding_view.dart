@@ -68,18 +68,20 @@ class _OnboardingViewState extends State<OnboardingView> {
             right: 24,
             child: PlatformButton(
               onPressed: () {
-                if (_currentPage < 2) {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                } else {
-                  LoginView.show(context);
-                }
+                LoginView.show(context);
+                // if (_currentPage < 2) {
+                //   _pageController.nextPage(
+                //     duration: const Duration(milliseconds: 300),
+                //     curve: Curves.easeInOut,
+                //   );
+                // } else {
+                //   LoginView.show(context);
+                // }
               },
               backgroundColor: Colors.white,
               child: Text(
-                _currentPage == 2 ? "Get Started" : "Continue",
+                // _currentPage == 2 ? "Get Started" : "Continue",
+                "Get Started",
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
