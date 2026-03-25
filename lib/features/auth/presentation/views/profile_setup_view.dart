@@ -68,50 +68,51 @@ class ProfileSetupView extends StatelessWidget {
                         : const ClampingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 16),
                         const Text(
-                          "Let's guide you like we did\nour 85K+ students.",
-                          textAlign: TextAlign.center,
+                          "Step 3: Profile Setup",
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 32,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF1F2937),
-                            height: 1.2,
+                            color: Color(0xFF05345C),
+                            letterSpacing: -0.5,
                           ),
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          "Can you quickly fill these out?",
-                          textAlign: TextAlign.center,
+                          "Let's guide you like we did our 85K+ students. Can you quickly fill these out?",
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                            color: Color(0xFF3D618C),
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 24),
                         // Scaled Illustration
-                        Container(
-                          height: viewModel.isAnyExpanded
-                              ? (screenWidth < 350 ? 180 : 260)
-                              : (screenWidth < 350 ? 140 : 200),
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                'assets/profile_setup_illustration.png',
+                        Center(
+                          child: Container(
+                            height: viewModel.isAnyExpanded
+                                ? (screenWidth < 350 ? 140 : 180)
+                                : (screenWidth < 350 ? 160 : 220),
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'assets/profile_setup_illustration.png',
+                                ),
+                                fit: BoxFit.contain,
                               ),
-                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
                         // Study Level Input
                         _buildSelectionField(
                           icon: Icons.school_outlined,
-                          label: "Study level",
+                          label: "STUDY LEVEL",
                           value: viewModel.selectedStudyLevel,
                           isExpanded: viewModel.isStudyLevelExpanded,
                           onTap: () => viewModel.toggleStudyLevelExpansion(),
@@ -143,7 +144,7 @@ class ProfileSetupView extends StatelessWidget {
                         // Start Date Input
                         _buildSelectionField(
                           icon: Icons.calendar_today_outlined,
-                          label: "Start date",
+                          label: "START DATE",
                           value: viewModel.selectedStartYear,
                           isExpanded: viewModel.isStartDateExpanded,
                           onTap: () => viewModel.toggleStartDateExpansion(),
@@ -156,7 +157,7 @@ class ProfileSetupView extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1F2937),
+                                  color: Color(0xFF05345C),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -181,7 +182,7 @@ class ProfileSetupView extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1F2937),
+                                  color: Color(0xFF05345C),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -211,31 +212,44 @@ class ProfileSetupView extends StatelessWidget {
                 ),
                 // Sign Up Button - Fixed at bottom
                 Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: SizedBox(
+                  padding: const EdgeInsets.only(top: 12, bottom: 12),
+                  child: Container(
                     width: double.infinity,
-                    height: 54,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFBF0C0F),
+                          Color(0xFFFD4135),
+                        ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0x33BF0C0F),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
                     child: PlatformButton(
+                      backgroundColor: Colors.transparent,
+                      borderRadius: 30,
                       onPressed: viewModel.isLoading
                           ? null
                           : () async {
-                              debugPrint(
-                                "PROFILE_VIEW: 'Sign up' button tapped",
-                              );
                               final success = await viewModel.saveProfile();
                               if (success && context.mounted) {
-                                final parentContext = Navigator.of(
-                                  context,
-                                ).context;
+                                final parentContext = Navigator.of(context).context;
                                 Navigator.pop(context); // Close Profile Setup
 
                                 Future.delayed(
                                   const Duration(milliseconds: 100),
                                   () {
                                     if (parentContext.mounted) {
-                                      RegistrationSuccessView.show(
-                                        parentContext,
-                                      );
+                                      RegistrationSuccessView.show(parentContext);
                                     }
                                   },
                                 );
@@ -246,13 +260,23 @@ class ProfileSetupView extends StatelessWidget {
                               color: Colors.white,
                               radius: 10,
                             )
-                          : const Text(
-                              "Sign up",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                          : const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Finish Setup",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: Colors.white,
+                                ),
+                              ],
                             ),
                     ),
                   ),

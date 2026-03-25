@@ -57,9 +57,7 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<RegisterViewModel>();
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
 
     return DraggableScrollableSheet(
       initialChildSize: screenHeight < 600 ? 0.95 : 0.92,
@@ -67,6 +65,8 @@ class RegisterView extends StatelessWidget {
       maxChildSize: screenHeight < 600 ? 0.95 : 0.92,
       expand: false,
       builder: (context, scrollController) {
+        final viewModel = context.watch<RegisterViewModel>();
+
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, result) async {
@@ -127,136 +127,192 @@ class RegisterView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 16),
-                            Text(
-                              "Choose from best country to work or study abroad",
-                              textAlign: TextAlign.center,
+                            const SizedBox(height: 24),
+                            const Text(
+                              "Create your account",
                               style: TextStyle(
-                                fontSize: screenWidth < 350 ? 24 : 28,
+                                fontSize: 32,
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.textBlack,
-                                height: 1.1,
+                                color: Color(0xFF05345C), // on-surface
+                                letterSpacing: -0.5,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              "Let's make it happen.",
+                            const Text(
+                              "Please fill in your details to start your journey with us.",
                               style: TextStyle(
-                                fontSize: screenWidth < 350 ? 16 : 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textBlack,
+                                fontSize: 14,
+                                color: Color(0xFF3D618C), // on-surface-variant
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                             const SizedBox(height: 32),
 
-                            _buildField(
-                              context: context,
-                              label: "Full name",
-                              hint: "As per your passport or ID proof",
+                            _buildLabeledField(
+                              label: "FULL NAME",
+                              hint: "e.g. John Doe",
+                              subHint: "As per your passport or ID proof",
                               controller: viewModel.nameController,
                               validator: viewModel.validateFullName,
                               autofillHints: [AutofillHints.name],
                             ),
-                            const SizedBox(height: 16),
-                            _buildField(
-                              context: context,
-                              label: "Country you live in",
-                              controller: viewModel.countryController,
-                              validator: viewModel.validateCountry,
-                              readOnly: true,
-                              onTap: () =>
-                                  _showCountryPicker(context, viewModel),
+                            const SizedBox(height: 20),
+
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: _buildLabeledField(
+                                    label: "COUNTRY",
+                                    hint: "Select Country",
+                                    controller: viewModel.countryController,
+                                    validator: viewModel.validateCountry,
+                                    readOnly: true,
+                                    suffixIcon: const Icon(
+                                      Icons.expand_more,
+                                      color: Color(0x993D618C),
+                                    ),
+                                    onTap: () =>
+                                        _showCountryPicker(context, viewModel),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: _buildLabeledField(
+                                    label: "CITY",
+                                    hint: "e.g. London",
+                                    controller: viewModel.cityController,
+                                    validator: viewModel.validateCity,
+                                    readOnly: true,
+                                    enabled: viewModel.isCountrySelected,
+                                    onTap: viewModel.isCountrySelected
+                                        ? () =>
+                                            _showCityPicker(context, viewModel)
+                                        : null,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 16),
-                            _buildField(
-                              context: context,
-                              label: "City you live in",
-                              controller: viewModel.cityController,
-                              validator: viewModel.validateCity,
-                              readOnly: true,
-                              enabled: viewModel.isCountrySelected,
-                              onTap: viewModel.isCountrySelected
-                                  ? () => _showCityPicker(context, viewModel)
-                                  : null,
-                            ),
-                            const SizedBox(height: 16),
-                            _buildField(
-                              context: context,
-                              label: "Nationality",
+                            const SizedBox(height: 20),
+
+                            _buildLabeledField(
+                              label: "NATIONALITY",
+                              hint: "Search nationality",
                               controller: viewModel.nationalityController,
                               validator: viewModel.validateNationality,
                               readOnly: true,
+                              suffixIcon: const Icon(
+                                Icons.public,
+                                color: Color(0x993D618C),
+                                size: 20,
+                              ),
                               onTap: () =>
                                   _showNationalityPicker(context, viewModel),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 20),
 
-                            PlatformTextField(
-                              controller: viewModel.phoneController,
-                              keyboardType: TextInputType.number,
-                              validator: viewModel.validatePhone,
-                              labelText: "Phone number",
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 16,
-                                  right: 12,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(2),
-                                      child: Image.network(
-                                        "https://flagcdn.com/w40/in.png",
-                                        width: 24,
-                                        height: 16,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(
-                                                  Icons.flag_outlined,
-                                                  size: 20,
-                                                ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Text(
-                                      "+91",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            // Phone Number Section
+                            const Text(
+                              "PHONE NUMBER",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF3D618C),
+                                letterSpacing: 1.0,
                               ),
                             ),
+                            const SizedBox(height: 8),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[50],
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: const Color(0x1A5A7DA9),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(2),
+                                        child: Image.network(
+                                          "https://flagcdn.com/w40/in.png",
+                                          width: 24,
+                                          height: 16,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const Icon(
+                                            Icons.flag_outlined,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Text(
+                                        "+91",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF05345C),
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.keyboard_arrow_down,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: PlatformTextField(
+                                    controller: viewModel.phoneController,
+                                    keyboardType: TextInputType.number,
+                                    validator: viewModel.validatePhone,
+                                    hintText: "07700 900000",
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
 
-                            const SizedBox(height: 16),
-                            _buildField(
-                              context: context,
-                              label: "Where do you wish to go?",
+                            _buildLabeledField(
+                              label: "DESTINATION",
+                              hint: "Where are you heading?",
                               controller: viewModel.studyCountryController,
                               validator: viewModel.validateStudyCountry,
                               readOnly: true,
+                              suffixIcon: const Icon(
+                                Icons.near_me,
+                                color: Color(0x993D618C),
+                                size: 20,
+                              ),
                               onTap: () =>
                                   _showStudyCountryPicker(context, viewModel),
                             ),
 
                             if (!viewModel.isGoogleOnboarding) ...[
-                              const SizedBox(height: 16),
-                              PlatformTextField(
+                              const SizedBox(height: 20),
+                              _buildLabeledField(
+                                label: "PASSWORD",
+                                hint: "Min. 8 characters",
                                 controller: viewModel.passwordController,
                                 obscureText: viewModel.obscurePassword,
                                 validator: viewModel.validatePassword,
-                                labelText: "Set your password",
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     viewModel.obscurePassword
                                         ? Icons.visibility_off_outlined
                                         : Icons.visibility_outlined,
-                                    color: Colors.grey[400],
+                                    color: const Color(0x993D618C),
+                                    size: 20,
                                   ),
                                   onPressed: () =>
                                       viewModel.togglePasswordVisibility(),
@@ -270,15 +326,19 @@ class RegisterView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  height: 24,
-                                  width: 24,
+                                  height: 22,
+                                  width: 22,
                                   child: Checkbox(
                                     value: viewModel.agreedToTerms,
                                     onChanged: (val) =>
                                         viewModel.toggleAgreedToTerms(val),
                                     activeColor: AppColors.primaryRed,
+                                    side: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
+                                      borderRadius: BorderRadius.circular(6),
                                     ),
                                   ),
                                 ),
@@ -287,14 +347,14 @@ class RegisterView extends StatelessWidget {
                                   child: RichText(
                                     text: TextSpan(
                                       style: const TextStyle(
-                                        fontSize: 13,
-                                        color: AppColors.textGrey,
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: Color(0xFF3D618C),
+                                        height: 1.4,
                                       ),
                                       children: [
                                         const TextSpan(text: "I agree to the "),
                                         TextSpan(
-                                          text: "Terms & Conditions",
+                                          text: "Terms of Service",
                                           style: const TextStyle(
                                             color: AppColors.primaryRed,
                                             fontWeight: FontWeight.bold,
@@ -307,7 +367,7 @@ class RegisterView extends StatelessWidget {
                                         ),
                                         const TextSpan(text: " and "),
                                         TextSpan(
-                                          text: "Privacy Policy.",
+                                          text: "Privacy Policy",
                                           style: const TextStyle(
                                             color: AppColors.primaryRed,
                                             fontWeight: FontWeight.bold,
@@ -318,6 +378,9 @@ class RegisterView extends StatelessWidget {
                                               "https://www.nationwidevisas.com/privacy-policy/",
                                             ),
                                         ),
+                                        const TextSpan(
+                                          text: ", including cookie use.",
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -327,10 +390,30 @@ class RegisterView extends StatelessWidget {
 
                             const SizedBox(height: 32),
 
-                            SizedBox(
+                            Container(
                               width: double.infinity,
-                              height: 56,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFBF0C0F),
+                                    Color(0xFFFD4135),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0x33BF0C0F),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
                               child: PlatformButton(
+                                backgroundColor: Colors.transparent,
+                                borderRadius: 30,
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
@@ -386,14 +469,51 @@ class RegisterView extends StatelessWidget {
                                         color: Colors.white,
                                         radius: 10,
                                       )
-                                    : const Text(
-                                        "Continue",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w800,
-                                          color: Colors.white,
-                                        ),
+                                    : const Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Continue",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Icon(
+                                            Icons.chevron_right,
+                                            color: Colors.white,
+                                          ),
+                                        ],
                                       ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Center(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF3D618C),
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text: "Already have an account? ",
+                                    ),
+                                    TextSpan(
+                                      text: "Sign In",
+                                      style: const TextStyle(
+                                        color: AppColors.primaryRed,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.pop(context);
+                                        },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 40),
@@ -467,39 +587,54 @@ class RegisterView extends StatelessWidget {
     });
   }
 
-  Widget _buildField({
-    required BuildContext context,
+  Widget _buildLabeledField({
     required String label,
-    String? hint,
+    required String hint,
+    String? subHint,
     TextEditingController? controller,
     String? Function(String?)? validator,
     bool readOnly = false,
     bool enabled = true,
+    bool obscureText = false,
     VoidCallback? onTap,
+    Widget? suffixIcon,
     Iterable<String>? autofillHints,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF3D618C), // on-surface-variant
+              letterSpacing: 1.0,
+            ),
+          ),
+        ),
         PlatformTextField(
           controller: controller,
-          // labelText: label,
-          hintText: label,
+          hintText: hint,
           enabled: enabled,
           validator: validator,
           readOnly: readOnly,
+          obscureText: obscureText,
           onTap: onTap,
+          suffixIcon: suffixIcon,
         ),
-        if (hint != null) ...[
+        if (subHint != null) ...[
           const SizedBox(height: 4),
           Padding(
-            padding: const EdgeInsets.only(left: 20),
+            padding: const EdgeInsets.only(left: 5),
             child: Text(
-              hint,
+              subHint,
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),

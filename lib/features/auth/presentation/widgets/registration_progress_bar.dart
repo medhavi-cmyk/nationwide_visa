@@ -12,62 +12,67 @@ class RegistrationProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String stepTitle = "";
+    switch (currentStep) {
+      case 1:
+        stepTitle = "PERSONAL DETAILS";
+        break;
+      case 2:
+        stepTitle = "VERIFICATION";
+        break;
+      case 3:
+        stepTitle = "SUCCESS";
+        break;
+    }
+
     return Column(
       children: [
-        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Step $currentStep of $totalSteps",
+                "STEP $currentStep OF $totalSteps",
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textGrey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primaryRed,
+                  letterSpacing: 0.5,
                 ),
               ),
               Text(
-                "${((currentStep / totalSteps) * 100).toInt()}%",
+                stepTitle,
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primaryRed,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF526074), // on-secondary-fixed-variant
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Stack(
             children: [
               Container(
-                height: 6,
+                height: 3,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(3),
+                  color: const Color(0xFFDCE9FF), // surface-container-high
+                  borderRadius: BorderRadius.circular(1.5),
                 ),
               ),
               FractionallySizedBox(
                 widthFactor: currentStep / totalSteps,
                 child: Container(
-                  height: 6,
+                  height: 3,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primaryRed, AppColors.accentRed],
-                    ),
-                    borderRadius: BorderRadius.circular(3),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryRed.withValues(alpha: 0.2),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    color: AppColors.primaryRed,
+                    borderRadius: BorderRadius.circular(1.5),
                   ),
                 ),
               ),

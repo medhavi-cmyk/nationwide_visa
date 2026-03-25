@@ -225,7 +225,9 @@ class AuthService {
           user.country != null &&
           user.city != null &&
           user.nationality != null &&
-          user.studyCountry != null;
+          user.studyCountry != null &&
+          user.profession != null &&
+          user.gradingSystem != null;
       _isCompleteCache[user.uid] = isComplete;
 
       if (isComplete) {
