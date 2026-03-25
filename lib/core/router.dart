@@ -31,6 +31,8 @@ class AppRouter {
     ]),
     redirect: (context, state) async {
       final user = FirebaseAuth.instance.currentUser;
+      debugPrint("ROUTER: Redirect check - User: ${user?.email}, Location: ${state.matchedLocation}");
+
       final bool isLoggingIn =
           state.matchedLocation == onboarding ||
           state.matchedLocation == login ||
@@ -53,14 +55,20 @@ class AppRouter {
 
         // If logged in, check if profile is complete
         final isComplete = await AuthService().isUserComplete(user.uid);
+        debugPrint("ROUTER: User is ${isComplete ? '' : 'NOT '}complete");
 
         if (!isComplete) {
           // If profile is incomplete, force them to the profile setup screen
           return (state.matchedLocation == profileSetup) ? null : profileSetup;
         }
 
-        // If logged in and profile is complete, and we are on an auth/onboarding page, go HOME
-        if (isLoggingIn || state.matchedLocation == onboarding) {
+        // If logged in and profile is complete, and we are on an auth/onboarding/profile-setup page, go HOME
+        final bool isAuthPage = isLoggingIn || 
+                               state.matchedLocation == onboarding || 
+                               state.matchedLocation == profileSetup;
+
+        if (isAuthPage) {
+          debugPrint("ROUTER: User is logged in and complete. Redirecting to home.");
           return home;
         }
       } else {

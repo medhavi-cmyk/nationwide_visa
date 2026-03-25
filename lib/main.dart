@@ -19,6 +19,7 @@ import 'core/services/zego_chat_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding.instance.deferFirstFrame();
 
   // 1. Critical Initialization (Wait for these)
   await _initializeCriticalServices();
