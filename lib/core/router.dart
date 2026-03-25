@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'globals.dart';
 import '../features/onboarding/presentation/views/onboarding_view.dart';
 import '../features/home/presentation/views/home_view.dart';
 import '../features/auth/presentation/views/login_view.dart';
@@ -24,9 +25,10 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     initialLocation: onboarding,
-    refreshListenable: GoRouterRefreshStream(
-      FirebaseAuth.instance.authStateChanges(),
-    ),
+    refreshListenable: Listenable.merge([
+      GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+      routerNotifier,
+    ]),
     redirect: (context, state) async {
       final user = FirebaseAuth.instance.currentUser;
       final bool isLoggingIn =

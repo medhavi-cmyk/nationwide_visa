@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../../../core/globals.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../data/auth_service.dart';
 
@@ -37,8 +38,7 @@ class EmailVerificationViewModel extends ChangeNotifier {
         timer.cancel();
         // Update Firestore flag
         await _authService.updateEmailVerificationStatus(user.uid, true);
-        notifyListeners();
-        // The router will automatically detect the state change and route them to Profile Setup or Home!
+        routerNotifier.notify();
       }
     });
   }
@@ -75,7 +75,7 @@ class EmailVerificationViewModel extends ChangeNotifier {
           
           if (context.mounted) {
             CustomSnackbar.showSuccess("Email verified successfully!");
-            // The AppRouter will handle the switch to 'home' or 'profile-setup' automatically
+            routerNotifier.notify();
           }
         } else {
           CustomSnackbar.showError(
