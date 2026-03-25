@@ -102,9 +102,10 @@ class PlatformTextField extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
+          horizontal: 16,
           vertical: 16,
         ),
+        errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.borderGrey),

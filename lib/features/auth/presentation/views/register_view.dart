@@ -105,8 +105,14 @@ class RegisterView extends StatelessWidget {
                     ),
                   ),
                 ),
-                const RegistrationProgressBar(currentStep: 1),
-                const SizedBox(height: 16),
+                const Center(
+                  child: Column(
+                    children: [
+                      RegistrationProgressBar(currentStep: 1),
+                      SizedBox(height: 16),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     controller: scrollController,
@@ -119,7 +125,7 @@ class RegisterView extends StatelessWidget {
                       child: Form(
                         key: viewModel.formKey,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 16),
                             Text(
@@ -487,7 +493,7 @@ class RegisterView extends StatelessWidget {
         if (hint != null) ...[
           const SizedBox(height: 4),
           Padding(
-            padding: const EdgeInsets.only(left: 16),
+            padding: const EdgeInsets.only(left: 20),
             child: Text(
               hint,
               style: TextStyle(
