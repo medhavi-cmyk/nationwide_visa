@@ -158,7 +158,8 @@ class RegisterView extends StatelessWidget {
                               controller: viewModel.countryController,
                               validator: viewModel.validateCountry,
                               readOnly: true,
-                              onTap: () => _showCountryPicker(context, viewModel),
+                              onTap: () =>
+                                  _showCountryPicker(context, viewModel),
                             ),
                             const SizedBox(height: 16),
                             _buildField(
@@ -179,7 +180,8 @@ class RegisterView extends StatelessWidget {
                               controller: viewModel.nationalityController,
                               validator: viewModel.validateNationality,
                               readOnly: true,
-                              onTap: () => _showNationalityPicker(context, viewModel),
+                              onTap: () =>
+                                  _showNationalityPicker(context, viewModel),
                             ),
                             const SizedBox(height: 16),
 
@@ -189,7 +191,10 @@ class RegisterView extends StatelessWidget {
                               validator: viewModel.validatePhone,
                               labelText: "Phone number",
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.only(left: 16, right: 12),
+                                padding: const EdgeInsets.only(
+                                  left: 16,
+                                  right: 12,
+                                ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -200,8 +205,12 @@ class RegisterView extends StatelessWidget {
                                         width: 24,
                                         height: 16,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) =>
-                                            const Icon(Icons.flag_outlined, size: 20),
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(
+                                                  Icons.flag_outlined,
+                                                  size: 20,
+                                                ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -225,27 +234,29 @@ class RegisterView extends StatelessWidget {
                               controller: viewModel.studyCountryController,
                               validator: viewModel.validateStudyCountry,
                               readOnly: true,
-                              onTap: () => _showStudyCountryPicker(context, viewModel),
+                              onTap: () =>
+                                  _showStudyCountryPicker(context, viewModel),
                             ),
- 
-                             if (!viewModel.isGoogleOnboarding) ...[
-                               const SizedBox(height: 16),
-                               PlatformTextField(
-                                 controller: viewModel.passwordController,
-                                 obscureText: viewModel.obscurePassword,
-                                 validator: viewModel.validatePassword,
-                                 labelText: "Set your password",
-                                 suffixIcon: IconButton(
-                                   icon: Icon(
-                                     viewModel.obscurePassword
-                                         ? Icons.visibility_off_outlined
-                                         : Icons.visibility_outlined,
-                                     color: Colors.grey[400],
-                                   ),
-                                   onPressed: () => viewModel.togglePasswordVisibility(),
-                                 ),
-                               ),
-                             ],
+
+                            if (!viewModel.isGoogleOnboarding) ...[
+                              const SizedBox(height: 16),
+                              PlatformTextField(
+                                controller: viewModel.passwordController,
+                                obscureText: viewModel.obscurePassword,
+                                validator: viewModel.validatePassword,
+                                labelText: "Set your password",
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    viewModel.obscurePassword
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                    color: Colors.grey[400],
+                                  ),
+                                  onPressed: () =>
+                                      viewModel.togglePasswordVisibility(),
+                                ),
+                              ),
+                            ],
 
                             const SizedBox(height: 24),
 
@@ -257,7 +268,8 @@ class RegisterView extends StatelessWidget {
                                   width: 24,
                                   child: Checkbox(
                                     value: viewModel.agreedToTerms,
-                                    onChanged: (val) => viewModel.toggleAgreedToTerms(val),
+                                    onChanged: (val) =>
+                                        viewModel.toggleAgreedToTerms(val),
                                     activeColor: AppColors.primaryRed,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
@@ -282,7 +294,10 @@ class RegisterView extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                           recognizer: TapGestureRecognizer()
-                                            ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/terms-and-conditions/"),
+                                            ..onTap = () => _launchURL(
+                                              context,
+                                              "https://www.nationwidevisas.com/terms-and-conditions/",
+                                            ),
                                         ),
                                         const TextSpan(text: " and "),
                                         TextSpan(
@@ -292,7 +307,10 @@ class RegisterView extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                           recognizer: TapGestureRecognizer()
-                                            ..onTap = () => _launchURL(context, "https://www.nationwidevisas.com/privacy-policy/"),
+                                            ..onTap = () => _launchURL(
+                                              context,
+                                              "https://www.nationwidevisas.com/privacy-policy/",
+                                            ),
                                         ),
                                       ],
                                     ),
@@ -310,28 +328,52 @@ class RegisterView extends StatelessWidget {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
-                                        if (!viewModel.agreedToTerms) {
-                                          CustomSnackbar.showError("Please agree to the Terms & Conditions");
-                                          return;
-                                        }
-                                          if (viewModel.validateForm()) {
-                                            final parentContext = Navigator.of(context).context;
-                                            Navigator.pop(context); // Close Register Sheet
-                                            
-                                            OtpVerificationView.show(
-                                              context: parentContext,
-                                              email: email,
-                                              password: viewModel.isGoogleOnboarding 
-                                                  ? "" // No password for Google
-                                                  : viewModel.passwordController.text.trim(),
-                                              name: viewModel.nameController.text.trim(),
-                                              phoneNumber: viewModel.phoneController.text.trim(),
-                                              country: viewModel.countryController.text.trim(),
-                                              city: viewModel.cityController.text.trim(),
-                                              nationality: viewModel.nationalityController.text.trim(),
-                                              studyCountry: viewModel.studyCountryController.text.trim(),
+                                        if (viewModel.validateForm()) {
+                                          if (!viewModel.agreedToTerms) {
+                                            CustomSnackbar.showError(
+                                              "Please agree to the Terms & Conditions",
                                             );
+                                            return;
                                           }
+                                          final parentContext = Navigator.of(
+                                            context,
+                                          ).context;
+                                          Navigator.pop(
+                                            context,
+                                          ); // Close Register Sheet
+
+                                          OtpVerificationView.show(
+                                            context: parentContext,
+                                            email: email,
+                                            password:
+                                                viewModel.isGoogleOnboarding
+                                                ? "" // No password for Google
+                                                : viewModel
+                                                      .passwordController
+                                                      .text
+                                                      .trim(),
+                                            name: viewModel.nameController.text
+                                                .trim(),
+                                            phoneNumber: viewModel
+                                                .phoneController
+                                                .text
+                                                .trim(),
+                                            country: viewModel
+                                                .countryController
+                                                .text
+                                                .trim(),
+                                            city: viewModel.cityController.text
+                                                .trim(),
+                                            nationality: viewModel
+                                                .nationalityController
+                                                .text
+                                                .trim(),
+                                            studyCountry: viewModel
+                                                .studyCountryController
+                                                .text
+                                                .trim(),
+                                          );
+                                        }
                                       },
                                 child: viewModel.isLoading
                                     ? const PlatformIndicator(
@@ -371,7 +413,10 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  void _showCountryPicker(BuildContext context, RegisterViewModel viewModel) async {
+  void _showCountryPicker(
+    BuildContext context,
+    RegisterViewModel viewModel,
+  ) async {
     final countries = await viewModel.getAllCountries();
     if (!context.mounted) return;
     CountryPickerView.show(context, countries, (country) {
@@ -379,7 +424,10 @@ class RegisterView extends StatelessWidget {
     });
   }
 
-  void _showNationalityPicker(BuildContext context, RegisterViewModel viewModel) async {
+  void _showNationalityPicker(
+    BuildContext context,
+    RegisterViewModel viewModel,
+  ) async {
     final countries = await viewModel.getAllCountries();
     if (!context.mounted) return;
     CountryPickerView.show(
@@ -393,13 +441,19 @@ class RegisterView extends StatelessWidget {
     );
   }
 
-  void _showStudyCountryPicker(BuildContext context, RegisterViewModel viewModel) {
+  void _showStudyCountryPicker(
+    BuildContext context,
+    RegisterViewModel viewModel,
+  ) {
     DestinationPickerView.show(context, (country) {
       viewModel.updateStudyCountry(country);
     });
   }
 
-  void _showCityPicker(BuildContext context, RegisterViewModel viewModel) async {
+  void _showCityPicker(
+    BuildContext context,
+    RegisterViewModel viewModel,
+  ) async {
     final cities = await viewModel.getCitiesForSelectedCountry();
     if (!context.mounted) return;
     CityPickerView.show(context, cities, (city) {
@@ -423,7 +477,8 @@ class RegisterView extends StatelessWidget {
       children: [
         PlatformTextField(
           controller: controller,
-          labelText: label,
+          // labelText: label,
+          hintText: label,
           enabled: enabled,
           validator: validator,
           readOnly: readOnly,
