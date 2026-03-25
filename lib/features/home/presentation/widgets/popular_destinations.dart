@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/app_colors.dart';
@@ -185,7 +185,7 @@ class _PopularDestinationsState extends State<PopularDestinations> {
   };
 
   void _openStory(String name, String icon) {
-    final route = Platform.isIOS
+    final route = PlatformUtils.isIOS
         ? CupertinoPageRoute(
             builder: (context) => DestinationStoryView(
               name: name,

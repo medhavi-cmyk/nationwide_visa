@@ -12,7 +12,7 @@ import '../viewmodels/login_viewmodel.dart';
 import 'login_view.dart';
 import 'register_view.dart';
 import '../../data/auth_service.dart';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 
 class AccountExistsView extends StatelessWidget {
   final String email;
@@ -67,7 +67,7 @@ class AccountExistsView extends StatelessWidget {
           if (viewModel.isLoading)
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
-              child: Platform.isIOS
+              child: PlatformUtils.isIOS
                   ? const PlatformIndicator()
                   : const LinearProgressIndicator(color: AppColors.primaryRed),
             ),

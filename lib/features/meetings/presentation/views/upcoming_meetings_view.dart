@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:nwdapp/features/meetings/presentation/view_models/meetings_view_model.dart';
@@ -220,7 +220,7 @@ class UpcomingMeetingsView extends StatelessWidget {
                           onTap: () {
                             final String callId =
                                 "session_${meeting.fullDateTime.millisecondsSinceEpoch}";
-                            final route = Platform.isIOS
+                            final route = PlatformUtils.isIOS
                                 ? CupertinoPageRoute(
                                     builder: (context) => ZegoUIKitPrebuiltCall(
                                       appID: 456153833,

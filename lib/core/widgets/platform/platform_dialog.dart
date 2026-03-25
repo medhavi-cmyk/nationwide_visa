@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
+import '../../utils/platform_utils.dart';
 
 class PlatformDialog {
   static Future<T?> show<T>({
@@ -11,7 +11,7 @@ class PlatformDialog {
     String? confirmLabel,
     VoidCallback? onConfirm,
   }) {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return showCupertinoDialog<T>(
         context: context,
         builder: (context) => CupertinoAlertDialog(

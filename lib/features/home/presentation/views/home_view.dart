@@ -5,7 +5,7 @@ import '../../../chat/presentation/views/chat_view.dart';
 import '../../../meetings/presentation/views/meetings_view.dart';
 import '../../../profile/presentation/views/profile_view.dart';
 import '../../../../core/widgets/platform/platform_scaffold.dart';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -31,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isIOS) {
+    if (PlatformUtils.isIOS) {
       return CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           currentIndex: _selectedIndex,

@@ -13,7 +13,7 @@ import '../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
 import 'account_exists_view.dart';
 import '../../data/auth_service.dart';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -302,7 +302,7 @@ class LoginView extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             // /this is for ios only
-                            if (Platform.isIOS)
+                            if (PlatformUtils.isIOS)
                               _buildSocialButton(
                                 "Continue with Apple",
                                 icon: Icons.apple,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
+import '../../../../core/utils/platform_utils.dart';
 import '../../../../core/app_colors.dart';
 import 'upcoming_meetings_view.dart';
 import 'history_meetings_view.dart';
@@ -48,7 +48,7 @@ class _MeetingsViewState extends State<MeetingsView> with SingleTickerProviderSt
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Platform.isIOS
+              child: PlatformUtils.isIOS
                   ? SizedBox(
                       width: double.infinity,
                       child: CupertinoSlidingSegmentedControl<int>(
