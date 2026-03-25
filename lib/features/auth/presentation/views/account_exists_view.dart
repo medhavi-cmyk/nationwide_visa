@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nwdapp/features/auth/presentation/views/forgot_password_view.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/router.dart';
 import '../../../../core/app_colors.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
@@ -196,7 +194,7 @@ class AccountExistsView extends StatelessWidget {
                               );
                               if (success && context.mounted) {
                                 Navigator.pop(context);
-                                context.go(AppRouter.home);
+                                // The AppRouter will handle the switch to 'home' automatically
                               } else if (!success && context.mounted) {
                                 if (viewModel.errorMessage != null) {
                                   CustomSnackbar.showError(
@@ -270,7 +268,7 @@ class AccountExistsView extends StatelessWidget {
                                     .signInWithGoogle();
                                 if (success && context.mounted) {
                                   Navigator.pop(context);
-                                  context.go(AppRouter.home);
+                                  // The AppRouter will handle the switch to 'home' automatically
                                 } else if (!success && context.mounted) {
                                   if (viewModel.errorMessage != null) {
                                     CustomSnackbar.showError(

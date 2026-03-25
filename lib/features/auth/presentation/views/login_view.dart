@@ -1,7 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nwdapp/core/router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/app_colors.dart';
@@ -271,7 +269,7 @@ class LoginView extends StatelessWidget {
                                           .signInWithGoogle();
                                       if (success && context.mounted) {
                                         Navigator.pop(context);
-                                        context.go(AppRouter.home);
+                                        // The AppRouter will handle the switch to 'home' automatically
                                       } else if (!success && context.mounted) {
                                         if (viewModel.errorMessage != null) {
                                           CustomSnackbar.showError(

@@ -7,7 +7,6 @@ import '../../../../core/widgets/custom_snackbar.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
 import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/auth_viewmodel.dart';
-import 'profile_setup_view.dart';
 import '../widgets/registration_progress_bar.dart';
 
 class OtpVerificationView extends StatefulWidget {
@@ -326,21 +325,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                       );
 
                                   if (success && context.mounted) {
-                                    // Use a local variable for the parent context to ensure it stays valid
-                                    final parentContext = Navigator.of(
-                                      context,
-                                    ).context;
                                     Navigator.pop(context); // Close OTP Sheet
-
-                                    // Give the sheet a moment to close before showing the next one
-                                    Future.delayed(
-                                      const Duration(milliseconds: 100),
-                                      () {
-                                        if (parentContext.mounted) {
-                                          ProfileSetupView.show(parentContext);
-                                        }
-                                      },
-                                    );
+                                    // The AppRouter will handle the switch to 'profile-setup' or 'home' automatically
                                   } else if (!success &&
                                       context.mounted &&
                                       viewModel.errorMessage != null) {

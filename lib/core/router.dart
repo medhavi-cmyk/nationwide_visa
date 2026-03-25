@@ -57,13 +57,8 @@ class AppRouter {
           return (state.matchedLocation == profileSetup) ? null : profileSetup;
         }
 
-        // --- NEW: Bypass home redirect if already in onboarding flow ---
-        // This prevents GoRouter from snatching the user away before the success modal shows.
-        if (isLoggingIn || state.matchedLocation == profileSetup) {
-          return null;
-        }
-
-        if (state.matchedLocation == onboarding) {
+        // If logged in and profile is complete, and we are on an auth/onboarding page, go HOME
+        if (isLoggingIn || state.matchedLocation == onboarding) {
           return home;
         }
       } else {

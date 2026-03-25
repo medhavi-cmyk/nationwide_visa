@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/router.dart';
 import '../../../../core/widgets/custom_snackbar.dart';
 import '../../data/auth_service.dart';
 
@@ -77,8 +75,7 @@ class EmailVerificationViewModel extends ChangeNotifier {
           
           if (context.mounted) {
             CustomSnackbar.showSuccess("Email verified successfully!");
-            // Navigate to home (or onboarding will redirect based on guard)
-            context.go(AppRouter.home);
+            // The AppRouter will handle the switch to 'home' or 'profile-setup' automatically
           }
         } else {
           CustomSnackbar.showError(
@@ -97,8 +94,6 @@ class EmailVerificationViewModel extends ChangeNotifier {
   void cancelSetup(BuildContext context) async {
     _timer?.cancel();
     await _auth.signOut();
-    if (context.mounted) {
-      context.go(AppRouter.login);
-    }
+    // The AppRouter will handle the return to 'onboarding' automatically after sign out
   }
 }

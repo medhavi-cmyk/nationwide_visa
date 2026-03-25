@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/app_colors.dart';
-import '../../../../core/router.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
 
 class RegistrationSuccessView extends StatelessWidget {
@@ -76,7 +74,7 @@ class RegistrationSuccessView extends StatelessWidget {
             width: double.infinity,
             height: 56,
             child: PlatformButton(
-              onPressed: () => context.go(AppRouter.home),
+              onPressed: () => Navigator.pop(context),
               child: const Text(
                 "Go to Home",
                 style: TextStyle(
