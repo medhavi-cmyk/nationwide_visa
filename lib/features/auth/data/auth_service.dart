@@ -9,9 +9,9 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  
+
   static const String _isCompletePrefKey = 'is_user_complete_';
-  
+
   // Cache for user completeness status to avoid redundant Firestore calls
   static final Map<String, bool> _isCompleteCache = {};
 
@@ -92,7 +92,8 @@ class AuthService {
       if (userData == null) return false;
 
       // Mandatory fields for "complete" profile
-      final isComplete = userData.phoneNumber != null &&
+      final isComplete =
+          userData.phoneNumber != null &&
           userData.country != null &&
           userData.city != null &&
           userData.nationality != null &&
@@ -103,7 +104,7 @@ class AuthService {
       if (isComplete) {
         await prefs.setBool('$_isCompletePrefKey$uid', true);
       }
-      
+
       return isComplete;
     } catch (e) {
       debugPrint("Check user complete error: $e");
@@ -217,15 +218,16 @@ class AuthService {
           .collection('users')
           .doc(user.uid)
           .set(dataToSave, SetOptions(merge: true));
-      
+
       // Update both caches
-      final isComplete = user.phoneNumber != null &&
+      final isComplete =
+          user.phoneNumber != null &&
           user.country != null &&
           user.city != null &&
           user.nationality != null &&
           user.studyCountry != null;
       _isCompleteCache[user.uid] = isComplete;
-      
+
       if (isComplete) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('$_isCompletePrefKey${user.uid}', true);
@@ -241,13 +243,17 @@ class AuthService {
   }
 
   // Update only email verification status in Firestore
-  Future<void> updateEmailVerificationStatus(String uid, bool isVerified) async {
+  Future<void> updateEmailVerificationStatus(
+    String uid,
+    bool isVerified,
+  ) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(uid)
-          .set({'isEmailVerified': isVerified}, SetOptions(merge: true));
-      debugPrint("Updated Firestore verification status for $uid to $isVerified");
+      await _firestore.collection('users').doc(uid).set({
+        'isEmailVerified': isVerified,
+      }, SetOptions(merge: true));
+      debugPrint(
+        "Updated Firestore verification status for $uid to $isVerified",
+      );
     } catch (e) {
       debugPrint("Error updating verification status: $e");
       rethrow;

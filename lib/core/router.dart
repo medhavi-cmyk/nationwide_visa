@@ -24,6 +24,7 @@ class AppRouter {
   static const String emailVerification = '/email-verification';
 
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: onboarding,
     refreshListenable: Listenable.merge([
       GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
