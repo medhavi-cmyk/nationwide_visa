@@ -2,12 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  
+  static const String _isCompletePrefKey = 'is_user_complete_';
   
   // Cache for user completeness status to avoid redundant Firestore calls
   static final Map<String, bool> _isCompleteCache = {};
@@ -71,8 +74,16 @@ class AuthService {
 
   // Check if user profile is complete
   Future<bool> isUserComplete(String uid) async {
-    // Check cache first
+    // 1. Check memory cache first
     if (_isCompleteCache.containsKey(uid) && _isCompleteCache[uid] == true) {
+      return true;
+    }
+
+    // 2. Check persistent cache
+    final prefs = await SharedPreferences.getInstance();
+    final persistentIsComplete = prefs.getBool('$_isCompletePrefKey$uid');
+    if (persistentIsComplete == true) {
+      _isCompleteCache[uid] = true;
       return true;
     }
 
@@ -87,8 +98,12 @@ class AuthService {
           userData.nationality != null &&
           userData.studyCountry != null;
 
-      // Update cache
+      // Update both caches
       _isCompleteCache[uid] = isComplete;
+      if (isComplete) {
+        await prefs.setBool('$_isCompletePrefKey$uid', true);
+      }
+      
       return isComplete;
     } catch (e) {
       debugPrint("Check user complete error: $e");
@@ -203,13 +218,18 @@ class AuthService {
           .doc(user.uid)
           .set(dataToSave, SetOptions(merge: true));
       
-      // Update completeness cache
+      // Update both caches
       final isComplete = user.phoneNumber != null &&
           user.country != null &&
           user.city != null &&
           user.nationality != null &&
           user.studyCountry != null;
       _isCompleteCache[user.uid] = isComplete;
+      
+      if (isComplete) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('$_isCompletePrefKey${user.uid}', true);
+      }
 
       debugPrint(
         "Successfully saved user data to Firestore for UID: ${user.uid}",

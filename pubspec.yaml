@@ -50,6 +50,7 @@ dependencies:
   image_picker: ^1.2.1
   file_picker: ^10.3.8
   cloud_firestore: ^5.6.12
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:

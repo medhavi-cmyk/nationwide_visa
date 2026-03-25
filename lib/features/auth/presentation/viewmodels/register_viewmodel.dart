@@ -146,6 +146,15 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
+  // Pre-load data in background
+  static Future<void> preLoadData() async {
+    debugPrint("--- Pre-loading JSON data ---");
+    final vm = RegisterViewModel();
+    await vm.getAllCountries();
+    await vm._loadStates();
+    debugPrint("--- JSON data pre-loaded ---");
+  }
+
   Future<void> _loadStates() async {
     if (_cachedStates != null) return;
     try {

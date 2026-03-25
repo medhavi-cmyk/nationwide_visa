@@ -39,8 +39,10 @@ class AppRouter {
 
       if (user != null) {
         // --- NEW: Email Verification Guard ---
-        bool requiresVerification = user.providerData.any((p) => p.providerId == 'password') && !user.emailVerified;
-        
+        bool requiresVerification =
+            user.providerData.any((p) => p.providerId == 'password') &&
+            !user.emailVerified;
+
         if (requiresVerification) {
           // Only redirect them to email verification if they are not already there
           if (state.matchedLocation == emailVerification) return null;
