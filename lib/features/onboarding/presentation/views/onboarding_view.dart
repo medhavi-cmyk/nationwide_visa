@@ -21,6 +21,18 @@ class _OnboardingViewState extends State<OnboardingView> {
   int _currentPage = 0;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Pre-cache all heavy onboarding images so Page 3 is instant
+    precacheImage(const AssetImage("assets/image_sir.JPG"), context);
+    precacheImage(const AssetImage("assets/image_2.webp"), context);
+    precacheImage(const AssetImage("assets/mahima_ghalaut.jpg"), context);
+    precacheImage(const AssetImage("assets/ramandeep.jpg"), context);
+    precacheImage(const AssetImage("assets/dsc00113.jpg"), context);
+    precacheImage(const AssetImage("assets/dsc00423.jpg"), context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryRed,

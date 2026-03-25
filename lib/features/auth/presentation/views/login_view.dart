@@ -13,6 +13,7 @@ import '../viewmodels/login_viewmodel.dart';
 import 'register_view.dart';
 import 'account_exists_view.dart';
 import '../../data/auth_service.dart';
+import 'dart:io' show Platform;
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -111,33 +112,46 @@ class LoginView extends StatelessWidget {
                                 height: 32,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
-                                  children: ["@gmail.com", "@yahoo.com", "@outlook.com"]
-                                      .map((domain) => Padding(
-                                            padding: const EdgeInsets.only(right: 8),
-                                            child: ActionChip(
-                                              label: Text(
-                                                domain,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors.primaryRed,
+                                  children:
+                                      [
+                                            "@gmail.com",
+                                            "@yahoo.com",
+                                            "@outlook.com",
+                                          ]
+                                          .map(
+                                            (domain) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 8,
+                                              ),
+                                              child: ActionChip(
+                                                label: Text(
+                                                  domain,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: AppColors.primaryRed,
+                                                  ),
                                                 ),
+                                                backgroundColor: AppColors
+                                                    .primaryRed
+                                                    .withValues(alpha: 0.05),
+                                                side: BorderSide(
+                                                  color: AppColors.primaryRed
+                                                      .withValues(alpha: 0.1),
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                onPressed: () {
+                                                  viewModel.updateEmail(
+                                                    "${viewModel.emailController.text}$domain",
+                                                  );
+                                                },
                                               ),
-                                              backgroundColor: AppColors.primaryRed.withValues(alpha: 0.05),
-                                              side: BorderSide(
-                                                color: AppColors.primaryRed.withValues(alpha: 0.1),
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20),
-                                              ),
-                                              onPressed: () {
-                                                viewModel.updateEmail(
-                                                  "${viewModel.emailController.text}$domain",
-                                                );
-                                              },
                                             ),
-                                          ))
-                                      .toList(),
+                                          )
+                                          .toList(),
                                 ),
                               ),
                             ],
@@ -152,7 +166,9 @@ class LoginView extends StatelessWidget {
                                   height: 1.5,
                                 ),
                                 children: [
-                                  const TextSpan(text: "By proceeding, you agree to the "),
+                                  const TextSpan(
+                                    text: "By proceeding, you agree to the ",
+                                  ),
                                   TextSpan(
                                     text: "Terms & Conditions",
                                     style: const TextStyle(
@@ -160,7 +176,9 @@ class LoginView extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/terms-and-conditions/"),
+                                      ..onTap = () => _launchURL(
+                                        "https://www.nationwidevisas.com/terms-and-conditions/",
+                                      ),
                                   ),
                                   const TextSpan(text: " and "),
                                   TextSpan(
@@ -170,7 +188,9 @@ class LoginView extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL("https://www.nationwidevisas.com/privacy-policy/"),
+                                      ..onTap = () => _launchURL(
+                                        "https://www.nationwidevisas.com/privacy-policy/",
+                                      ),
                                   ),
                                 ],
                               ),
@@ -184,15 +204,23 @@ class LoginView extends StatelessWidget {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () {
-                                        final parentContext = Navigator.of(context).context;
+                                        final parentContext = Navigator.of(
+                                          context,
+                                        ).context;
                                         viewModel.checkEmailAndRedirect(
                                           onAccountExists: (email) {
                                             Navigator.pop(context);
-                                            AccountExistsView.show(parentContext, email);
+                                            AccountExistsView.show(
+                                              parentContext,
+                                              email,
+                                            );
                                           },
                                           onNewUser: (email) {
                                             Navigator.pop(context);
-                                            RegisterView.show(parentContext, email: email);
+                                            RegisterView.show(
+                                              parentContext,
+                                              email: email,
+                                            );
                                           },
                                         );
                                       },
@@ -239,50 +267,69 @@ class LoginView extends StatelessWidget {
                               onPressed: viewModel.isLoading
                                   ? null
                                   : () async {
-                                       bool success = await viewModel.signInWithGoogle();
-                                       if (success && context.mounted) {
-                                         Navigator.pop(context);
-                                         context.go(AppRouter.home);
-                                       } else if (!success && context.mounted) {
-                                         if (viewModel.errorMessage != null) {
-                                           CustomSnackbar.showError(viewModel.errorMessage!);
-                                         } else {
-                                           // User is authenticated but incomplete
-                                           final user = AuthService().currentUser;
-                                           if (user != null) {
-                                             final parentContext = Navigator.of(context).context;
-                                            Navigator.pop(context); // Close Login Sheet
-                                            
+                                      bool success = await viewModel
+                                          .signInWithGoogle();
+                                      if (success && context.mounted) {
+                                        Navigator.pop(context);
+                                        context.go(AppRouter.home);
+                                      } else if (!success && context.mounted) {
+                                        if (viewModel.errorMessage != null) {
+                                          CustomSnackbar.showError(
+                                            viewModel.errorMessage!,
+                                          );
+                                        } else {
+                                          // User is authenticated but incomplete
+                                          final user =
+                                              AuthService().currentUser;
+                                          if (user != null) {
+                                            final parentContext = Navigator.of(
+                                              context,
+                                            ).context;
+                                            Navigator.pop(
+                                              context,
+                                            ); // Close Login Sheet
+
                                             RegisterView.show(
                                               parentContext,
                                               email: user.email ?? "",
                                               isGoogleOnboarding: true,
                                               initialName: user.displayName,
                                             );
-                                           }
-                                         }
-                                       }
-                                     },
+                                          }
+                                        }
+                                      }
+                                    },
                             ),
                             const SizedBox(height: 12),
-                            _buildSocialButton(
-                              "Continue with Apple",
-                              icon: Icons.apple,
-                              onPressed: () {
-                                // Apple Sign In placeholder
-                              },
-                            ),
+                            // /this is for ios only
+                            if (Platform.isIOS)
+                              _buildSocialButton(
+                                "Continue with Apple",
+                                icon: Icons.apple,
+                                onPressed: () {
+                                  // Apple Sign In placeholder
+                                },
+                              ),
                             const SizedBox(height: 40),
                             // Stats Row
                             const IntrinsicHeight(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  _StatItem(val: "4.7/5 ⭐", label: "Google rating"),
+                                  _StatItem(
+                                    val: "4.7/5 ⭐",
+                                    label: "Google \n rating",
+                                  ),
                                   SizedBox(width: 8),
-                                  _StatItem(val: "100K+", label: "Students counselled"),
+                                  _StatItem(
+                                    val: "100K+",
+                                    label: "Students counselled",
+                                  ),
                                   SizedBox(width: 8),
-                                  _StatItem(val: "75K+", label: "Courses available"),
+                                  _StatItem(
+                                    val: "75K+",
+                                    label: "Courses available",
+                                  ),
                                 ],
                               ),
                             ),
@@ -301,8 +348,6 @@ class LoginView extends StatelessWidget {
     );
   }
 
-
-
   Future<void> _launchURL(String urlString) async {
     final Uri url = Uri.parse(urlString);
     if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
@@ -310,7 +355,12 @@ class LoginView extends StatelessWidget {
     }
   }
 
-  Widget _buildSocialButton(String text, {IconData? icon, Widget? iconWidget, VoidCallback? onPressed}) {
+  Widget _buildSocialButton(
+    String text, {
+    IconData? icon,
+    Widget? iconWidget,
+    VoidCallback? onPressed,
+  }) {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(30),
@@ -324,7 +374,10 @@ class LoginView extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (iconWidget != null) iconWidget else Icon(icon, size: 20, color: Colors.black87),
+            if (iconWidget != null)
+              iconWidget
+            else
+              Icon(icon, size: 20, color: Colors.black87),
             const SizedBox(width: 12),
             Text(
               text,

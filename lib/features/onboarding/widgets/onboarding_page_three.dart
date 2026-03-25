@@ -28,12 +28,14 @@ class OnboardingPageThree extends StatelessWidget {
                         child: Column(
                           children: [
                             _buildImage(
+                              context,
                               assetPath: "assets/image_sir.JPG",
                               height: 220,
                               isFaded: false,
                             ),
                             const SizedBox(height: 16),
                             _buildImage(
+                              context,
                               assetPath: "assets/image_2.webp",
                               height: 140,
                               isFaded: true,
@@ -49,6 +51,7 @@ class OnboardingPageThree extends StatelessWidget {
                           children: [
                             const SizedBox(height: 30),
                             _buildImage(
+                              context,
                               assetPath: "assets/mahima_ghalaut.jpg",
                               height: 130,
                               isFaded: false,
@@ -80,6 +83,7 @@ class OnboardingPageThree extends StatelessWidget {
                             ),
                             const SizedBox(height: 14),
                             _buildImage(
+                              context,
                               assetPath: "assets/ramandeep.jpg",
                               height: 180,
                               isFaded: true,
@@ -95,12 +99,14 @@ class OnboardingPageThree extends StatelessWidget {
                           children: [
                             const SizedBox(height: 50),
                             _buildImage(
+                              context,
                               assetPath: "assets/dsc00113.jpg",
                               height: 200,
                               isFaded: false,
                             ),
                             const SizedBox(height: 16),
                             _buildImage(
+                              context,
                               assetPath: "assets/dsc00423.jpg",
                               height: 140,
                               isFaded: true,
@@ -141,7 +147,8 @@ class OnboardingPageThree extends StatelessWidget {
     );
   }
 
-  Widget _buildImage({
+  Widget _buildImage(
+    BuildContext context, {
     required String assetPath,
     required double height,
     required bool isFaded,
@@ -154,6 +161,7 @@ class OnboardingPageThree extends StatelessWidget {
         height: height,
         width: double.infinity,
         fit: BoxFit.cover,
+        cacheHeight: (height * MediaQuery.of(context).devicePixelRatio).toInt(),
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (wasSynchronouslyLoaded || frame != null) {
             return child;
