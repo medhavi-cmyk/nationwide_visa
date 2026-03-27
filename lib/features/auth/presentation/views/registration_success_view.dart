@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/router.dart';
 import '../../../../core/widgets/platform/platform_button.dart';
 
 class RegistrationSuccessView extends StatelessWidget {
@@ -101,7 +103,10 @@ class RegistrationSuccessView extends StatelessWidget {
             child: PlatformButton(
               backgroundColor: Colors.transparent,
               borderRadius: 30,
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                Navigator.pop(context); // Close bottom sheet
+                context.go(AppRouter.home); // Navigate to home
+              },
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

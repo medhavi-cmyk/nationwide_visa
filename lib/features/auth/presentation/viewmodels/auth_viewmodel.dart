@@ -20,6 +20,7 @@ class AuthViewModel extends ChangeNotifier {
   String? _verificationId;
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isDisposed = false;
 
   int get secondsRemaining => _secondsRemaining;
   bool get canResend => _canResend;
@@ -30,12 +31,12 @@ class AuthViewModel extends ChangeNotifier {
 
   void _setLoading(bool value) {
     _isLoading = value;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   void _setError(String? message) {
     _errorMessage = message;
-    notifyListeners();
+    if (!_isDisposed) notifyListeners();
   }
 
   void startResendTimer() {
@@ -277,6 +278,7 @@ class AuthViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _isDisposed = true;
     for (var controller in controllers) {
       controller.dispose();
     }

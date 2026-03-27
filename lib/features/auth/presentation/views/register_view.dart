@@ -425,9 +425,9 @@ class RegisterView extends StatelessWidget {
                                           final parentContext = Navigator.of(
                                             context,
                                           ).context;
-                                          Navigator.pop(
-                                            context,
-                                          ); // Close Register Sheet
+                                          if (Navigator.of(context).canPop()) {
+                                            Navigator.pop(context);
+                                          }
 
                                           OtpVerificationView.show(
                                             context: parentContext,

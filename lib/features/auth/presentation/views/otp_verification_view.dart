@@ -324,7 +324,9 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                       );
 
                                   if (success && context.mounted) {
-                                    Navigator.pop(context); // Close OTP Sheet
+                                    if (Navigator.of(context).canPop()) {
+                                      Navigator.pop(context);
+                                    }
                                     // The AppRouter will handle the switch to 'profile-setup' or 'home' automatically
                                   } else if (!success &&
                                       context.mounted &&
