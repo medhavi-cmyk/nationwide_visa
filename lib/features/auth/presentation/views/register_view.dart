@@ -161,42 +161,30 @@ class RegisterView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
 
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: _buildLabeledField(
-                                    label: "COUNTRY",
-                                    hint: "Select Country",
-                                    controller: viewModel.countryController,
-                                    validator: viewModel.validateCountry,
-                                    readOnly: true,
-                                    suffixIcon: const Icon(
-                                      Icons.expand_more,
-                                      color: Color(0x993D618C),
-                                    ),
-                                    onTap: () =>
-                                        _showCountryPicker(context, viewModel),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildLabeledField(
-                                    label: "CITY",
-                                    hint: "e.g. London",
-                                    controller: viewModel.cityController,
-                                    validator: viewModel.validateCity,
-                                    readOnly: true,
-                                    enabled: viewModel.isCountrySelected,
-                                    onTap: viewModel.isCountrySelected
-                                        ? () => _showCityPicker(
-                                            context,
-                                            viewModel,
-                                          )
-                                        : null,
-                                  ),
-                                ),
-                              ],
+                            _buildLabeledField(
+                              label: "COUNTRY",
+                              hint: "Select Country",
+                              controller: viewModel.countryController,
+                              validator: viewModel.validateCountry,
+                              readOnly: true,
+                              suffixIcon: const Icon(
+                                Icons.expand_more,
+                                color: Color(0x993D618C),
+                              ),
+                              onTap: () =>
+                                  _showCountryPicker(context, viewModel),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLabeledField(
+                              label: "CITY",
+                              hint: "e.g. London",
+                              controller: viewModel.cityController,
+                              validator: viewModel.validateCity,
+                              readOnly: true,
+                              enabled: viewModel.isCountrySelected,
+                              onTap: viewModel.isCountrySelected
+                                  ? () => _showCityPicker(context, viewModel)
+                                  : null,
                             ),
                             const SizedBox(height: 20),
 
