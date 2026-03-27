@@ -35,6 +35,9 @@ class RegisterView extends StatelessWidget {
     bool isGoogleOnboarding = false,
     String? initialName,
   }) {
+    // 1. Get the already-existing ViewModel from the context
+    final existingViewModel = context.read<RegisterViewModel>();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -42,8 +45,9 @@ class RegisterView extends StatelessWidget {
       enableDrag: false,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return ChangeNotifierProvider(
-          create: (_) => RegisterViewModel()
+        // 2. Use .value so we don't dispose the global ViewModel when the modal closes
+        return ChangeNotifierProvider.value(
+          value: existingViewModel
             ..setGoogleOnboarding(isGoogleOnboarding)
             ..prefillFromGoogle(name: initialName),
           child: RegisterView(

@@ -106,6 +106,7 @@ class PlatformTextField extends StatelessWidget {
           vertical: 16,
         ),
         errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
+        errorMaxLines: 3,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.borderGrey),
