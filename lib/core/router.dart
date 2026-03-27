@@ -9,7 +9,6 @@ import '../features/auth/presentation/views/login_view.dart';
 import '../features/auth/presentation/views/register_view.dart';
 import '../features/auth/presentation/views/account_exists_view.dart';
 import '../features/auth/presentation/views/otp_verification_view.dart';
-import '../features/auth/presentation/views/profile_setup_view.dart';
 import '../features/auth/presentation/views/email_verification_view.dart';
 import '../features/auth/data/auth_service.dart';
 
@@ -20,7 +19,6 @@ class AppRouter {
   static const String register = '/register';
   static const String accountExists = '/account-exists';
   static const String otp = '/otp';
-  static const String profileSetup = '/profile-setup';
   static const String emailVerification = '/email-verification';
 
   static final GoRouter router = GoRouter(
@@ -43,39 +41,23 @@ class AppRouter {
           state.matchedLocation == otp;
 
       if (user != null) {
-        // --- NEW: Email Verification Guard ---
-        bool requiresVerification =
-            user.providerData.any((p) => p.providerId == 'password') &&
-            !user.emailVerified;
-
-        if (requiresVerification) {
-          // Only redirect them to email verification if they are not already there
-          if (state.matchedLocation == emailVerification) return null;
-          return emailVerification;
-        }
-
-        // If logged in, check if profile is complete
+        // 1. Check Profile Completeness
         final isComplete = await AuthService().isUserComplete(user.uid);
-        debugPrint("ROUTER: User is ${isComplete ? '' : 'NOT '}complete");
+        debugPrint("ROUTER: User completeness: $isComplete");
 
+        // 2. If NOT complete, stay on Auth/Onboarding pages
         if (!isComplete) {
-          // If profile is incomplete, force them to the profile setup screen
-          return (state.matchedLocation == profileSetup) ? null : profileSetup;
+          if (isLoggingIn) return null; // Already on an auth page, stay there
+          return onboarding; // Force back to onboarding if they try to access home
         }
 
-        // If logged in and profile is complete, and we are on an auth/onboarding/profile-setup page, go HOME
-        final bool isAuthPage = isLoggingIn || 
-                               state.matchedLocation == onboarding || 
-                               state.matchedLocation == profileSetup;
-
-        if (isAuthPage) {
-          debugPrint("ROUTER: User is logged in and complete. Redirecting to home.");
+        // 3. User is complete. If on Auth page, go HOME
+        if (isLoggingIn) {
+          debugPrint("ROUTER: User is finished. Redirecting to home.");
           return home;
         }
       } else {
-        // If not logged in and trying to access home/profile-setup, force login
-        if (state.matchedLocation == home ||
-            state.matchedLocation == profileSetup) {
+        if (state.matchedLocation == home) {
           return onboarding;
         }
       }
@@ -117,10 +99,6 @@ class AppRouter {
             studyCountry: data['studyCountry'] ?? '',
           );
         },
-      ),
-      GoRoute(
-        path: profileSetup,
-        builder: (context, state) => const ProfileSetupView(),
       ),
       GoRoute(
         path: emailVerification,

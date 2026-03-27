@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nwdapp/features/auth/presentation/views/login_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:nwdapp/features/auth/presentation/views/otp_verification_view.dart';
@@ -184,8 +185,10 @@ class RegisterView extends StatelessWidget {
                                     readOnly: true,
                                     enabled: viewModel.isCountrySelected,
                                     onTap: viewModel.isCountrySelected
-                                        ? () =>
-                                            _showCityPicker(context, viewModel)
+                                        ? () => _showCityPicker(
+                                            context,
+                                            viewModel,
+                                          )
                                         : null,
                                   ),
                                 ),
@@ -246,9 +249,9 @@ class RegisterView extends StatelessWidget {
                                           errorBuilder:
                                               (context, error, stackTrace) =>
                                                   const Icon(
-                                            Icons.flag_outlined,
-                                            size: 16,
-                                          ),
+                                                    Icons.flag_outlined,
+                                                    size: 16,
+                                                  ),
                                         ),
                                       ),
                                       const SizedBox(width: 8),
@@ -468,7 +471,8 @@ class RegisterView extends StatelessWidget {
                                         radius: 10,
                                       )
                                     : const Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             "Continue",
@@ -507,7 +511,10 @@ class RegisterView extends StatelessWidget {
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
+                                          // 1. Close Register
                                           Navigator.pop(context);
+                                          // 2. Open Login (Triggered from the base context)
+                                          LoginView.show(context);
                                         },
                                     ),
                                   ],

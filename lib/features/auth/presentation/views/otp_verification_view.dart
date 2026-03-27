@@ -8,6 +8,7 @@ import '../../../../core/widgets/platform/platform_button.dart';
 import '../../../../core/widgets/platform/platform_indicator.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../widgets/registration_progress_bar.dart';
+import 'profile_setup_view.dart';
 
 class OtpVerificationView extends StatefulWidget {
   final String email;
@@ -89,8 +90,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.75,
-      minChildSize: 0.5,
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
       maxChildSize: 0.95,
       expand: false,
       builder: (context, scrollController) {
@@ -327,7 +328,8 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
                                     if (Navigator.of(context).canPop()) {
                                       Navigator.pop(context);
                                     }
-                                    // The AppRouter will handle the switch to 'profile-setup' or 'home' automatically
+                                    // Manually show the Profile Setup modal since it's no longer a route redirect
+                                    ProfileSetupView.show(context);
                                   } else if (!success &&
                                       context.mounted &&
                                       viewModel.errorMessage != null) {

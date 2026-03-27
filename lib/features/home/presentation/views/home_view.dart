@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'explore_view.dart';
 import '../../../chat/presentation/views/chat_view.dart';
 import '../../../meetings/presentation/views/meetings_view.dart';
 import '../../../profile/presentation/views/profile_view.dart';
 import '../../../../core/widgets/platform/platform_scaffold.dart';
 import '../../../../core/utils/platform_utils.dart';
+import '../../../auth/data/auth_service.dart';
+import '../../../auth/presentation/views/profile_setup_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -16,6 +19,22 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkProfileCompleteness();
+  }
+
+  Future<void> _checkProfileCompleteness() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && mounted) {
+      final isComplete = await AuthService().isUserComplete(user.uid);
+      if (!isComplete && mounted) {
+        ProfileSetupView.show(context);
+      }
+    }
+  }
 
   static const Color _navRed = Color(0xFFC00A15);
 
