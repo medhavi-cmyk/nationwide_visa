@@ -73,13 +73,11 @@ class RegisterView extends StatelessWidget {
             if (didPop) return;
             _showExitConfirmation(context);
           },
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
-              ),
+          child: Material(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(40),
+              topRight: Radius.circular(40),
             ),
             child: Column(
               children: [
