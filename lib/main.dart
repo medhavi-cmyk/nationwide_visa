@@ -19,7 +19,7 @@ import 'core/services/zego_chat_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetsBinding.instance.deferFirstFrame();
+
 
   // 1. Critical Initialization (Wait for these)
   await _initializeCriticalServices();
@@ -42,8 +42,7 @@ void main() async {
     ),
   );
 
-  // Now that the app UI is built, allow the first frame to render
-  WidgetsBinding.instance.allowFirstFrame();
+
 }
 
 /// Services that MUST be ready before the app can even start
